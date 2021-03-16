@@ -52,11 +52,10 @@ namespace RelatorioFA.AppWinForm
             txbAbsence.Text = "0";
             cbbContractType.Enabled = false;
 
-            txbObs.Text = "time topado!";
-            txbAcceptedPointsExpense.Text = "5";
-            txbAcceptedPointsInvestment.Text = "8";
+            //txbObs.Text = "time topado!";
+            //txbAcceptedPointsExpense.Text = "24";
+            //txbAcceptedPointsInvestment.Text = "10";
             //outputDocPath = System.IO.Directory.GetCurrentDirectory();
-            //btnOpenDestinationFolder.Enabled = true;
         }
 
         #region Config
@@ -260,27 +259,20 @@ namespace RelatorioFA.AppWinForm
                         {
                             EmployeesCount = PrincipalTO.CalcEmployeesPrticipation(contract, devPresence)
                         };
-                        double cerimonialPoint = (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedValue == UtilDTO.CERIMONIAL_POINT.DESPESA ? 1 : 0;
-                        cs.PointsPerPartnerExpenses = PrincipalTO.CalcPartnerPoints(newSprint.PointsPerTeamMemberExpenses + cerimonialPoint, contract.Factor);
-                        //cs.PointsPerPartnerInvestment = PrincipalTO.CalcPartnerPoints(cs.EmployeesCount, newSprint.PointsPerTeamMemberInvestment);
+
+                        cs.PointsPerPartnerExpenses = PrincipalTO.CalcPartnerPoints(newSprint.PointsPerTeamMemberExpenses, contract.Factor, (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedValue == UtilDTO.CERIMONIAL_POINT.DESPESA ? true : false, cs.EmployeesCount);
+                        cs.PointsPerPartnerInvestment = PrincipalTO.CalcPartnerPoints(newSprint.PointsPerTeamMemberInvestment, contract.Factor, (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedValue == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO ? true : false, cs.EmployeesCount);
 
                         if (contract.HourValue > 0)
                         {
-                            cs.Hours = PrincipalTO.CalcSprintHours(cs.PointsPerPartnerExpenses, partner.UstValue, contract.HourValue);
-                           // cs.BillingExpenses = PrincipalTO.CalcBillingHour(cs.Hours, contract.HourValue);
-                            //TODO - cs.BillingInvestment = 
+                            cs.HoursExpenses = PrincipalTO.CalcSprintHours(cs.PointsPerPartnerExpenses, partner.UstValue, contract.HourValue);
+                            cs.HoursInvestment = PrincipalTO.CalcSprintHours(cs.PointsPerPartnerInvestment, partner.UstValue, contract.HourValue);
                         }
-                        //else
-                        //{
-                        //    cs.BillingExpenses = PrincipalTO.CalcBillingUst(partner.UstValue, cs.PointsPerPartnerExpenses, contract.Factor);
-                        //    cs.BillingInvestment = PrincipalTO.CalcBillingUst(partner.UstValue, cs.PointsPerPartnerInvestment, contract.Factor);
-                        //}
 
                         if (contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString())
                         {
                             cs.EmployeesCount = 1;
                             cs.PointsPerPartnerExpenses = Convert.ToDouble(txbSmPoints.Text);
-                           // cs.BillingExpenses = cs.PointsPerPartnerExpenses * partner.UstValue;
                         }
 
                         contract.ContractSprint.Add(cs);
@@ -292,6 +284,7 @@ namespace RelatorioFA.AppWinForm
 
                 SetDefaultDevAbsence();
                 txbAcceptedPointsExpense.Clear();
+                txbAcceptedPointsInvestment.Clear();
                 txbObs.Clear();
                 txbAbsence.Text = "0";
                 btnGenerateAll.Enabled = true;
@@ -406,6 +399,7 @@ namespace RelatorioFA.AppWinForm
 
             cbbSprintRanges.Enabled = !block;
             cbbContractType.Enabled = !block;
+            cbbCerimonialPoint.Enabled = !block;
 
             dtpIniDate.Enabled = !block;
             dtpEndDate.Enabled = !block;

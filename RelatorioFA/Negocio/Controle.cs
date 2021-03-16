@@ -71,9 +71,13 @@ namespace RelatorioFA.Negocio
             return Math.Round(ustValue * pointsPerPartner * factor, 2);
         }
 
-        public static double CalcPartnerPoints(double pointsPerTeamMember, double factor)
+        public static double CalcPartnerPoints(double pointsPerTeamMember, double factor, bool addCerimonialPoint, double emploeeCount)
         {
-            return Math.Round(pointsPerTeamMember * factor, 3);
+            if (addCerimonialPoint)
+            {
+                pointsPerTeamMember += 1;
+            }
+            return Math.Round(pointsPerTeamMember * factor * emploeeCount, 3);
         }
 
         public static void CalcPointsPerTeamMember(SprintDTO newSprint)

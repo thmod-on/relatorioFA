@@ -8,7 +8,12 @@ namespace RelatorioFA.DTO
 {
     public class UtilDTO
     {
-        //public const string BaneseContract = "BANESE";
+        public enum CATEGORY
+        {
+            DES,
+            INV
+        }
+
         public enum CONTRACTS
         {
             BANESE,

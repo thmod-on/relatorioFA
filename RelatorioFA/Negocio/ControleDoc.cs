@@ -147,7 +147,7 @@ namespace RelatorioFA.Negocio
                     CreateSummaryTableUst(document, sprints, partner.Contracts, missing, partner.UstValue);
                     break;
                 case (UtilDTO.BILLING_TYPE.UST_HORA):
-                    CreateSummaryTableUstHour(document, para1.Range, sprints, partner.Contracts, missing);
+                    CreateSummaryTableUstHour(document, sprints, partner.Contracts, missing);
                     break;
                 default:
                     break;
@@ -241,9 +241,9 @@ namespace RelatorioFA.Negocio
             #region DevTable
             if (contracts.Any(x => x.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString()))
             {
-                CreateSummaryTableUstDevExpenses(document, sprints, contracts, ref missing, ustValue);
+                CreateSummaryTableUstDev(document, sprints, contracts, ref missing, ustValue, UtilDTO.CATEGORY.DES);
                 AddPAragraph(" ", 3, 3, 0, 8, WdParagraphAlignment.wdAlignParagraphLeft, document, ref missing);
-                CreateSummaryTableUstDevInvestment(document, sprints, contracts, ref missing, ustValue);
+                CreateSummaryTableUstDev(document, sprints, contracts, ref missing, ustValue, UtilDTO.CATEGORY.INV);
             }
             #endregion
 
@@ -256,8 +256,7 @@ namespace RelatorioFA.Negocio
         }
 
         #region CreateSummaryTableUstDev
-        #region CreateSummaryTableUstDevExpenses
-        private static void CreateSummaryTableUstDevExpenses(Document document, List<SprintDTO> sprints, List<ContratoDTO> contracts, ref object missing, double ustValue)
+        private static void CreateSummaryTableUstDev(Document document, List<SprintDTO> sprints, List<ContratoDTO> contracts, ref object missing, double ustValue, UtilDTO.CATEGORY category)
         {
             int line = 2;
             double totalPoints = 0;
@@ -268,7 +267,7 @@ namespace RelatorioFA.Negocio
             summaryTable.Borders.Enable = 1;
             summaryTable.Range.Font.Size = 8;
 
-            SetTableHeaderUstDevExp(ref summaryTable);
+            SetTableHeaderUstDev(ref summaryTable, category);
 
             foreach (var contract in contracts)
             {
@@ -277,19 +276,29 @@ namespace RelatorioFA.Negocio
                     int sprintIndex = 0;
                     foreach (var cs in contract.ContractSprint)
                     {
+                        int acceptedPoints = category == UtilDTO.CATEGORY.DES ? sprints[sprintIndex].AcceptedPointsExpenses : sprints[sprintIndex].AcceptedPointsInvestment;
+                        double pointsPerTeamMember = category == UtilDTO.CATEGORY.DES ? sprints[sprintIndex].PointsPerTeamMemberExpenses : sprints[sprintIndex].PointsPerTeamMemberInvestment;
+                        string cerimonialPoint = "0";
+                        if ((category == UtilDTO.CATEGORY.DES && sprints[sprintIndex].CerimonialPoint == UtilDTO.CERIMONIAL_POINT.DESPESA) ||
+                            (category == UtilDTO.CATEGORY.INV && sprints[sprintIndex].CerimonialPoint == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO))
+                        {
+                            cerimonialPoint = "1";
+                        }
+                        double pointsPerPartner = category == UtilDTO.CATEGORY.DES ? cs.PointsPerPartnerExpenses : cs.PointsPerPartnerInvestment;
+
                         summaryTable.Rows.Add(missing);
                         summaryTable.Rows[line].Range.Font.Bold = 0;
                         summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
                         summaryTable.Rows[line].Cells[1].Range.Text = sprints[sprintIndex].Range.Name + "\n" + contract.Name;
-                        summaryTable.Rows[line].Cells[2].Range.Text = sprints[sprintIndex].AcceptedPointsExpenses.ToString();
+                        summaryTable.Rows[line].Cells[2].Range.Text = acceptedPoints.ToString();
                         summaryTable.Rows[line].Cells[3].Range.Text = sprints[sprintIndex].TeamSize.ToString();
                         summaryTable.Rows[line].Cells[4].Range.Text = cs.EmployeesCount.ToString();
-                        summaryTable.Rows[line].Cells[5].Range.Text = sprints[sprintIndex].PointsPerTeamMemberExpenses.ToString();
+                        summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString();
                         summaryTable.Rows[line].Cells[6].Range.Text = contract.Factor.ToString();
-                        summaryTable.Rows[line].Cells[7].Range.Text = sprints[sprintIndex].CerimonialPoint == UtilDTO.CERIMONIAL_POINT.DESPESA ? "1" : "0";
-                        summaryTable.Rows[line].Cells[8].Range.Text = cs.PointsPerPartnerExpenses.ToString();
+                        summaryTable.Rows[line].Cells[7].Range.Text = cerimonialPoint;
+                        summaryTable.Rows[line].Cells[8].Range.Text = pointsPerPartner.ToString();
 
-                        totalPoints += cs.PointsPerPartnerExpenses;
+                        totalPoints += pointsPerPartner;
                         line++;
                         sprintIndex++;
                     }
@@ -298,86 +307,23 @@ namespace RelatorioFA.Negocio
 
             SetSummaryTableTotal(ref summaryTable, columns, line, totalPoints, ustValue, ref missing);
         }
-        #region SetTableHeaderUstDevExp
-        private static void SetTableHeaderUstDevExp(ref Table table)
+        #region SetTableHeaderUstDev
+        private static void SetTableHeaderUstDev(ref Table table, UtilDTO.CATEGORY category)
         {
             List<string> headers = new List<string>
             {
                 "Sprint",
-                "A. Pts entregues DES",
+                "A. Pts entregues " + category,
                 "B. Tamanho do time",
                 "C. Qtd funcionários empresa",
                 "D. Pts por membro do time\n(A / B)",
                 "E. Fator de ajuste",
                 "F. UST pelas cerimônias",
-                "G. Total de pontos\n( D + F) * E",
+                "G. Total de pontos\n( D + F) * E * C",
                 " - "
             };
             SetGenericTableHeader(ref table, headers);
         }
-        #endregion
-        #endregion
-
-        #region CreateSummaryTableUstDevInvestment
-        private static void CreateSummaryTableUstDevInvestment(Document document, List<SprintDTO> sprints, List<ContratoDTO> contracts, ref object missing, double ustValue)
-        {
-            int line = 2;
-            double totalPoints = 0;
-            int columns = 9;
-
-            Table summaryTable = document.Tables.Add(EndOfDocument(document, ref missing), 1, columns, ref missing, ref missing);
-
-            summaryTable.Borders.Enable = 1;
-            summaryTable.Range.Font.Size = 8;
-
-            SetTableHeaderUstDevInv(ref summaryTable);
-
-            foreach (var contract in contracts)
-            {
-                if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() && contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
-                {
-                    int sprintIndex = 0;
-                    foreach (var cs in contract.ContractSprint)
-                    {
-                        summaryTable.Rows.Add(missing);
-                        summaryTable.Rows[line].Range.Font.Bold = 0;
-                        summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
-                        summaryTable.Rows[line].Cells[1].Range.Text = sprints[sprintIndex].Range.Name + "\n" + contract.Name;
-                        summaryTable.Rows[line].Cells[2].Range.Text = sprints[sprintIndex].AcceptedPointsInvestment.ToString();
-                        summaryTable.Rows[line].Cells[3].Range.Text = sprints[sprintIndex].TeamSize.ToString();
-                        summaryTable.Rows[line].Cells[4].Range.Text = cs.EmployeesCount.ToString();
-                        summaryTable.Rows[line].Cells[5].Range.Text = sprints[sprintIndex].PointsPerTeamMemberInvestment.ToString();
-                        summaryTable.Rows[line].Cells[6].Range.Text = contract.Factor.ToString();
-                        summaryTable.Rows[line].Cells[7].Range.Text = sprints[sprintIndex].CerimonialPoint == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO ? "1" : "0";
-                        summaryTable.Rows[line].Cells[8].Range.Text = cs.PointsPerPartnerExpenses.ToString();
-
-                        totalPoints += cs.PointsPerPartnerExpenses;
-                        line++;
-                        sprintIndex++;
-                    }
-                }
-            }
-
-            SetSummaryTableTotal(ref summaryTable, columns, line, totalPoints, ustValue, ref missing);
-        }
-        #region SetTableHeaderUstDevInv
-        private static void SetTableHeaderUstDevInv(ref Table table)
-        {
-            List<string> headers = new List<string>
-            {
-                "Sprint",
-                "A. Pts entregues INV",
-                "B. Tamanho do time",
-                "C. Qtd funcionários empresa",
-                "D. Pts por membro do time\n(A / B)",
-                "E. Fator de ajuste",
-                "F. UST pelas cerimônias",
-                "G. Total de pontos\n( D + F) * E",
-                " - "
-            };
-            SetGenericTableHeader(ref table, headers);
-        }
-        #endregion 
         #endregion
         #endregion
         #endregion
@@ -439,67 +385,88 @@ namespace RelatorioFA.Negocio
         #endregion
         
         #region CreateSummaryTableUstHour
-        private static void CreateSummaryTableUstHour(Document document, Range range, List<SprintDTO> sprints, List<ContratoDTO> contracts, object missing)
+        private static void CreateSummaryTableUstHour(Document document, List<SprintDTO> sprints, List<ContratoDTO> contracts, object missing)
         {
-            Table summaryTable = document.Tables.Add(range, 1, 9, ref missing, ref missing);
+            foreach (var contract in contracts)
+            {
+                CreateSummaryTableUstHour(document, sprints, contract, missing, UtilDTO.CATEGORY.DES);
+                AddPAragraph(" ", 3, 3, 0, 8, WdParagraphAlignment.wdAlignParagraphLeft, document, ref missing);
+                CreateSummaryTableUstHour(document, sprints, contract, missing, UtilDTO.CATEGORY.INV); 
+            }
+        }
+
+        private static void CreateSummaryTableUstHour(Document document, List<SprintDTO> sprints, ContratoDTO contract, object missing, UtilDTO.CATEGORY category)
+        {
+            int columns = 9;
+            Table summaryTable = document.Tables.Add(EndOfDocument(document, ref missing), 1, columns, ref missing, ref missing);
             summaryTable.Borders.Enable = 1;
             summaryTable.Range.Font.Size = 8;
 
-            SetTableHeaderUstHour(ref summaryTable);
+            SetTableHeaderUstHour(ref summaryTable, category);
 
             int line = 2;
-            double totalBilling = 0;
-
-            foreach (var contract in contracts)
+            double totalHours = 0;
+                        
+            int sprintIndex = 0;
+            foreach (var cs in contract.ContractSprint)
             {
-                int sprintIndex = 0;
-                foreach (var cs in contract.ContractSprint)
+                int acceptedPoints = category == UtilDTO.CATEGORY.DES ? sprints[sprintIndex].AcceptedPointsExpenses : sprints[sprintIndex].AcceptedPointsInvestment;
+                double pointsPerTeamMember = category == UtilDTO.CATEGORY.DES ? sprints[sprintIndex].PointsPerTeamMemberExpenses : sprints[sprintIndex].PointsPerTeamMemberInvestment;
+                double pointsPerPartner = category == UtilDTO.CATEGORY.DES ? cs.PointsPerPartnerExpenses : cs.PointsPerPartnerInvestment;
+                int hours = category == UtilDTO.CATEGORY.DES ? cs.HoursExpenses : cs.HoursInvestment;
+                string cerimonialPoint = "0";//category == sprints[sprintIndex].CerimonialPoint ? "1" : "0";
+                if ((category == UtilDTO.CATEGORY.DES && sprints[sprintIndex].CerimonialPoint == UtilDTO.CERIMONIAL_POINT.DESPESA) ||
+                    (category == UtilDTO.CATEGORY.INV && sprints[sprintIndex].CerimonialPoint == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO))
                 {
-                    summaryTable.Rows.Add(missing);
-                    summaryTable.Rows[line].Range.Font.Bold = 0;
-                    summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
-                    summaryTable.Rows[line].Cells[1].Range.Text = sprints[sprintIndex].Range.Name;
-                    summaryTable.Rows[line].Cells[2].Range.Text = sprints[sprintIndex].AcceptedPointsExpenses.ToString();
-                    summaryTable.Rows[line].Cells[3].Range.Text = sprints[sprintIndex].TeamSize.ToString();
-                    summaryTable.Rows[line].Cells[4].Range.Text = cs.EmployeesCount.ToString();
-                    summaryTable.Rows[line].Cells[5].Range.Text = sprints[sprintIndex].PointsPerTeamMemberExpenses.ToString();
-                    summaryTable.Rows[line].Cells[6].Range.Text = cs.PointsPerPartnerExpenses.ToString();
-                    summaryTable.Rows[line].Cells[7].Range.Text = contract.Factor.ToString();
-                    summaryTable.Rows[line].Cells[8].Range.Text = cs.Hours.ToString();
-                    summaryTable.Rows[line].Cells[9].Range.Text = "99";//string.Format("{0:C}", cs.BillingExpenses);
-
-                    //totalBilling += cs.BillingExpenses;
-                    line++;
-                    sprintIndex++;
+                    cerimonialPoint = "1";
                 }
+
+                summaryTable.Rows.Add(missing);
+                summaryTable.Rows[line].Range.Font.Bold = 0;
+                summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
+                summaryTable.Rows[line].Cells[1].Range.Text = sprints[sprintIndex].Range.Name;
+                summaryTable.Rows[line].Cells[2].Range.Text = acceptedPoints.ToString();
+                summaryTable.Rows[line].Cells[3].Range.Text = sprints[sprintIndex].TeamSize.ToString();
+                summaryTable.Rows[line].Cells[4].Range.Text = cs.EmployeesCount.ToString();
+                summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString();
+                summaryTable.Rows[line].Cells[6].Range.Text =  cerimonialPoint;
+                summaryTable.Rows[line].Cells[7].Range.Text = pointsPerPartner.ToString();
+                summaryTable.Rows[line].Cells[8].Range.Text = hours.ToString();
+                //summaryTable.Rows[line].Cells[9].Range.Text = "99";//string.Format("{0:C}", cs.BillingExpenses);
+
+                totalHours += hours; // cs.HoursExpenses;
+                line++;
+                sprintIndex++;
             }
 
             summaryTable.Rows.Add(missing);
             summaryTable.Rows[line].Cells[1].Range.Text = "TOTAL:";
-            summaryTable.Rows[line].Cells[1].Merge(summaryTable.Rows[line].Cells[8]);
-            summaryTable.Rows[line].Cells[2].Range.Text = string.Format("{0:C}", totalBilling);
+            summaryTable.Rows[line].Cells[1].Merge(summaryTable.Rows[line].Cells[columns - 2]);
+            summaryTable.Rows[line].Cells[2].Range.Text = totalHours.ToString() + "h";
             summaryTable.Rows[line].Cells[2].Range.Font.Bold = 1;
+            summaryTable.Rows[line].Cells[3].Range.Text = string.Format("{0:C}", totalHours * contract.HourValue);
+            summaryTable.Rows[line].Cells[3].Range.Font.Bold = 1;
 
             //summaryTable.Range.Cells.AutoFit();
             //summaryTable.Range.Cells.DistributeHeight();
             summaryTable.Range.ParagraphFormat.SpaceAfter = 0;
         }
 
-        private static void SetTableHeaderUstHour(ref Table table)
+        private static void SetTableHeaderUstHour(ref Table table, UtilDTO.CATEGORY category)
         {
-            table.Cell(1, 1).Range.Text = "Sprint";
-            table.Cell(1, 2).Range.Text = "A. Pts entregues";
-            table.Cell(1, 3).Range.Text = "B. Tamanho do time";
-            table.Cell(1, 4).Range.Text = "C. Qtd funcionários empresa";
-            table.Cell(1, 5).Range.Text = "D. Pts por membro do time + 1\n(A / B)+1";
-            table.Cell(1, 6).Range.Text = "E. Pontos fornecedor\n(C * D)";
-            table.Cell(1, 7).Range.Text = "F. Fator de ajuste";
-            table.Cell(1, 8).Range.Text = "G. Horas na sprint\n(E * UST / Valor hora)";
-            table.Cell(1, 9).Range.Text = "A ser faturado\n(F * G * Valor hora)";
-
-            table.Rows[1].Range.Font.Bold = 1;
-            table.Rows[1].Shading.BackgroundPatternColor = WdColor.wdColorGray25;
-            table.Rows[1].Alignment = WdRowAlignment.wdAlignRowCenter;
+            List<string> headers = new List<string>()
+            {
+                "Sprint"
+                ,$"A. Pts entregues {category.ToString()}"
+                ,"B. Tamanho do time"
+                ,"C. Qtd funcionários empresa"
+                ,"D. Pts por membro do time\n(A / B)"
+                ,"E. Pontuação de cerimônia"
+                ,"F. Pontos fornecedor\n(C *(D + E))"
+                ,"G. Horas na sprint\n(F * UST / Valor hora)"
+                ,"A ser faturado\n(G * Valor hora)"
+            };
+            SetGenericTableHeader(ref table, headers);
         }
         #endregion
 

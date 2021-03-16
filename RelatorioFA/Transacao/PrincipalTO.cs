@@ -51,9 +51,9 @@ namespace RelatorioFA.Transacao
             return Controle.CalcEmployeesPrticipation(contract, devPresence);
         }
 
-        public static double CalcPartnerPoints(double pointsPerTeamMember, double factor)
+        public static double CalcPartnerPoints(double pointsPerTeamMember, double factor, bool addCerimonialPoint, double emploeeCount)
         {
-            return Controle.CalcPartnerPoints(pointsPerTeamMember, factor);
+            return Controle.CalcPartnerPoints(pointsPerTeamMember, factor, addCerimonialPoint, emploeeCount);
         }
 
         public static double CalcBillingUst(double ustValue, double pointsPerPartner, double factor)

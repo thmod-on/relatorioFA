@@ -12,6 +12,7 @@ namespace RelatorioFA.DTO
         public double EmployeesCount { get; set; }//consideraando as ausências
         public double PointsPerPartnerExpenses { get; set; }
         public double PointsPerPartnerInvestment { get; set; }
-        public int Hours { get; set; }
+        public int HoursExpenses { get; set; }
+        public int HoursInvestment { get; set; }
     }
 }
