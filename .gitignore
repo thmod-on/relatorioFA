@@ -10,3 +10,6 @@
 /RelatorioFA/Transacao/bin
 /RelatorioFA/Transacao/obj
 *.xml
+*.user
+*.png
+*.jpeg

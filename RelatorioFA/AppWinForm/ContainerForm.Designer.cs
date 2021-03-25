@@ -123,7 +123,7 @@
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "ContainerForm";
-            this.Text = "Relatório de fábrica ágil - v 4.4.0";
+            this.Text = "Relatório de fábrica ágil - v 4.6.2";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);

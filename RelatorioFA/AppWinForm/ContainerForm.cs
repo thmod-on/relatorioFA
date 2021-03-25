@@ -51,12 +51,12 @@ namespace RelatorioFA.AppWinForm
         #region Ações do menu
         private void VersõesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AbrirForm(new SobreForm());
+            AbrirForm(new SobreForm(this));
         }
 
         private void ModeloDeArquivoDeConfiguraçãoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AbrirForm(new ModeloConfigXMLForm());
+            AbrirForm(new ModeloConfigXMLForm(this));
         }
         #endregion
 

@@ -11,6 +11,8 @@ namespace RelatorioFA.Negocio
 {
     public class ControleDoc
     {
+        const string decimalFormat = "0.000";
+
         public static void GenerateAllDocs(ConfigDTO config, List<SprintDTO> sprints, List<ColaboradorDTO> devTeam, string outputDocPath)
         {
             try
@@ -42,7 +44,7 @@ namespace RelatorioFA.Negocio
                     Microsoft.Office.Interop.Word.Document document = winword.Documents.Add(ref missing, ref missing, ref missing, ref missing);
 
                     SetDocumentContent(document, ref missing, sprints, devTeam, config.TeamName, config.AuthorName, partner, partner.BillingType);
-                    SetDocumentHeader(document, partner.Name, config.TeamName);
+                    SetDocumentHeader(document, partner.Name, partner.CaminhoLogomarca, config.TeamName);
                     SetDocumentFooter(document);
                     SaveAndClose(ref document, ref winword, outputDocName, outputDocPath, missing); 
                 }
@@ -74,7 +76,7 @@ namespace RelatorioFA.Negocio
 
             CreateFirstPage(para1, sprints, teamName);
             
-            CreateFollowPages(sprints, devTeam, para1);
+            CreateFollowPages(document, partner, sprints, devTeam, para1);
 
             CreateLastPage(document, para1, sprints, missing, author, teamName, billingType, partner);
         }
@@ -162,7 +164,7 @@ namespace RelatorioFA.Negocio
         #endregion
 
         #region CreateFollowPages
-        private static void CreateFollowPages(List<SprintDTO> sprints, List<ColaboradorDTO> devTeam, Paragraph paragraph)
+        private static void CreateFollowPages(Document document, FornecedorDTO partner, List<SprintDTO> sprints, List<ColaboradorDTO> devTeam, Paragraph paragraph)
         {
             string strAux;
             string strObs = string.Empty;
@@ -177,16 +179,39 @@ namespace RelatorioFA.Negocio
                 }
                 else
                 {
+                    if (i > 0)
+                    {
+                        document.Words.Last.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
+                    }
+
+                    //Cabecalho da sprint
                     strObs += " " + sprints[i].Obs;
                     strAux = $"SPRINT {sprints[i].Range.Name} ({sprints[i].Range.IniDate.ToString("dd/MM/yyyy")} a {sprints[i].Range.EndDate.ToString("dd/MM/yyyy")})";
                     AddPAragraph(paragraph, strAux, 30, 30, 1, 14, WdParagraphAlignment.wdAlignParagraphJustify);
 
+                    //Imagem da sprint
+                    if (sprints[i].ImagePath != string.Empty)
+                    {
+                        paragraph.Range.InlineShapes.AddPicture(sprints[i].ImagePath);
+                        paragraph.Range.InsertParagraphAfter(); 
+                    }
+
+                    //Time de desenvolvimento
                     AddPAragraph(paragraph, "TIME DE DESENVOLVIMENTO:", 30, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
 
                     foreach (var dev in devTeam)
                     {
                         strAux = dev.Name;
-                        AddPAragraph(paragraph, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
+                        if (partner
+                            .Contracts.Any(contract => contract
+                            .Collaborators.Any(colaborator => colaborator.Name == dev.Name)))
+                        {
+                            AddPAragraph(paragraph, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify, WdColorIndex.wdYellow);
+                        }
+                        else
+                        {
+                            AddPAragraph(paragraph, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
+                        }
                     }
                     //Detalhes da sprint
                     strAux = $"* {strObs}";
@@ -198,7 +223,7 @@ namespace RelatorioFA.Negocio
         #endregion
         #endregion
 
-        #region AddPAragraph
+        #region Sobrecarga desnecessaria. Apagar um.
         /// <summary>
         /// Método para criar novos parágrafos no documento Word
         /// </summary>
@@ -222,13 +247,14 @@ namespace RelatorioFA.Negocio
             paragraph.Range.InsertParagraphAfter();
         }
 
-        private static void AddPAragraph(Paragraph paragraph, string text, int spaceBefore, int spaceAfter, int flagFontBold, int fontSize, WdParagraphAlignment paragraphAlignment)
+        private static void AddPAragraph(Paragraph paragraph, string text, int spaceBefore, int spaceAfter, int flagFontBold, int fontSize, WdParagraphAlignment paragraphAlignment, WdColorIndex highlightColor = WdColorIndex.wdAuto)
         {
             paragraph.Range.Text = text;
             paragraph.Format.SpaceBefore = spaceBefore;
             paragraph.Format.SpaceAfter = spaceAfter;
             paragraph.Range.Font.Bold = flagFontBold;
             paragraph.Range.Font.Size = fontSize;
+            paragraph.Range.HighlightColorIndex = highlightColor;
             paragraph.Format.Alignment = paragraphAlignment;
             paragraph.Range.InsertParagraphAfter();
         }
@@ -293,10 +319,10 @@ namespace RelatorioFA.Negocio
                         summaryTable.Rows[line].Cells[2].Range.Text = acceptedPoints.ToString();
                         summaryTable.Rows[line].Cells[3].Range.Text = sprints[sprintIndex].TeamSize.ToString();
                         summaryTable.Rows[line].Cells[4].Range.Text = cs.EmployeesCount.ToString();
-                        summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString();
+                        summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString(decimalFormat);
                         summaryTable.Rows[line].Cells[6].Range.Text = contract.Factor.ToString();
                         summaryTable.Rows[line].Cells[7].Range.Text = cerimonialPoint;
-                        summaryTable.Rows[line].Cells[8].Range.Text = pointsPerPartner.ToString();
+                        summaryTable.Rows[line].Cells[8].Range.Text = pointsPerPartner.ToString(decimalFormat);
 
                         totalPoints += pointsPerPartner;
                         line++;
@@ -428,13 +454,12 @@ namespace RelatorioFA.Negocio
                 summaryTable.Rows[line].Cells[2].Range.Text = acceptedPoints.ToString();
                 summaryTable.Rows[line].Cells[3].Range.Text = sprints[sprintIndex].TeamSize.ToString();
                 summaryTable.Rows[line].Cells[4].Range.Text = cs.EmployeesCount.ToString();
-                summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString();
-                summaryTable.Rows[line].Cells[6].Range.Text =  cerimonialPoint;
-                summaryTable.Rows[line].Cells[7].Range.Text = pointsPerPartner.ToString();
+                summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString(decimalFormat);
+                summaryTable.Rows[line].Cells[6].Range.Text = cerimonialPoint;
+                summaryTable.Rows[line].Cells[7].Range.Text = pointsPerPartner.ToString(decimalFormat);
                 summaryTable.Rows[line].Cells[8].Range.Text = hours.ToString();
-                //summaryTable.Rows[line].Cells[9].Range.Text = "99";//string.Format("{0:C}", cs.BillingExpenses);
 
-                totalHours += hours; // cs.HoursExpenses;
+                totalHours += hours;
                 line++;
                 sprintIndex++;
             }
@@ -512,7 +537,7 @@ namespace RelatorioFA.Negocio
             {
                 //Get the footer range and add the footer details.  
                 Microsoft.Office.Interop.Word.Range footerRange = wordSection.Footers[Microsoft.Office.Interop.Word.WdHeaderFooterIndex.wdHeaderFooterPrimary].Range;
-                footerRange.Font.ColorIndex = Microsoft.Office.Interop.Word.WdColorIndex.wdDarkRed;
+                footerRange.Font.ColorIndex = Microsoft.Office.Interop.Word.WdColorIndex.wdGray50;
                 footerRange.Font.Size = 10;
                 footerRange.ParagraphFormat.Alignment = Microsoft.Office.Interop.Word.WdParagraphAlignment.wdAlignParagraphCenter;
                 footerRange.Text = "BANESE - Banco do Estado de Sergipe";
@@ -521,17 +546,25 @@ namespace RelatorioFA.Negocio
         #endregion
 
         #region SetDocumentHeader
-        private static void SetDocumentHeader(Document document, string partnerName, string teamName)
+        private static void SetDocumentHeader(Document document, string partnerName, string logoPath, string teamName)
         {
             foreach (Microsoft.Office.Interop.Word.Section section in document.Sections)
             {
                 //Get the header range and add the header details.  
                 Microsoft.Office.Interop.Word.Range headerRange = section.Headers[Microsoft.Office.Interop.Word.WdHeaderFooterIndex.wdHeaderFooterPrimary].Range;
                 headerRange.Fields.Add(headerRange, Microsoft.Office.Interop.Word.WdFieldType.wdFieldPage);
+                headerRange.Text = "";
+                if (logoPath != string.Empty)
+                {
+                    headerRange.InlineShapes.AddPicture(logoPath);
+                }
+                else
+                {
+                    headerRange.Font.Size = 10;
+                    headerRange.Text = $"{partnerName} - {teamName}".ToUpper();
+                }
                 headerRange.ParagraphFormat.Alignment = Microsoft.Office.Interop.Word.WdParagraphAlignment.wdAlignParagraphCenter;
                 //headerRange.Font.ColorIndex = Microsoft.Office.Interop.Word.WdColorIndex.wdBlue;
-                headerRange.Font.Size = 10;
-                headerRange.Text = $"{partnerName} - {teamName}".ToUpper();
             }
         }
         #endregion

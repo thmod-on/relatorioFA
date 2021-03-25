@@ -12,15 +12,26 @@ namespace RelatorioFA.AppWinForm
 {
     public partial class SobreForm : Form
     {
-        public SobreForm()
+        public SobreForm(Form parentForm)
         {
             InitializeComponent();
+            ResizeParent(parentForm);
             LoadUpdatesDescription();
+        }
+
+        private void ResizeParent(Form containerForm)
+        {
+            containerForm.Size = new System.Drawing.Size(this.Width, this.Height + 20);
+            containerForm.MinimumSize = new Size(this.Width, this.Height + 20);
         }
 
         private void LoadUpdatesDescription()
         {
-            txbUpdates.AppendText("+ ---------------------+\n  Versão 4.4.0  \n + ---------------------+\n - Adicionada importação de imagem para a logo do fornecedor (ainda não é adicionada ao relatório, apenas no arquivo de configuração);\n - Alterada tela de geração de relatório para aceitar pontos de investimento e despesa;\n - Refeita lógica das tabelas para simplificar a manutenção do código;\n - Refeitas as tabelas para gerar sempre investimento e despesa (SM_FIXO, PADRAO, PLENO, SENIOR, UST_HORA)");
+            txbUpdates.AppendText("+ ---------------------+\n  Versão 4.6.2  \n + ---------------------+\n - Alterada a cor da mensagem do rodapé do documento;\n - Cada sprint agora é gerada em uma página");
+            txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.6.1  \n + ---------------------+\n - Melhoria no redimensionamento dos formulários;\n - Na tela de relatórios, ao selecionar uma sprint ele irá trazer a maioria dos dados PARA CONFERÊNCIA;\n - Tela de atualizações dando preferência para as mais recentes.");
+            txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.6.0  \n + ---------------------+\n - Reformulado layout da tela de relatórios para deixar mais intuitiva;\n - Possibilidade de carregar um imagem par cada sprint para ser adicionada ao relatório;\n - Adição dos zeros à direit na tabela de resumo mesmo quando a conta é exata (algum caaso pode ter ficado de fora).");
+            txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.5.0  \n + ---------------------+\n - Tratado erro ao adicionar imagem que já existe;\n - Adicionara logo do parceiro no cabeçalho do arquivo;\n - Realçado o nome do colaborador referente ao relatório do parceiro.");
+            txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.4.0  \n + ---------------------+\n - Adicionada importação de imagem para a logo do fornecedor (ainda não é adicionada ao relatório, apenas no arquivo de configuração);\n - Alterada tela de geração de relatório para aceitar pontos de investimento e despesa;\n - Refeita lógica das tabelas para simplificar a manutenção do código;\n - Refeitas as tabelas para gerar sempre investimento e despesa (SM_FIXO, PADRAO, PLENO, SENIOR, UST_HORA)");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.3.0  \n + ---------------------+\n - Tela de geração de configuração permite o SM_FIXO; Realizar mudanças necessárias nas lógicas do time e de leitura do arquivo de configuração para aceitar o SM_FIXO; Gerar o doc com SM_FIXO");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.2.0  \n + ---------------------+\n - Adicionado botão para abrir a pasta destino dos relatórios;\n - Reefatoradas algumas variáveis para facilitar manutenção;\n - Simplificada interface do form de criação do arquivo de configuração.");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.1.0  \n + ---------------------+\n - Mudanças na geraçlão do relatório:\n   . Escondido o tipo do contrato para simplificar a interface;\n   . Ao selecionar um colaborador o campo de ausências automaticamente é sselecionado;\n   . Caso algum contrato do fornecedor possua horas cadastradas ele será categorizado diferente para geração do relatório. OBS.: Este caso está funcionando mas com limitações. Caso necessite de ajustes ou melhorias podem reportar ou corrigir / evoluir.");
@@ -39,6 +50,9 @@ namespace RelatorioFA.AppWinForm
             txbUpdates.AppendText("\n\n +----------------------+\n  Versão 1.2.0  \n + ---------------------+\n - Geração do relatório\n   . Cálculo automático do tamnho do time baseado no arquivo de configuração;\n   . Arquivo doc agora lista todos devs do time cadastrados no arquivo de config.\n - Geração de modelo de xml agora funcional");
             txbUpdates.AppendText("\n\n +----------------------+\n  Versão 1.1.0  \n + ---------------------+\n - Adição das colunas de investimento e despesa no relatório;\n- Adição dos campo de controle de investimento e despea na interface;\n- Crição do container para separação das funcionalidades;\n- Adição do menu 'Sobre'");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 1.0.1  \n + ---------------------+\n - Versão inicial da aplicação; \n   . Carregamento do arquivo de configuração; \n   . Geração da versão inicial do relatório em DOCX");
+
+            txbUpdates.SelectionStart = 0;
+            txbUpdates.SelectionLength = 0;
         }
     }
 }

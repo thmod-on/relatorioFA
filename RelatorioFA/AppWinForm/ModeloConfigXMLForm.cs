@@ -19,18 +19,25 @@ namespace RelatorioFA.AppWinForm
     {
         private string arquivoImagemLogomarca;
 
-        public ModeloConfigXMLForm()
+        public ModeloConfigXMLForm(Form parentForm)
         {
             InitializeComponent();
+            ResizeParent(parentForm);
             LoadConfigData();
             LoadContractType();
 
-            //txbAuthor.Text = "Modesto";
+            //txbAuthor.Text = "Thiago de Mendonça Modesto";
             //txbTeamName.Text = "ACAFS - Governo";
             //txbPartnerName.Text = "Influir";
-            //txbPartnerUstValue.Text = "100,2";
+            //txbPartnerUstValue.Text = "750";
             //txbContractFactor.Text = "1";
             //btnGenerateFilled.Enabled = true;
+        }
+
+        private void ResizeParent(Form containerForm)
+        {
+            containerForm.Size = new System.Drawing.Size(this.Width, this.Height + 20);
+            containerForm.MinimumSize = new Size(this.Width, this.Height + 20);
         }
 
         private void LoadContractType()
@@ -143,7 +150,6 @@ namespace RelatorioFA.AppWinForm
                     Name = txbPartnerName.Text,
                     UstValue = Convert.ToDouble(txbPartnerUstValue.Text)
                 };
-
                 
                 partner.CaminhoLogomarca = SalvarImagemParceiro(partner.Name);
 
@@ -166,20 +172,31 @@ namespace RelatorioFA.AppWinForm
         {
             if (arquivoImagemLogomarca != null)
             {
-                nomeParceiro = nomeParceiro.Trim().Replace(" ", "_");
+                try
+                {
+                    nomeParceiro = nomeParceiro.Trim().Replace(" ", "_");
 
-                FileInfo fileInfoImagem = new FileInfo(arquivoImagemLogomarca);                
-                FileInfo fileInfoExecutavel = new FileInfo(Application.ExecutablePath);
+                    FileInfo fileInfoImagem = new FileInfo(arquivoImagemLogomarca);
+                    FileInfo fileInfoExecutavel = new FileInfo(Application.ExecutablePath);
 
-                string pathDestino = $"{fileInfoExecutavel.DirectoryName}\\imagens\\";
+                    string pathDestino = $"{fileInfoExecutavel.DirectoryName}\\imagens\\";
 
-                if (!Directory.Exists(pathDestino))
-                    Directory.CreateDirectory(pathDestino);
+                    if (!Directory.Exists(pathDestino))
+                        Directory.CreateDirectory(pathDestino);
 
-                pathDestino = $"{pathDestino}{nomeParceiro}{fileInfoImagem.Extension}";
-                fileInfoImagem.CopyTo(pathDestino);
-                
-                return pathDestino;
+                    pathDestino = $"{pathDestino}{nomeParceiro}{fileInfoImagem.Extension}";
+                    fileInfoImagem.CopyTo(pathDestino, true);
+
+                    return pathDestino;
+                }
+                catch (PathTooLongException)
+                {
+                    throw new PathTooLongException("O caminho para salvar a imagem é muito longo. Favor escolher outra pasta destino para a logomarca do parceiro");
+                }
+                catch(Exception e)
+                {
+                    throw e;
+                }
             }
 
             return "";

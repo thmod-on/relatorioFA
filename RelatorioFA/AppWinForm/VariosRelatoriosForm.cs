@@ -38,19 +38,14 @@ namespace RelatorioFA.AppWinForm
         List<IntervaloDTO> sprintRanges = new List<IntervaloDTO>();
         private string outputDocPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
         Dictionary<string, int> devAbsence = new Dictionary<string, int>();
+        string sprintImagePath = string.Empty;
 
         private void SetFields()
         {
             txbResult.Enabled = false;
-            txbTeamName.Enabled = false;
-            
-            cbbContractType.DataSource = Enum.GetValues(typeof(UtilDTO.BILLING_TYPE));
-            cbbContractType.SelectedIndex = 0;
-            
-            btnGenerateAll.Enabled = false;
-
             txbAbsence.Text = "0";
-            cbbContractType.Enabled = false;
+
+            btnGenerateAll.Enabled = false;
 
             //txbObs.Text = "time topado!";
             //txbAcceptedPointsExpense.Text = "24";
@@ -128,11 +123,12 @@ namespace RelatorioFA.AppWinForm
         private void ResizeParent(Form containerForm)
         {
             containerForm.Size = new System.Drawing.Size(this.Width, this.Height + 20);
+            containerForm.MinimumSize = new Size(this.Width, this.Height + 20);
         }
 
         private void LoadAuthor()
         {
-            txbAuthor.Text = config.AuthorName;
+            lblAuthor.Text = config.AuthorName;
         }
         #endregion
 
@@ -174,7 +170,7 @@ namespace RelatorioFA.AppWinForm
 
         private void LoadTeamName()
         {
-            txbTeamName.Text = config.TeamName;
+            lblTeamName.Text = config.TeamName;
         }
 
         private void ClearFields()
@@ -246,7 +242,8 @@ namespace RelatorioFA.AppWinForm
                     AcceptedPointsExpenses = Convert.ToInt32(txbAcceptedPointsExpense.Text),
                     AcceptedPointsInvestment = Convert.ToInt32(txbAcceptedPointsInvestment.Text),
                     TeamSize = PrincipalTO.CalcTeamSize(devPresence),
-                    CerimonialPoint = (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedItem
+                    CerimonialPoint = (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedItem,
+                    ImagePath = sprintImagePath
                 };
 
                 PrincipalTO.CalcPointsPerTeamMember(newSprint);
@@ -286,13 +283,15 @@ namespace RelatorioFA.AppWinForm
                 txbAcceptedPointsExpense.Clear();
                 txbAcceptedPointsInvestment.Clear();
                 txbObs.Clear();
+                pbxSprintImage.Image = null;
                 txbAbsence.Text = "0";
                 btnGenerateAll.Enabled = true;
-                cbbContractType.Enabled = false;
                 if (cbbSprintRanges.SelectedIndex < cbbSprintRanges.Items.Count)
                 {
                     cbbSprintRanges.SelectedIndex += 1;
                 }
+
+                lsbSprints.Items.Add(newSprint.Range.Name);
             }
             catch (Exception ex)
             {
@@ -312,8 +311,7 @@ namespace RelatorioFA.AppWinForm
             DialogResult result = folderDlg.ShowDialog();
             if (result == DialogResult.OK)
             {
-                lblOutputDocPath.Text = "Os relatórios serão gerados em:\n\n";
-                lblOutputDocPath.Text += folderDlg.SelectedPath;
+                lblOutputDocPath.Text = folderDlg.SelectedPath;
                 lblOutputDocPath.Visible = true;
 
                 outputDocPath = folderDlg.SelectedPath;
@@ -370,6 +368,38 @@ namespace RelatorioFA.AppWinForm
             System.Diagnostics.Process.Start(outputDocPath);
         }
         #endregion
+
+        #region BtnSprintImage_Click
+        private void BtnSprintImage_Click(object sender, EventArgs e)
+        {
+            var fileContent = string.Empty;
+            string filePath = null;
+            sprintImagePath = string.Empty;
+
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Imagens PNG (*.png)|*.png|Imagens Jpeg (*.jpg)|*.jpg";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    //Get the path of specified file
+                    filePath = openFileDialog.FileName;
+
+                    //Read the contents of the file into a stream
+                    var fileStream = openFileDialog.OpenFile();
+
+                    using (StreamReader reader = new StreamReader(fileStream))
+                    {
+                        pbxSprintImage.Load(filePath);
+                    }
+                }
+            }
+
+            sprintImagePath = filePath;
+        }
+        #endregion
         #endregion
 
         #region Processing
@@ -398,7 +428,6 @@ namespace RelatorioFA.AppWinForm
             txbSmPoints.Enabled = !block;
 
             cbbSprintRanges.Enabled = !block;
-            cbbContractType.Enabled = !block;
             cbbCerimonialPoint.Enabled = !block;
 
             dtpIniDate.Enabled = !block;
@@ -443,6 +472,11 @@ namespace RelatorioFA.AppWinForm
         #region ValidateAddSprint
         private void ValidateAddSprint()
         {
+            if (txbAcceptedPointsExpense.Text.Trim() == string.Empty && txbAcceptedPointsInvestment.Text.Trim() == string.Empty)
+            {
+                throw new Exception("Uma sprint não pode ser cadastrada sem pontos aceitos.");
+            }
+
             if (txbAcceptedPointsExpense.Text.Trim() == string.Empty || Convert.ToInt32(txbAcceptedPointsExpense.Text) < 1)
             {
                 txbAcceptedPointsExpense.Text = "0";
@@ -459,5 +493,25 @@ namespace RelatorioFA.AppWinForm
             }
         }
         #endregion
+
+        private void LsbSprints_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //Atualizar os objetos com os dados da tela
+
+
+            //Carregar os novos dados
+            SprintDTO sprint = new SprintDTO();
+            sprint = sprints.Find(x => x.Range.Name == lsbSprints.SelectedItem.ToString());
+
+            txbObs.Text = sprint.Obs;
+            txbAcceptedPointsExpense.Text = sprint.AcceptedPointsExpenses.ToString();
+            txbAcceptedPointsInvestment.Text = sprint.AcceptedPointsInvestment.ToString();
+
+            dtpIniDate.Text = sprint.Range.IniDate.ToString();
+            dtpEndDate.Text = sprint.Range.EndDate.ToString();
+
+            cbbCerimonialPoint.SelectedItem = sprint.CerimonialPoint;
+            cbbSprintRanges.SelectedItem = sprint.Range.Name;
+        }
     }
 }
