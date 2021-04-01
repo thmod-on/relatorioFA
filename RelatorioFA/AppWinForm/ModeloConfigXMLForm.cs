@@ -18,6 +18,7 @@ namespace RelatorioFA.AppWinForm
     public partial class ModeloConfigXMLForm : Form
     {
         private string arquivoImagemLogomarca;
+        private const string NOVO = "NOVO";
 
         public ModeloConfigXMLForm(Form parentForm)
         {
@@ -25,21 +26,43 @@ namespace RelatorioFA.AppWinForm
             ResizeParent(parentForm);
             LoadConfigData();
             LoadContractType();
+            cbbPartner.Items.Add(NOVO);
+            cbbPartner.SelectedIndex = 0;
 
-            //txbAuthor.Text = "Thiago de Mendonça Modesto";
-            //txbTeamName.Text = "ACAFS - Governo";
-            //txbPartnerName.Text = "Influir";
-            //txbPartnerUstValue.Text = "750";
-            //txbContractFactor.Text = "1";
-            //btnGenerateFilled.Enabled = true;
+            //Tests();
         }
+
+        public ModeloConfigXMLForm()
+        {
+            InitializeComponent();
+            LoadConfigData();
+            LoadContractType();
+            cbbPartner.Items.Add(NOVO);
+            cbbPartner.SelectedIndex = 0;
+
+            //Tests();
+        }
+
+        private void Tests()
+        {
+            txbAuthor.Text = "Thiago de Mendonça Modesto";
+            txbTeamName.Text = "ACAFS - Governo";
+            txbPartnerName.Text = "Influir";
+            txbPartnerUstValue.Text = "750";
+            txbContractFactor.Text = "1";
+        }
+
+        private string outputPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+        const string outputName = "RelatorioFA.xml";
+        private ConfigDTO config = new ConfigDTO();
 
         private void ResizeParent(Form containerForm)
         {
             containerForm.Size = new System.Drawing.Size(this.Width, this.Height + 20);
-            containerForm.MinimumSize = new Size(this.Width, this.Height + 20);
+            containerForm.MinimumSize = new Size(this.Width, this.Height + 30);
         }
 
+        #region LoadContractType
         private void LoadContractType()
         {
             foreach (var contractType in Enum.GetValues(typeof(UtilDTO.CONTRACTS)))
@@ -47,16 +70,13 @@ namespace RelatorioFA.AppWinForm
 
                 if (contractType.ToString() != UtilDTO.CONTRACTS.BANESE.ToString())
                 {
-                    cbbContractType.Items.Add(contractType); 
+                    cbbContractType.Items.Add(contractType);
                 }
             }
             cbbContractType.SelectedIndex = 0;
-        }
+        } 
+        #endregion
 
-        private string outputPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-        const string outputName = "RelatorioFA.xml";
-        private ConfigDTO config = new ConfigDTO();
-        
         private void LoadConfigData()
         {
             lblOutputPath.Text = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
@@ -93,29 +113,43 @@ namespace RelatorioFA.AppWinForm
 
                     outputPath = folderDlg.SelectedPath;
 
-                    btnGenerate.Enabled = true;
+                    btnLoad.Enabled = true;
                 }
             }
             catch (Exception ex)
             {
                 txbResult.Text = $"Erro durante escolha do local de saída do arquivo XML. Mensagem:\n{ex.Message}\n\nPilha de erro:\n{ex.StackTrace}";
             }
-        } 
+        }
         #endregion
 
-        #region BtnGenerate_Click
-        private void BtnGenerate_Click(object sender, EventArgs e)
+        #region BtnLoad_Click
+        private void BtnLoad_Click(object sender, EventArgs e)
         {
-            txbResult.Clear();
+            string filePath = string.Empty;
             try
             {
-                Processing(true);
-                PrincipalTO.GenerateConfigXmlFile(outputPath, outputName);
-                Processing(false);
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    openFileDialog.Filter = "XML (*.XML)|*.XML";
+                    openFileDialog.FilterIndex = 1;
+                    openFileDialog.RestoreDirectory = true;
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        filePath = openFileDialog.FileName;
+                        config = PrincipalTO.LoadConfig(filePath);
+                        UpdatePartnersCombo();
+                        UpdateContractsCombo();
+                        txbAuthor.Text = config.AuthorName;
+                        txbTeamName.Text = config.TeamName;
+                        PrintUserLog("Arquivo de configuração carregado.");
+                    }
+                }
             }
             catch (Exception ex)
             {
-                txbResult.Text = $"Erro durante geração do arquivo XML. Mensagem:\n{ex.Message}\n\nPilha de erro:\n{ex.StackTrace}";
+                txbResult.Text = $"ERRO\n\n{ex.Message}\n\n{ex.InnerException.Message}";
             }
         } 
         #endregion
@@ -150,10 +184,14 @@ namespace RelatorioFA.AppWinForm
                     Name = txbPartnerName.Text,
                     UstValue = Convert.ToDouble(txbPartnerUstValue.Text)
                 };
-                
                 partner.CaminhoLogomarca = SalvarImagemParceiro(partner.Name);
 
+                if (cbbPartner.SelectedItem.ToString() != NOVO)
+                {
+                    config.Partners.Remove(config.Partners.Find(p => p.Name == cbbPartner.SelectedItem.ToString()));
+                }
                 config.Partners.Add(partner);
+
                 picBoxLogomarca.Image = null;
                 arquivoImagemLogomarca = null;
                 txbPartnerName.Clear();
@@ -168,6 +206,7 @@ namespace RelatorioFA.AppWinForm
         }
         #endregion
 
+        #region SalvarImagemParceiro
         private string SalvarImagemParceiro(string nomeParceiro)
         {
             if (arquivoImagemLogomarca != null)
@@ -193,22 +232,26 @@ namespace RelatorioFA.AppWinForm
                 {
                     throw new PathTooLongException("O caminho para salvar a imagem é muito longo. Favor escolher outra pasta destino para a logomarca do parceiro");
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     throw e;
                 }
             }
 
             return "";
-        }
-
+        } 
+        #endregion
 
         #region BtnAddContract_Click
         private void BtnAddContract_Click(object sender, EventArgs e)
         {
             try
             {
-                ValidateContractData();
+                if (cbbContract.SelectedValue.ToString() == NOVO)
+                {
+                    ValidateContractData(); 
+                }
+
                 ContratoDTO newContract = new ContratoDTO()
                 {
                     Name = cbbContractType.SelectedItem.ToString(),
@@ -218,6 +261,19 @@ namespace RelatorioFA.AppWinForm
                 if (txbContractHourValue.Text.Trim() != string.Empty)
                 {
                     newContract.HourValue = Convert.ToDouble(txbContractHourValue.Text);
+                }
+
+                if (cbbContract.SelectedValue.ToString() != NOVO &&
+                    cbbContract.SelectedValue.ToString() != UtilDTO.CONTRACTS.BANESE.ToString())
+                {
+                    var oldContract = config
+                        .Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString())
+                        .Contracts.Find(c => c.Name == cbbContract.SelectedValue.ToString());
+
+                    config
+                        .Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString())
+                        .Contracts
+                        .Remove(oldContract);
                 }
 
                 config.Partners
@@ -247,22 +303,44 @@ namespace RelatorioFA.AppWinForm
                     Name = txbDevName.Text
                 };
 
-                if (cbbContract.SelectedItem.ToString() != UtilDTO.CONTRACTS.BANESE.ToString())
+                if (cbbDevs.SelectedItem.ToString() == NOVO)
                 {
-                    config.Partners
-                                .Find(x => x.Name == cbbPartner.SelectedItem.ToString())
-                                .Contracts
-                                    .Find(x => x.Name == cbbContract.SelectedItem.ToString())
-                                    .Collaborators
-                                        .Add(newDev);
+                    if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.BANESE.ToString())
+                    {
+                        config.BaneseDes.Add(newDev);
+                    }
+                    else
+                    {
+                        config.Partners
+                                     .Find(x => x.Name == cbbPartner.SelectedItem.ToString())
+                                     .Contracts
+                                         .Find(x => x.Name == cbbContract.SelectedValue.ToString())
+                                         .Collaborators
+                                            .Add(newDev);
+                    }
                 }
                 else
                 {
-                    config.BaneseDes.Add(newDev);
+                    var oldDevData = config.Partners
+                               .Find(x => x.Name == cbbPartner.SelectedItem.ToString())
+                               .Contracts
+                                   .Find(x => x.Name == cbbContract.SelectedValue.ToString())
+                                   .Collaborators
+                                   .Find(dev => dev.Name == cbbDevs.SelectedItem.ToString());
+
+                    var contract = config.Partners
+                                     .Find(x => x.Name == cbbPartner.SelectedItem.ToString())
+                                     .Contracts
+                                         .Find(x => x.Name == cbbContract.SelectedValue.ToString());
+
+                    contract.Collaborators.Remove(oldDevData);
+                    contract.Collaborators.Add(newDev);
                 }
+
                 txbDevName.Clear();
+                UpdateDevsCombo();
                 btnGenerateFilled.Enabled = true;
-                PrintUserLog($"Desenvolvedor '{newDev.Name}' adicionado ao contrato '{cbbContract.SelectedItem.ToString()}'");
+                PrintUserLog($"Desenvolvedor '{newDev.Name}' adicionado ao contrato '{cbbContract.SelectedValue.ToString()}' do fornecedor '{cbbPartner.SelectedItem.ToString()}'");
             }
             catch (Exception ex)
             {
@@ -283,13 +361,45 @@ namespace RelatorioFA.AppWinForm
             {
                 txbResult.Text = $"Erro ao abrir o arquivo solicitado. Mensagem:\n{ex.Message}\n\nPilha:\n{ex.StackTrace}";
             }
+        }
+        #endregion
+
+        #region BtnLogomarcaParceiro_Click
+        private void BtnLogomarcaParceiro_Click(object sender, EventArgs e)
+        {
+            var fileContent = string.Empty;
+            string filePath = null;
+
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Imagens Jpeg (*.jpg)|*.jpg|Imagens PNG (*.png)|*.png";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    //Get the path of specified file
+                    filePath = openFileDialog.FileName;
+
+                    //Read the contents of the file into a stream
+                    var fileStream = openFileDialog.OpenFile();
+
+                    using (StreamReader reader = new StreamReader(fileStream))
+                    {
+                        picBoxLogomarca.Load(filePath);
+                    }
+                }
+            }
+            arquivoImagemLogomarca = filePath;
         } 
         #endregion
         #endregion
 
         private void UpdatePartnersCombo()
         {
+            cbbPartner.Enabled = true;
             cbbPartner.Items.Clear();
+            cbbPartner.Items.Add(NOVO);
             foreach (var partner in config.Partners)
             {
                 if (partner.Name != UtilDTO.CONTRACTS.BANESE.ToString())
@@ -303,16 +413,19 @@ namespace RelatorioFA.AppWinForm
 
         private void UpdateContractsCombo()
         {
-            cbbContract.Items.Clear();
-            cbbContract.Items.Add(UtilDTO.CONTRACTS.BANESE.ToString());
+            cbbContract.DataSource = null;
+
+            Dictionary<string, string> comboItens = new Dictionary<string, string>
+            {
+                { NOVO, NOVO + " - " +  cbbPartner.SelectedItem.ToString()},
+                { UtilDTO.CONTRACTS.BANESE.ToString(), UtilDTO.CONTRACTS.BANESE.ToString() }
+            };
             if (config.Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString()).Contracts.Count > 0)
             {
                 foreach (var contract in config.Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString()).Contracts)
                 {
-                    cbbContract.Items.Add(contract.Name);
+                    comboItens.Add(contract.Name, cbbPartner.SelectedItem.ToString() + " - " + contract.Name);
                 }
-                cbbContract.SelectedIndex = 0;
-                EnableDevFields();
             }
             else
             {
@@ -320,27 +433,62 @@ namespace RelatorioFA.AppWinForm
                 txbDevName.Enabled = false;
                 btnAddDev.Enabled = false;
             }
+            cbbContract.DisplayMember = "Value";
+            cbbContract.ValueMember = "Key";
+            cbbContract.DataSource = new BindingSource(comboItens, null);
+            cbbContract.SelectedIndex = cbbContract.Items.Count > 2 ? cbbContract.Items.Count - 1 : 0;
+            if (config.Partners.Find(p => p.Name == cbbPartner.SelectedItem.ToString()).Contracts.Count > 0)
+            {
+                EnableDevFields(); 
+            }
+        }
+
+        private void UpdateDevsCombo()
+        {
+            cbbDevs.Items.Clear();
+            cbbDevs.Items.Add(NOVO);
+            List<ColaboradorDTO> colaboradores = new List<ColaboradorDTO>();
+            if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.BANESE.ToString())
+            {
+                colaboradores = config.BaneseDes;
+            }
+            else
+            {
+                colaboradores = config
+                    .Partners.Find(p => p.Name == cbbPartner.SelectedItem.ToString())
+                    .Contracts.Find(c => c.Name == (cbbContract.SelectedValue.ToString()))
+                    .Collaborators; 
+            }
+            if (colaboradores.Count > 0)
+            {
+                foreach (var col in colaboradores)
+                {
+                    cbbDevs.Items.Add(col.Name);
+                }
+            }
+            cbbDevs.SelectedIndex = 0;
         }
 
         private void EnableDevFields()
         {
-            cbbContract.Enabled = true;
+            cbbDevs.Enabled = true;
             txbDevName.Enabled = true;
             btnAddDev.Enabled = true;
         }
 
         private void EnableContractFields()
         {
-            cbbPartner.Enabled = true;
+            cbbContract.Enabled = true;
             //txbContractHourValue.Enabled = true;
             cbbContractType.Enabled = true;
             txbContractFactor.Enabled = true;
             btnAddContract.Enabled = true;
         }
 
+        #region KeyPress
         private void TxbUstValue_KeyPress(object sender, KeyPressEventArgs e)
         {
-            ValidateNumericalInput(sender, e);   
+            ValidateNumericalInput(sender, e);
         }
 
         private void TxbContractHourValue_KeyPress(object sender, KeyPressEventArgs e)
@@ -351,7 +499,8 @@ namespace RelatorioFA.AppWinForm
         private void TxbContractFactor_KeyPress(object sender, KeyPressEventArgs e)
         {
             ValidateNumericalInput(sender, e);
-        }
+        } 
+        #endregion
 
         #region Validações
         private void ValidatePartnerData()
@@ -413,7 +562,7 @@ namespace RelatorioFA.AppWinForm
             if (Convert.ToDouble(txbContractFactor.Text) == 0)
             {
                 txbContractFactor.Focus();
-                throw new Exception("Fator de ajuste nãao pode ser zero.");
+                throw new Exception("Fator de ajuste não pode ser zero.");
             }
 
             if (config.Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString()).Contracts.Any(x => x.Name == cbbContractType.SelectedItem.ToString()))
@@ -428,10 +577,100 @@ namespace RelatorioFA.AppWinForm
         }
         #endregion
 
+        #region SelectedIndexChanged
         private void CbbPartner_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateContractsCombo();
+            if (cbbPartner.SelectedItem.ToString() != NOVO)
+            {
+                btnAddPartner.Text = "Atualizar";
+                FornecedorDTO partner = config
+                        .Partners.Find(p => p.Name == cbbPartner.SelectedItem.ToString());
+                txbPartnerName.Text = partner.Name;
+                txbPartnerUstValue.Text = partner.UstValue.ToString();
+                if (partner.CaminhoLogomarca != string.Empty)
+                {
+                    picBoxLogomarca.Load(partner.CaminhoLogomarca); 
+                }
+                UpdateContractsCombo();
+            }
+            else
+            {
+                btnAddPartner.Text = "Adicionar";
+                txbPartnerName.Clear();
+                txbPartnerUstValue.Clear();
+                picBoxLogomarca.Image = null;
+
+                cbbContract.Enabled = false;
+                cbbContractType.Enabled = false;
+                txbContractFactor.Enabled = false;
+                txbContractHourValue.Enabled = false;
+                cbbDevs.Enabled = false;
+                txbDevName.Enabled = false;
+            }
         }
+
+        private void CbbContract_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            txbResult.Clear();
+            try
+            {
+                if (cbbContract.SelectedValue.ToString() == NOVO)
+                {
+                    btnAddContract.Enabled = true;
+                    txbContractFactor.Enabled = true;
+                    cbbContractType.Enabled = true;
+                    btnAddContract.Text = "Adicionar";
+                    txbContractFactor.Clear();
+                }
+                else
+                {
+                    if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.BANESE.ToString())
+                    {
+                        btnAddContract.Enabled = false;
+                        txbContractFactor.Enabled = false;
+                        cbbContractType.Enabled = false;
+                        UpdateDevsCombo();
+                    }
+                    else
+                    {
+                        btnAddContract.Enabled = true;
+                        txbContractFactor.Enabled = true;
+                        cbbContractType.Enabled = true;
+                        btnAddContract.Text = "Atualizar";
+                        ContratoDTO contract = config
+                                            .Partners.Find(p => p.Name == cbbPartner.SelectedItem.ToString())
+                                            .Contracts.Find(c => c.Name == cbbContract.SelectedValue.ToString());
+                        txbContractFactor.Text = contract.Factor.ToString();
+                        UpdateDevsCombo();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                txbResult.Text = $"ERRO\n\nMensagem: {ex.Message}";
+            }
+        }
+
+        private void CbbDevs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbbDevs.SelectedItem.ToString() != NOVO)
+            {
+                btnAddDev.Text = "Atualizar";
+                ColaboradorDTO dev = config
+                        .Partners.Find(p => p.Name == cbbPartner.SelectedItem.ToString())
+                        .Contracts.Find(c => c.Name == cbbContract.SelectedValue.ToString())
+                        .Collaborators.Find(x => x.Name == cbbDevs.SelectedItem.ToString());
+                txbDevName.Text = dev.Name;
+                ckbHalf.Checked = dev.WorksHalfDay;
+            }
+            else
+            {
+                btnAddDev.Text = "Adicionar";
+                txbDevName.Clear();
+                ckbHalf.Checked = false;
+            }
+        }
+        #endregion
 
         private void Processing(bool processing)
         {
@@ -447,6 +686,7 @@ namespace RelatorioFA.AppWinForm
             }
         }
 
+        #region BlockFields
         private void BlockFields(bool processing)
         {
             txbAuthor.Enabled = !processing;
@@ -464,11 +704,15 @@ namespace RelatorioFA.AppWinForm
             btnAddPartner.Enabled = !processing;
             btnAddContract.Enabled = !processing;
             btnAddDev.Enabled = !processing;
-            btnGenerate.Enabled = !processing;
+            btnLoad.Enabled = !processing;
             btnGenerateFilled.Enabled = !processing;
             btnOutputPath.Enabled = !processing;
-        }
 
+            ckbHalf.Enabled = !processing;
+        }
+        #endregion
+
+        #region PrintUserLog
         private void PrintUserLog(string mensagem)
         {
             txbResult.Text = mensagem;
@@ -479,7 +723,7 @@ namespace RelatorioFA.AppWinForm
                 foreach (var dev in config.BaneseDes)
                 {
                     txbResult.AppendText($"\n  > {dev.Name}");
-                } 
+                }
             }
             if (config.Partners.Count > 1)
             {
@@ -506,40 +750,11 @@ namespace RelatorioFA.AppWinForm
                                     }
                                 }
                             }
-                        } 
+                        }
                     }
                 }
             }
-        }
-
-        private void btnLogomarcaParceiro_Click(object sender, EventArgs e)
-        {
-            var fileContent = string.Empty;
-            string filePath = null;
-
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {                
-                openFileDialog.Filter = "Imagens Jpeg (*.jpg)|*.jpg|Imagens PNG (*.png)|*.png";
-                openFileDialog.FilterIndex = 1;
-                openFileDialog.RestoreDirectory = true;
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    //Get the path of specified file
-                    filePath = openFileDialog.FileName;
-
-                    //Read the contents of the file into a stream
-                    var fileStream = openFileDialog.OpenFile();
-
-                    using (StreamReader reader = new StreamReader(fileStream))
-                    {
-                        picBoxLogomarca.Load(filePath);
-                    }
-                }
-            }
-
-            arquivoImagemLogomarca = filePath;
-            
-        }
+        } 
+        #endregion
     }
 }

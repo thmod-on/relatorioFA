@@ -11,5 +11,6 @@ namespace RelatorioFA.DTO
     {
         [XmlElement("Nome")]
         public string Name { get; set; }
+        public bool WorksHalfDay { get; set; }
     }
 }

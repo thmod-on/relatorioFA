@@ -60,7 +60,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 439);
+            this.ClientSize = new System.Drawing.Size(766, 439);
             this.Controls.Add(this.txbUpdates);
             this.Controls.Add(this.label1);
             this.Name = "SobreForm";

@@ -13,21 +13,25 @@ namespace RelatorioFA.AcessoDados
     {
         private const string configFile = "RelatorioFA.xml";
 
-        public static ConfigDTO LoadConfig(string outputDocPath)
+        public static ConfigDTO LoadConfig(string filePath)
         {
             ConfigDTO config;
+            if (filePath.Substring(filePath.Length - 4).ToUpper() != ".XML")
+            {
+                filePath = Path.Combine(filePath, configFile); 
+            }
             try
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(ConfigDTO));
 
-                using (FileStream fileStream = new FileStream(Path.Combine(outputDocPath, configFile), FileMode.Open))
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
                 {
                     config = (ConfigDTO)serializer.Deserialize(fileStream);
                 }
             }
             catch (FileNotFoundException ex)
             {
-                throw new FileNotFoundException($"ERRO:\n\nArquivo {configFile} não encontrado em {outputDocPath}.\n\nFavor selecione o local do arquivo utilizando o botão no canto superior esquerdo do programa.", ex);
+                throw new FileNotFoundException($"ERRO:\n\nArquivo {configFile} não encontrado em {filePath}.\n\nFavor selecione o local do arquivo utilizando o botão no canto superior esquerdo do programa.", ex);
             }
             catch (Exception ex)
             {

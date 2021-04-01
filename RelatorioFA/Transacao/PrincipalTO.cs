@@ -25,12 +25,7 @@ namespace RelatorioFA.Transacao
         {
             return Controle.GenerateRanges();
         }
-
-        public static void GenerateConfigXmlFile(string outputPath, string outputName)
-        {
-            ControleXml.GenerateConfigXmlFile(outputPath, outputName);
-        }
-
+        
         public static double CalcTeamSize(Dictionary<string, double> devPresence)
         {
             return Controle.CalcTeamSize(devPresence);

@@ -27,7 +27,8 @@ namespace RelatorioFA.AppWinForm
 
         private void LoadUpdatesDescription()
         {
-            txbUpdates.AppendText("+ ---------------------+\n  Versão 4.6.2  \n + ---------------------+\n - Alterada a cor da mensagem do rodapé do documento;\n - Cada sprint agora é gerada em uma página");
+            txbUpdates.AppendText("+ ---------------------+\n  Versão 4.7.0  \n + ---------------------+\n - Atualizado form para controle de arquivo xml de configuração;\n - Adicionada possibilidade para o usuário editar um arquivo de configuração existente.");
+            txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.6.2  \n + ---------------------+\n - Alterada a cor da mensagem do rodapé do documento;\n - Cada sprint agora é gerada em uma página");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.6.1  \n + ---------------------+\n - Melhoria no redimensionamento dos formulários;\n - Na tela de relatórios, ao selecionar uma sprint ele irá trazer a maioria dos dados PARA CONFERÊNCIA;\n - Tela de atualizações dando preferência para as mais recentes.");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.6.0  \n + ---------------------+\n - Reformulado layout da tela de relatórios para deixar mais intuitiva;\n - Possibilidade de carregar um imagem par cada sprint para ser adicionada ao relatório;\n - Adição dos zeros à direit na tabela de resumo mesmo quando a conta é exata (algum caaso pode ter ficado de fora).");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.5.0  \n + ---------------------+\n - Tratado erro ao adicionar imagem que já existe;\n - Adicionara logo do parceiro no cabeçalho do arquivo;\n - Realçado o nome do colaborador referente ao relatório do parceiro.");
