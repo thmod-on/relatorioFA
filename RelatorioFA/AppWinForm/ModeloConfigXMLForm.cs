@@ -300,7 +300,8 @@ namespace RelatorioFA.AppWinForm
                 ValidateDevData();
                 ColaboradorDTO newDev = new ColaboradorDTO()
                 {
-                    Name = txbDevName.Text
+                    Name = txbDevName.Text,
+                    WorksHalfDay = ckbHalf.Checked
                 };
 
                 if (cbbDevs.SelectedItem.ToString() == NOVO)
@@ -580,32 +581,41 @@ namespace RelatorioFA.AppWinForm
         #region SelectedIndexChanged
         private void CbbPartner_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cbbPartner.SelectedItem.ToString() != NOVO)
+            try
             {
-                btnAddPartner.Text = "Atualizar";
-                FornecedorDTO partner = config
-                        .Partners.Find(p => p.Name == cbbPartner.SelectedItem.ToString());
-                txbPartnerName.Text = partner.Name;
-                txbPartnerUstValue.Text = partner.UstValue.ToString();
-                if (partner.CaminhoLogomarca != string.Empty)
+                if (cbbPartner.SelectedItem.ToString() != NOVO)
                 {
-                    picBoxLogomarca.Load(partner.CaminhoLogomarca); 
+                    btnAddPartner.Text = "Atualizar";
+                    FornecedorDTO partner = config
+                            .Partners.Find(p => p.Name == cbbPartner.SelectedItem.ToString());
+                    txbPartnerName.Text = partner.Name;
+                    txbPartnerUstValue.Text = partner.UstValue.ToString();
+                    if (partner.CaminhoLogomarca != string.Empty &&
+                        partner.CaminhoLogomarca != null)
+                    {
+                        picBoxLogomarca.Load(partner.CaminhoLogomarca);
+                    }
+                    UpdateContractsCombo();
                 }
-                UpdateContractsCombo();
-            }
-            else
-            {
-                btnAddPartner.Text = "Adicionar";
-                txbPartnerName.Clear();
-                txbPartnerUstValue.Clear();
-                picBoxLogomarca.Image = null;
+                else
+                {
+                    btnAddPartner.Text = "Adicionar";
+                    txbPartnerName.Clear();
+                    txbPartnerUstValue.Clear();
+                    picBoxLogomarca.Image = null;
 
-                cbbContract.Enabled = false;
-                cbbContractType.Enabled = false;
-                txbContractFactor.Enabled = false;
-                txbContractHourValue.Enabled = false;
-                cbbDevs.Enabled = false;
-                txbDevName.Enabled = false;
+                    cbbContract.Enabled = false;
+                    cbbContractType.Enabled = false;
+                    txbContractFactor.Enabled = false;
+                    txbContractHourValue.Enabled = false;
+                    cbbDevs.Enabled = false;
+                    txbDevName.Enabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                txbResult.Text = $"ERRO ao carregar dados do parceiro.\n\nMensagem: {ex.Message}";
+                BlockFields(true);
             }
         }
 
@@ -656,10 +666,23 @@ namespace RelatorioFA.AppWinForm
             if (cbbDevs.SelectedItem.ToString() != NOVO)
             {
                 btnAddDev.Text = "Atualizar";
-                ColaboradorDTO dev = config
-                        .Partners.Find(p => p.Name == cbbPartner.SelectedItem.ToString())
-                        .Contracts.Find(c => c.Name == cbbContract.SelectedValue.ToString())
-                        .Collaborators.Find(x => x.Name == cbbDevs.SelectedItem.ToString());
+                ColaboradorDTO dev = new ColaboradorDTO();
+
+                if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.BANESE.ToString())
+                {
+                    dev = config
+                        .BaneseDes
+                            .Find(x => x.Name == cbbDevs.SelectedItem.ToString());
+                }
+                else
+                {
+                    dev = config
+                            .Partners.Find(p => p.Name == cbbPartner.SelectedItem.ToString())
+                            .Contracts.Find(c => c.Name == cbbContract.SelectedValue.ToString())
+                            .Collaborators
+                                .Find(x => x.Name == cbbDevs.SelectedItem.ToString());
+                }
+
                 txbDevName.Text = dev.Name;
                 ckbHalf.Checked = dev.WorksHalfDay;
             }
@@ -700,6 +723,7 @@ namespace RelatorioFA.AppWinForm
 
             cbbPartner.Enabled = !processing;
             cbbContract.Enabled = !processing;
+            cbbDevs.Enabled = !processing;
 
             btnAddPartner.Enabled = !processing;
             btnAddContract.Enabled = !processing;
@@ -707,6 +731,7 @@ namespace RelatorioFA.AppWinForm
             btnLoad.Enabled = !processing;
             btnGenerateFilled.Enabled = !processing;
             btnOutputPath.Enabled = !processing;
+            btnLogomarcaParceiro.Enabled = !processing;
 
             ckbHalf.Enabled = !processing;
         }
@@ -722,10 +747,11 @@ namespace RelatorioFA.AppWinForm
             {
                 foreach (var dev in config.BaneseDes)
                 {
-                    txbResult.AppendText($"\n  > {dev.Name}");
+                    txbResult.AppendText($"\n  > Nome: {dev.Name}");
+                    txbResult.AppendText($"\n  > Turno único:  {dev.WorksHalfDay}");
                 }
             }
-            if (config.Partners.Count > 1)
+            if (config.Partners.Count > 0)
             {
                 foreach (var partner in config.Partners)
                 {
@@ -746,7 +772,8 @@ namespace RelatorioFA.AppWinForm
                                     txbResult.AppendText($"\n      - Devs:");
                                     foreach (var dev in contract.Collaborators)
                                     {
-                                        txbResult.AppendText($"\n         . {dev.Name}");
+                                        txbResult.AppendText($"\n         . Nome: {dev.Name}");
+                                        txbResult.AppendText($"\n         . Turno único: {dev.WorksHalfDay}");
                                     }
                                 }
                             }

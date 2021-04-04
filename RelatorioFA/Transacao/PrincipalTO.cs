@@ -31,7 +31,7 @@ namespace RelatorioFA.Transacao
             return Controle.CalcTeamSize(devPresence);
         }
 
-        public static void SetDevPresence(out Dictionary<string, double> devPresence, Dictionary<string, int> devAbsence, int sprintDays)
+        public static void SetDevPresence(out Dictionary<string, double> devPresence, Dictionary<ColaboradorDTO, int> devAbsence, int sprintDays)
         {
             Controle.SetDevPresence(out devPresence, devAbsence, sprintDays);
         }

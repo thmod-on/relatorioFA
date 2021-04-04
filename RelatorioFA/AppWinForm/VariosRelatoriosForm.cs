@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using RelatorioFA.Transacao;
 using RelatorioFA.DTO;
-using System.Reflection;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -37,7 +32,7 @@ namespace RelatorioFA.AppWinForm
         List<SprintDTO> sprints = new List<SprintDTO>();
         List<IntervaloDTO> sprintRanges = new List<IntervaloDTO>();
         private string outputDocPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-        Dictionary<string, int> devAbsence = new Dictionary<string, int>();
+        Dictionary<ColaboradorDTO, int> devAbsence = new Dictionary<ColaboradorDTO, int>();
         string sprintImagePath = string.Empty;
 
         private void SetFields()
@@ -116,7 +111,7 @@ namespace RelatorioFA.AppWinForm
             devAbsence.Clear();
             foreach (var dev in devTeam)
             {
-                devAbsence.Add(dev.Name, 0);
+                devAbsence.Add(dev, 0);
             }
         }
 
@@ -211,7 +206,9 @@ namespace RelatorioFA.AppWinForm
 
         private void LsbDevTeam_SelectedIndexChanged(object sender, EventArgs e)
         {
-            txbAbsence.Text = devAbsence[lsbDevTeam.SelectedItem.ToString()].ToString();
+            //txbAbsence.Text = devAbsence[lsbDevTeam.SelectedItem.ToString()].ToString();
+            ColaboradorDTO dev = devAbsence.Keys.ToList().Find(d => d.Name == lsbDevTeam.SelectedItem.ToString());
+            txbAbsence.Text = devAbsence[dev].ToString();
             txbAbsence.Focus();
         }
         #endregion
@@ -447,8 +444,9 @@ namespace RelatorioFA.AppWinForm
                 {
                     try
                     {
-                        devAbsence[lsbDevTeam.SelectedItem.ToString()] = Convert.ToInt32(txbAbsence.Text);
-
+                        ColaboradorDTO dev = devAbsence.Keys.ToList().Find(x => x.Name == lsbDevTeam.SelectedItem.ToString());
+                        devAbsence[dev] = Convert.ToInt32(txbAbsence.Text);
+                        //devAbsence[lsbDevTeam.SelectedItem.ToString()] = Convert.ToInt32(txbAbsence.Text);
                     }
                     catch (Exception)
                     {

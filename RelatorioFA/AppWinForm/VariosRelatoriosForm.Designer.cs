@@ -111,7 +111,7 @@
             // 
             // txbAbsence
             // 
-            this.txbAbsence.Location = new System.Drawing.Point(90, 156);
+            this.txbAbsence.Location = new System.Drawing.Point(91, 159);
             this.txbAbsence.Name = "txbAbsence";
             this.txbAbsence.Size = new System.Drawing.Size(121, 20);
             this.txbAbsence.TabIndex = 7;

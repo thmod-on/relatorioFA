@@ -26,6 +26,7 @@ namespace RelatorioFA.Negocio
                     {
                         writer.WriteStartElement("DesenvBanese");
                         writer.WriteElementString("Nome", dev.Name);
+                        writer.WriteElementString("UmTurno", dev.WorksHalfDay ? "true" : "false");
                         writer.WriteEndElement();//DesenvBanese 
                     }
                     
@@ -47,6 +48,7 @@ namespace RelatorioFA.Negocio
                             {
                                 writer.WriteStartElement("Colaborador");
                                 writer.WriteElementString("Nome", dev.Name);
+                                writer.WriteElementString("UmTurno", dev.WorksHalfDay ? "true" : "false");
                                 writer.WriteEndElement();//Colaborador
                             }
                             writer.WriteEndElement();//Contrato

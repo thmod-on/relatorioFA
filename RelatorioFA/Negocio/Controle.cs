@@ -9,12 +9,13 @@ namespace RelatorioFA.Negocio
 {
     public class Controle
     {
-        public static void SetDevPresence(out Dictionary<string, double> devPresence, Dictionary<string, int> devAbsence, int sprintDays)
+        public static void SetDevPresence(out Dictionary<string, double> devPresence, Dictionary<ColaboradorDTO, int> devAbsence, int sprintDays)
         {
             devPresence = new Dictionary<string, double>();
             foreach (var dev in devAbsence)
             {
-                devPresence.Add(dev.Key, Math.Round((double)(sprintDays - dev.Value) / sprintDays, 2));
+                double factor = dev.Key.WorksHalfDay ? 0.5 : 1;
+                devPresence.Add(dev.Key.Name, Math.Round((double)(sprintDays - dev.Value) * factor / sprintDays, 2));
             }
         }
 
