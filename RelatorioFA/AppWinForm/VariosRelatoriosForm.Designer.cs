@@ -66,8 +66,8 @@
             this.btnSprintImage = new System.Windows.Forms.Button();
             this.lsbSprints = new System.Windows.Forms.ListBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -101,11 +101,12 @@
             // 
             // txbResult
             // 
-            this.txbResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txbResult.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txbResult.Location = new System.Drawing.Point(526, 11);
+            this.txbResult.Location = new System.Drawing.Point(517, 13);
             this.txbResult.Name = "txbResult";
-            this.txbResult.Size = new System.Drawing.Size(272, 202);
+            this.txbResult.Size = new System.Drawing.Size(196, 166);
             this.txbResult.TabIndex = 3;
             this.txbResult.Text = "";
             // 
@@ -264,7 +265,7 @@
             // 
             // txbObs
             // 
-            this.txbObs.Location = new System.Drawing.Point(271, 195);
+            this.txbObs.Location = new System.Drawing.Point(264, 197);
             this.txbObs.Name = "txbObs";
             this.txbObs.Size = new System.Drawing.Size(205, 65);
             this.txbObs.TabIndex = 4;
@@ -280,7 +281,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(268, 178);
+            this.label5.Location = new System.Drawing.Point(261, 180);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(113, 13);
             this.label5.TabIndex = 12;
@@ -301,7 +302,7 @@
             this.groupBox5.Controls.Add(this.label19);
             this.groupBox5.Controls.Add(this.txbAbsence);
             this.groupBox5.Controls.Add(this.label4);
-            this.groupBox5.Location = new System.Drawing.Point(7, 174);
+            this.groupBox5.Location = new System.Drawing.Point(8, 176);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(244, 210);
             this.groupBox5.TabIndex = 3;
@@ -327,7 +328,7 @@
             // 
             // btnAddSprint
             // 
-            this.btnAddSprint.Location = new System.Drawing.Point(3, 23);
+            this.btnAddSprint.Location = new System.Drawing.Point(19, 11);
             this.btnAddSprint.Name = "btnAddSprint";
             this.btnAddSprint.Size = new System.Drawing.Size(121, 23);
             this.btnAddSprint.TabIndex = 46;
@@ -368,7 +369,7 @@
             this.groupBox4.Controls.Add(this.txbAcceptedPointsExpense);
             this.groupBox4.Controls.Add(this.label8);
             this.groupBox4.Controls.Add(this.label17);
-            this.groupBox4.Location = new System.Drawing.Point(271, 11);
+            this.groupBox4.Location = new System.Drawing.Point(264, 13);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(233, 137);
             this.groupBox4.TabIndex = 49;
@@ -397,16 +398,16 @@
             this.pbxSprintImage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbxSprintImage.Location = new System.Drawing.Point(526, 237);
+            this.pbxSprintImage.Location = new System.Drawing.Point(517, 197);
             this.pbxSprintImage.Name = "pbxSprintImage";
-            this.pbxSprintImage.Size = new System.Drawing.Size(272, 171);
+            this.pbxSprintImage.Size = new System.Drawing.Size(200, 200);
             this.pbxSprintImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pbxSprintImage.TabIndex = 52;
             this.pbxSprintImage.TabStop = false;
             // 
             // btnSprintImage
             // 
-            this.btnSprintImage.Location = new System.Drawing.Point(271, 331);
+            this.btnSprintImage.Location = new System.Drawing.Point(264, 333);
             this.btnSprintImage.Name = "btnSprintImage";
             this.btnSprintImage.Size = new System.Drawing.Size(103, 23);
             this.btnSprintImage.TabIndex = 53;
@@ -417,7 +418,7 @@
             // lsbSprints
             // 
             this.lsbSprints.FormattingEnabled = true;
-            this.lsbSprints.Location = new System.Drawing.Point(4, 44);
+            this.lsbSprints.Location = new System.Drawing.Point(20, 32);
             this.lsbSprints.Name = "lsbSprints";
             this.lsbSprints.Size = new System.Drawing.Size(120, 95);
             this.lsbSprints.TabIndex = 55;
@@ -434,32 +435,23 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.btnAddSprint);
-            this.splitContainer1.Panel1.Controls.Add(this.lsbSprints);
+            this.splitContainer1.Panel1.Controls.Add(this.groupBox1);
+            this.splitContainer1.Panel1.Controls.Add(this.groupBox5);
+            this.splitContainer1.Panel1.Controls.Add(this.label3);
+            this.splitContainer1.Panel1.Controls.Add(this.groupBox4);
+            this.splitContainer1.Panel1.Controls.Add(this.btnSprintImage);
+            this.splitContainer1.Panel1.Controls.Add(this.label5);
+            this.splitContainer1.Panel1.Controls.Add(this.pbxSprintImage);
+            this.splitContainer1.Panel1.Controls.Add(this.txbObs);
+            this.splitContainer1.Panel1.Controls.Add(this.txbResult);
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.label3);
-            this.splitContainer1.Panel2.Controls.Add(this.btnSprintImage);
-            this.splitContainer1.Panel2.Controls.Add(this.pbxSprintImage);
-            this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
-            this.splitContainer1.Panel2.Controls.Add(this.groupBox4);
-            this.splitContainer1.Panel2.Controls.Add(this.groupBox5);
-            this.splitContainer1.Panel2.Controls.Add(this.txbResult);
-            this.splitContainer1.Panel2.Controls.Add(this.txbObs);
-            this.splitContainer1.Panel2.Controls.Add(this.label5);
-            this.splitContainer1.Size = new System.Drawing.Size(942, 413);
-            this.splitContainer1.SplitterDistance = 132;
+            this.splitContainer1.Panel2.Controls.Add(this.btnAddSprint);
+            this.splitContainer1.Panel2.Controls.Add(this.lsbSprints);
+            this.splitContainer1.Size = new System.Drawing.Size(901, 413);
+            this.splitContainer1.SplitterDistance = 726;
             this.splitContainer1.TabIndex = 56;
-            // 
-            // label3
-            // 
-            this.label3.Location = new System.Drawing.Point(268, 283);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(208, 44);
-            this.label3.TabIndex = 54;
-            this.label3.Text = "Escolha a imagem com as US que foram aceitas mostrando o tipo de faturamento (INV" +
-    " / DES)";
             // 
             // groupBox1
             // 
@@ -471,12 +463,21 @@
             this.groupBox1.Controls.Add(this.cbbSprintRanges);
             this.groupBox1.Controls.Add(this.label21);
             this.groupBox1.Controls.Add(this.label15);
-            this.groupBox1.Location = new System.Drawing.Point(7, 9);
+            this.groupBox1.Location = new System.Drawing.Point(8, 11);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(244, 139);
             this.groupBox1.TabIndex = 51;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Datas";
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(261, 285);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(208, 44);
+            this.label3.TabIndex = 54;
+            this.label3.Text = "Escolha a imagem com as US que foram aceitas mostrando o tipo de faturamento (INV" +
+    " / DES)";
             // 
             // label6
             // 
@@ -492,7 +493,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(950, 526);
+            this.ClientSize = new System.Drawing.Size(909, 526);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.btnLoadXml);
             this.Controls.Add(this.btnGenerateAll);
@@ -509,8 +510,8 @@
             this.groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbxSprintImage)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);

@@ -64,5 +64,10 @@ namespace RelatorioFA.AppWinForm
         {
             AbrirForm(new VariosRelatoriosForm(this));
         }
+
+        private void DevOpsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AbrirForm(new DevOpsForm(this));
+        }
     }
 }

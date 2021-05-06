@@ -34,6 +34,7 @@
             this.relatórioDaFábricaÁgilToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.avulsoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.todasEmpresasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.devOpsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ajudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.comoUtilizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.versõesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,7 +72,8 @@
             // 
             this.relatórioDaFábricaÁgilToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.avulsoToolStripMenuItem,
-            this.todasEmpresasToolStripMenuItem});
+            this.todasEmpresasToolStripMenuItem,
+            this.devOpsToolStripMenuItem});
             this.relatórioDaFábricaÁgilToolStripMenuItem.Name = "relatórioDaFábricaÁgilToolStripMenuItem";
             this.relatórioDaFábricaÁgilToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.relatórioDaFábricaÁgilToolStripMenuItem.Text = "Relatório da fábrica ágil";
@@ -89,6 +91,13 @@
             this.todasEmpresasToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.todasEmpresasToolStripMenuItem.Text = "Todas empresas";
             this.todasEmpresasToolStripMenuItem.Click += new System.EventHandler(this.TodasEmpresasToolStripMenuItem_Click);
+            // 
+            // devOpsToolStripMenuItem
+            // 
+            this.devOpsToolStripMenuItem.Name = "devOpsToolStripMenuItem";
+            this.devOpsToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.devOpsToolStripMenuItem.Text = "DevOps";
+            this.devOpsToolStripMenuItem.Click += new System.EventHandler(this.DevOpsToolStripMenuItem_Click);
             // 
             // ajudaToolStripMenuItem
             // 
@@ -123,7 +132,7 @@
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "ContainerForm";
-            this.Text = "Relatório de fábrica ágil - v 4.7.1";
+            this.Text = "Relatório de fábrica ágil - v 4.8.0";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -142,5 +151,6 @@
         private System.Windows.Forms.ToolStripMenuItem versõesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem avulsoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem todasEmpresasToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem devOpsToolStripMenuItem;
     }
 }

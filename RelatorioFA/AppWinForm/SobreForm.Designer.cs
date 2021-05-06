@@ -50,6 +50,9 @@
             // 
             // txbUpdates
             // 
+            this.txbUpdates.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txbUpdates.Location = new System.Drawing.Point(13, 62);
             this.txbUpdates.Name = "txbUpdates";
             this.txbUpdates.Size = new System.Drawing.Size(740, 360);

@@ -16,7 +16,7 @@ namespace RelatorioFA.AppWinForm
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new VariosRelatoriosForm());
+            //Application.Run(new DevOpsForm());
             Application.Run(new ContainerForm());
         }
     }

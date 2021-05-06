@@ -43,10 +43,10 @@ namespace RelatorioFA.Negocio
                     //Create a new document  
                     Microsoft.Office.Interop.Word.Document document = winword.Documents.Add(ref missing, ref missing, ref missing, ref missing);
 
-                    SetDocumentContent(document, ref missing, sprints, devTeam, config.TeamName, config.AuthorName, partner, partner.BillingType);
+                    SetDocumentContent(document, ref missing, sprints, devTeam, config, partner);
                     SetDocumentHeader(document, partner.Name, partner.CaminhoLogomarca, config.TeamName);
                     SetDocumentFooter(document);
-                    SaveAndClose(ref document, ref winword, outputDocName, outputDocPath, missing); 
+                    SaveAndClose(ref document, ref winword, outputDocName, outputDocPath, missing);
                 }
             }
             catch (Exception ex)
@@ -58,31 +58,93 @@ namespace RelatorioFA.Negocio
         #region SaveAndClose
         private static void SaveAndClose(ref Document document, ref Application winword, string outputDocName, string outputDocPath, object missing)
         {
-            //ExportAndCloseDocument(winword, document, );
-            //Save the document
             object filename = Path.Combine(outputDocPath, outputDocName);
             document.SaveAs2(ref filename);
             document.Close(ref missing, ref missing, ref missing);
-            //document = null;
+            document = null;
             winword.Quit(ref missing, ref missing, ref missing);
-            //winword = null;
+            winword = null;
+        }
+
+        public static void GenerateOpsDoc(ConfigDTO config, List<SprintDevOpsDTO> sprintDevOpsList, FornecedorDTO partner, string outputDocPath)
+        {
+            try
+            {
+                //Set doc name
+                string outputDocName = $"Relatório Ágil -";
+                foreach (var sprint in sprintDevOpsList)
+                {
+                    outputDocName += $" {sprint.Range.Name}";
+                }
+                outputDocName += $" - {partner.Name} - {config.TeamName}.docx";
+
+                //Create an instance for word app  
+                Microsoft.Office.Interop.Word.Application winword = new Microsoft.Office.Interop.Word.Application
+                {
+                    ShowAnimation = false,
+                    Visible = false
+                };
+
+                //Create a missing variable for missing value  
+                object missing = System.Reflection.Missing.Value;
+
+                Microsoft.Office.Interop.Word.Document document = winword.Documents.Add(ref missing, ref missing, ref missing, ref missing);
+                Microsoft.Office.Interop.Word.Paragraph para1 = document.Content.Paragraphs.Add(ref missing);
+
+                List<IntervaloDTO> ranges = new List<IntervaloDTO>();
+                foreach (var sprint in sprintDevOpsList)
+                {
+                    ranges.Add(sprint.Range);
+                }
+
+                CreateFirstPage(para1, ranges, config.TeamName);
+
+                //Armengue T.T #cansado
+                List<SprintDTO> sprints = new List<SprintDTO>();
+                foreach (var sprintOps in sprintDevOpsList)
+                {
+                    SprintDTO sprint = new SprintDTO()
+                    {
+                        Range = sprintOps.Range,
+                        Obs = sprintOps.Obs,
+                        ImagePath = sprintOps.ImagePath
+                    };
+                    sprints.Add(sprint);
+                }
+
+                CreateFollowPages(document, partner, sprints, para1);
+                //CreateLastPageDevOps
+                CreateLastPage(document, para1, sprintDevOpsList, missing, config, partner);
+                SaveAndClose(ref document, ref winword, outputDocName, outputDocPath, missing);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
         #endregion
 
         #region SetDocumentContent
-        private static void SetDocumentContent(Document document, ref Object missing, List<SprintDTO> sprints, List<ColaboradorDTO> devTeam, string teamName, string author, FornecedorDTO partner, UtilDTO.BILLING_TYPE billingType)
+        private static void SetDocumentContent(Document document, ref Object missing, List<SprintDTO> sprints, List<ColaboradorDTO> devTeam, ConfigDTO config, FornecedorDTO partner)
         {
             Microsoft.Office.Interop.Word.Paragraph para1 = document.Content.Paragraphs.Add(ref missing);
 
-            CreateFirstPage(para1, sprints, teamName);
-            
-            CreateFollowPages(document, partner, sprints, devTeam, para1);
+            List<IntervaloDTO> ranges = new List<IntervaloDTO>();
+            foreach (var sprint in sprints)
+            {
+                ranges.Add(sprint.Range);
+            }
 
-            CreateLastPage(document, para1, sprints, missing, author, teamName, billingType, partner);
+            CreateFirstPage(para1, ranges, config.TeamName);
+
+            CreateFollowPages(document, partner, sprints, para1, devTeam);
+
+            CreateLastPage(document, para1, sprints, missing, config, partner);
         }
 
         #region CreateFirstPage
-        private static void CreateFirstPage(Paragraph para1, List<SprintDTO> sprints, string teamName)
+        private static void CreateFirstPage(Paragraph para1, List<IntervaloDTO> ranges, string teamName)
         {
             string strAux;
             List<string> paragraphTexts = new List<string>();
@@ -92,10 +154,10 @@ namespace RelatorioFA.Negocio
             #region Identificação das sprints
             strAux = "ATIVIDADES DESENVOLVIDAS NAS SPRINTS: ";
             int sprintsCount = 1;
-            foreach (var sprint in sprints)
+            foreach (var range in ranges)
             {
-                strAux += sprint.Range.Name;
-                if (sprintsCount < sprints.Count())
+                strAux += range.Name;
+                if (sprintsCount < ranges.Count())
                 {
                     strAux += ", ";
                 }
@@ -105,8 +167,8 @@ namespace RelatorioFA.Negocio
 
             strAux = "TIME: " + teamName;
             paragraphTexts.Add(strAux);
-            
-            strAux = $"PERÍODO: {sprints[0].Range.IniDate.ToString("dd/MM/yyyy")} a {sprints[sprints.Count - 1].Range.EndDate.ToString("dd/MM/yyyy")}";
+
+            strAux = $"PERÍODO: {ranges[0].IniDate:dd/MM/yyyy} a {ranges[ranges.Count - 1].EndDate:dd/MM/yyyy}";
             paragraphTexts.Add(strAux);
 
             foreach (var paragraphText in paragraphTexts)
@@ -116,20 +178,51 @@ namespace RelatorioFA.Negocio
             #endregion
 
             AddPAragraph(para1, "Banese – Banco do Estado de Sergipe", 150, 150, 1, 20, WdParagraphAlignment.wdAlignParagraphCenter);
-            
+
             strAux = "Aracaju, " + DateTime.Now.ToString("dddd, dd 'de' MMMM 'de' yyyy", System.Globalization.CultureInfo.GetCultureInfo("pt-BR"));
             AddPAragraph(para1, strAux, 150, 150, 0, 14, WdParagraphAlignment.wdAlignParagraphRight);
         }
         #endregion
 
         #region CreateLastPage
-        private static void CreateLastPage(Document document, Paragraph para1, List<SprintDTO> sprints, object missing, string author, string teamName,UtilDTO.BILLING_TYPE billingType, FornecedorDTO partner)
+        private static void CreateLastPage(Document document, Paragraph para1, List<SprintDTO> sprints, object missing, ConfigDTO config, FornecedorDTO partner)
+        {
+            UtilDTO.BILLING_TYPE billingType = partner.BillingType;
+            SetLastPageText(document, para1, partner, billingType);
+
+            switch (billingType)
+            {
+                case (UtilDTO.BILLING_TYPE.UST):
+                    CreateSummaryTableUst(document, sprints, partner.Contracts, missing, partner.UstValue);
+                    break;
+                case (UtilDTO.BILLING_TYPE.UST_HORA):
+                    CreateSummaryTableUstHour(document, sprints, partner.Contracts, missing);
+                    break;
+                default:
+                    break;
+            }
+
+            SetLastPageSignature(para1, config);
+        }
+
+        private static void CreateLastPage(Document document, Paragraph para1, List<SprintDevOpsDTO> sprintsDevOps, object missing, ConfigDTO config, FornecedorDTO partner) 
+        {
+            UtilDTO.BILLING_TYPE billingType = partner.BillingType;
+
+            SetLastPageText(document, para1, partner, billingType);
+            CreateSummaryTableUstDevOps(document, sprintsDevOps, missing, partner);
+            SetLastPageSignature(para1, config);
+        }
+
+        private static void SetLastPageText(Document document, Paragraph para1, FornecedorDTO partner, UtilDTO.BILLING_TYPE billingType)
         {
             string strAux;
             document.Words.Last.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
 
             AddPAragraph(para1, "DETALHES DO FATURAMENTO", 10, 0, 1, 14, WdParagraphAlignment.wdAlignParagraphJustify);
-            if (billingType == UtilDTO.BILLING_TYPE.UST || billingType == UtilDTO.BILLING_TYPE.UST_HORA)
+            if (billingType == UtilDTO.BILLING_TYPE.UST || 
+                billingType == UtilDTO.BILLING_TYPE.UST_HORA ||
+                billingType == UtilDTO.BILLING_TYPE.UST_DEVOPS)
             {
                 strAux = "Valor da UST: R$" + partner.UstValue;
                 AddPAragraph(para1, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
@@ -142,29 +235,19 @@ namespace RelatorioFA.Negocio
                 strAux = "Contrato: " + partner.Contracts[0].Name;
                 AddPAragraph(para1, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
             }
-            
-            switch (billingType)
-            {
-                case (UtilDTO.BILLING_TYPE.UST):
-                    CreateSummaryTableUst(document, sprints, partner.Contracts, missing, partner.UstValue);
-                    break;
-                case (UtilDTO.BILLING_TYPE.UST_HORA):
-                    CreateSummaryTableUstHour(document, sprints, partner.Contracts, missing);
-                    break;
-                default:
-                    break;
-            }            
+        }
 
-            //assinatura
+        private static void SetLastPageSignature(Paragraph para1, ConfigDTO config)
+        {
             AddPAragraph(para1, "Atenciosamente,", 150, 30, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
             AddPAragraph(para1, "_________________________________________________", 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphCenter);
-            AddPAragraph(para1, author, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphCenter);
-            AddPAragraph(para1, teamName, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphCenter);
+            AddPAragraph(para1, config.AuthorName, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphCenter);
+            AddPAragraph(para1, config.TeamName, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphCenter);
         }
         #endregion
 
         #region CreateFollowPages
-        private static void CreateFollowPages(Document document, FornecedorDTO partner, List<SprintDTO> sprints, List<ColaboradorDTO> devTeam, Paragraph paragraph)
+        private static void CreateFollowPages(Document document, FornecedorDTO partner, List<SprintDTO> sprints, Paragraph paragraph, List<ColaboradorDTO> devTeam = null)
         {
             string strAux;
             string strObs = string.Empty;
@@ -186,7 +269,7 @@ namespace RelatorioFA.Negocio
 
                     //Cabecalho da sprint
                     strObs += " " + sprints[i].Obs;
-                    strAux = $"SPRINT {sprints[i].Range.Name} ({sprints[i].Range.IniDate.ToString("dd/MM/yyyy")} a {sprints[i].Range.EndDate.ToString("dd/MM/yyyy")})";
+                    strAux = $"SPRINT {sprints[i].Range.Name} ({sprints[i].Range.IniDate:dd/MM/yyyy} a {sprints[i].Range.EndDate:dd/MM/yyyy})";
                     AddPAragraph(paragraph, strAux, 30, 30, 1, 14, WdParagraphAlignment.wdAlignParagraphJustify);
 
                     //Imagem da sprint
@@ -196,22 +279,25 @@ namespace RelatorioFA.Negocio
                         paragraph.Range.InsertParagraphAfter(); 
                     }
 
-                    //Time de desenvolvimento
-                    AddPAragraph(paragraph, "TIME DE DESENVOLVIMENTO:", 30, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
-
-                    foreach (var dev in devTeam)
+                    if (devTeam != null)
                     {
-                        strAux = dev.Name;
-                        if (partner
-                            .Contracts.Any(contract => contract
-                            .Collaborators.Any(colaborator => colaborator.Name == dev.Name)))
+                        //Time de desenvolvimento
+                        AddPAragraph(paragraph, "TIME DE DESENVOLVIMENTO:", 30, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
+
+                        foreach (var dev in devTeam)
                         {
-                            AddPAragraph(paragraph, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify, WdColorIndex.wdYellow);
-                        }
-                        else
-                        {
-                            AddPAragraph(paragraph, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
-                        }
+                            strAux = dev.Name;
+                            if (partner
+                                .Contracts.Any(contract => contract
+                                .Collaborators.Any(colaborator => colaborator.Name == dev.Name)))
+                            {
+                                AddPAragraph(paragraph, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify, WdColorIndex.wdYellow);
+                            }
+                            else
+                            {
+                                AddPAragraph(paragraph, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
+                            }
+                        } 
                     }
                     //Detalhes da sprint
                     strAux = $"* {strObs}";
@@ -261,6 +347,47 @@ namespace RelatorioFA.Negocio
         #endregion
 
         #region CreateSummaryTable
+        #region CreateSummaryTableUstDevOps
+        private static void CreateSummaryTableUstDevOps(Document document, List<SprintDevOpsDTO> sprintsDevOps, object missing, FornecedorDTO partner)
+        {
+            int line = 2;
+            double totalPoints = 0;
+            int columns = 7;
+
+            Table summaryTable = document.Tables.Add(EndOfDocument(document, ref missing), 1, columns, ref missing, ref missing);
+            summaryTable.Borders.Enable = 1;
+            summaryTable.Range.Font.Size = 8;
+            List<string> headers = new List<string>
+            {
+                "Sprint",
+                "A. Pts sobreaviso",
+                "B. Pts acionamento",
+                "C. Pts de US",
+                "D. Quantidade de plantonistas",
+                "E. Pontos fornecedor\n(A + B + C) * D",
+                "A ser faturado\n(UST * E)"
+            };
+            SetGenericTableHeader(ref summaryTable, headers);
+            foreach (var sprint in sprintsDevOps)
+            {
+                double sprintPoints = (sprint.WarningUst + sprint.ActuationUst + sprint.UsUst) * sprint.TeamSize;
+                summaryTable.Rows.Add(missing);
+                summaryTable.Rows[line].Range.Font.Bold = 0;
+                summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
+                summaryTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name;
+                summaryTable.Rows[line].Cells[2].Range.Text = sprint.WarningUst.ToString();
+                summaryTable.Rows[line].Cells[3].Range.Text = sprint.ActuationUst.ToString();
+                summaryTable.Rows[line].Cells[4].Range.Text = sprint.UsUst.ToString();
+                summaryTable.Rows[line].Cells[5].Range.Text = sprint.TeamSize.ToString();
+                summaryTable.Rows[line].Cells[6].Range.Text = sprintPoints.ToString();
+
+                totalPoints += sprintPoints;
+                line++;
+            }
+            SetSummaryTableTotal(ref summaryTable, columns, line, totalPoints, partner.UstValue, ref missing);
+        }
+        #endregion
+
         #region CreateSummaryTableUst
         private static void CreateSummaryTableUst(Document document, List<SprintDTO> sprints, List<ContratoDTO> contracts, object missing, double ustValue)
         {
@@ -482,7 +609,7 @@ namespace RelatorioFA.Negocio
             List<string> headers = new List<string>()
             {
                 "Sprint"
-                ,$"A. Pts entregues {category.ToString()}"
+                ,$"A. Pts entregues {category}"
                 ,"B. Tamanho do time"
                 ,"C. Qtd funcionários empresa"
                 ,"D. Pts por membro do time\n(A / B)"
@@ -516,7 +643,7 @@ namespace RelatorioFA.Negocio
         private static void SetSummaryTableTotal(ref Table summaryTable, int columns, int line, double totalPoints, double ustValue, ref object missing)
         {
             summaryTable.Rows.Add(missing);
-            summaryTable.Rows[line].Cells[1].Range.Text = "TOTAL A SER FATUADO:\n(G * Valor da UST)";
+            summaryTable.Rows[line].Cells[1].Range.Text = "TOTAL A SER FATUADO:";
             summaryTable.Rows[line].Cells[1].Merge(summaryTable.Rows[line].Cells[columns - 2]);
             summaryTable.Rows[line].Cells[2].Range.Text = totalPoints.ToString();
             summaryTable.Rows[line].Cells[2].Range.Font.Bold = 1;

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace RelatorioFA.DTO
 {
-    public class ContratoSprintDTO
+    public class SprintContratoDTO
     {
 
-        public double EmployeesCount { get; set; }//consideraando as ausências
+        public double EmployeesCount { get; set; }//considerando as ausências
         public double PointsPerPartnerExpenses { get; set; }
         public double PointsPerPartnerInvestment { get; set; }
         public int HoursExpenses { get; set; }

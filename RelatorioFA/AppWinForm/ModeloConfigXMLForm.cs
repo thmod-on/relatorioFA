@@ -126,7 +126,7 @@ namespace RelatorioFA.AppWinForm
         #region BtnLoad_Click
         private void BtnLoad_Click(object sender, EventArgs e)
         {
-            string filePath = string.Empty;
+            string filePath;
             try
             {
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -281,9 +281,9 @@ namespace RelatorioFA.AppWinForm
                     .Add(newContract);
 
                 UpdateContractsCombo();
-                txbContractHourValue.Clear();
-                txbContractFactor.Clear();
-                PrintUserLog($"Contrato '{newContract.Name}' adicionado ao parceiro '{cbbPartner.SelectedItem.ToString()}'");
+                //txbContractHourValue.Clear();
+                //txbContractFactor.Clear();
+                PrintUserLog($"Contrato '{newContract.Name}' adicionado ao parceiro '{cbbPartner.SelectedItem}'");
             }
             catch (Exception ex)
             {
@@ -341,7 +341,7 @@ namespace RelatorioFA.AppWinForm
                 txbDevName.Clear();
                 UpdateDevsCombo();
                 btnGenerateFilled.Enabled = true;
-                PrintUserLog($"Desenvolvedor '{newDev.Name}' adicionado ao contrato '{cbbContract.SelectedValue.ToString()}' do fornecedor '{cbbPartner.SelectedItem.ToString()}'");
+                PrintUserLog($"Desenvolvedor '{newDev.Name}' adicionado ao contrato '{cbbContract.SelectedValue}' do fornecedor '{cbbPartner.SelectedItem}'");
             }
             catch (Exception ex)
             {
@@ -368,7 +368,6 @@ namespace RelatorioFA.AppWinForm
         #region BtnLogomarcaParceiro_Click
         private void BtnLogomarcaParceiro_Click(object sender, EventArgs e)
         {
-            var fileContent = string.Empty;
             string filePath = null;
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -624,7 +623,7 @@ namespace RelatorioFA.AppWinForm
             txbResult.Clear();
             try
             {
-                if (cbbContract.SelectedValue.ToString() == NOVO)
+                if (cbbContract.SelectedValue == null || cbbContract.SelectedValue.ToString() == NOVO )
                 {
                     btnAddContract.Enabled = true;
                     txbContractFactor.Enabled = true;

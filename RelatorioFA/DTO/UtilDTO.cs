@@ -28,7 +28,8 @@ namespace RelatorioFA.DTO
         {
             UST,
             UST_HORA,
-            HORA
+            HORA,
+            UST_DEVOPS
         }
 
         public enum CERIMONIAL_POINT

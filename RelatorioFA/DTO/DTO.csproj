@@ -44,7 +44,8 @@
     <Compile Include="ColaboradorDTO.cs" />
     <Compile Include="ConfigDTO.cs" />
     <Compile Include="ContratoDTO.cs" />
-    <Compile Include="ContratoSprintDTO.cs" />
+    <Compile Include="SprintContratoDTO.cs" />
+    <Compile Include="SprintDevOpsDTO.cs" />
     <Compile Include="FornecedorDTO.cs" />
     <Compile Include="IntervaloDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

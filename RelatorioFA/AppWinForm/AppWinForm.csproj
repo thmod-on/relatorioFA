@@ -52,6 +52,12 @@
     <Compile Include="ContainerForm.Designer.cs">
       <DependentUpon>ContainerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="DevOpsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DevOpsForm.Designer.cs">
+      <DependentUpon>DevOpsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="DocumentacaoForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -80,6 +86,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ContainerForm.resx">
       <DependentUpon>ContainerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DevOpsForm.resx">
+      <DependentUpon>DevOpsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DocumentacaoForm.resx">
       <DependentUpon>DocumentacaoForm.cs</DependentUpon>

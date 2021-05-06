@@ -168,14 +168,6 @@ namespace RelatorioFA.AppWinForm
             lblTeamName.Text = config.TeamName;
         }
 
-        private void ClearFields()
-        {
-            txbAcceptedPointsExpense.Text = "0";
-            txbAbsence.Text = "0";
-            txbObs.Clear();
-            txbResult.Clear();
-        }
-
         #region ValidateFieldsGenerate
         private void ValidateFieldsGenerate()
         {
@@ -249,13 +241,13 @@ namespace RelatorioFA.AppWinForm
                 {
                     foreach (var contract in partner.Contracts)
                     {
-                        ContratoSprintDTO cs = new ContratoSprintDTO()
+                        SprintContratoDTO cs = new SprintContratoDTO()
                         {
                             EmployeesCount = PrincipalTO.CalcEmployeesPrticipation(contract, devPresence)
                         };
 
-                        cs.PointsPerPartnerExpenses = PrincipalTO.CalcPartnerPoints(newSprint.PointsPerTeamMemberExpenses, contract.Factor, (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedValue == UtilDTO.CERIMONIAL_POINT.DESPESA ? true : false, cs.EmployeesCount);
-                        cs.PointsPerPartnerInvestment = PrincipalTO.CalcPartnerPoints(newSprint.PointsPerTeamMemberInvestment, contract.Factor, (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedValue == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO ? true : false, cs.EmployeesCount);
+                        cs.PointsPerPartnerExpenses = PrincipalTO.CalcPartnerPoints(newSprint.PointsPerTeamMemberExpenses, contract.Factor, (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedValue == UtilDTO.CERIMONIAL_POINT.DESPESA, cs.EmployeesCount);
+                        cs.PointsPerPartnerInvestment = PrincipalTO.CalcPartnerPoints(newSprint.PointsPerTeamMemberInvestment, contract.Factor, (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedValue == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO, cs.EmployeesCount);
 
                         if (contract.HourValue > 0)
                         {
@@ -312,8 +304,6 @@ namespace RelatorioFA.AppWinForm
                 lblOutputDocPath.Visible = true;
 
                 outputDocPath = folderDlg.SelectedPath;
-
-                Environment.SpecialFolder root = folderDlg.RootFolder;
             }
         }
         #endregion
@@ -369,7 +359,6 @@ namespace RelatorioFA.AppWinForm
         #region BtnSprintImage_Click
         private void BtnSprintImage_Click(object sender, EventArgs e)
         {
-            var fileContent = string.Empty;
             string filePath = null;
             sprintImagePath = string.Empty;
 
@@ -463,7 +452,7 @@ namespace RelatorioFA.AppWinForm
 
         private bool ValidteAbsence()
         {
-            return (Convert.ToInt32(txbSprintDays.Text) < Convert.ToInt32(txbAbsence.Text)) ? false : true;
+            return Convert.ToInt32(txbSprintDays.Text) >= Convert.ToInt32(txbAbsence.Text);
         }
         #endregion
 
@@ -492,6 +481,7 @@ namespace RelatorioFA.AppWinForm
         }
         #endregion
 
+        #region LsbSprints_SelectedIndexChanged
         private void LsbSprints_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Atualizar os objetos com os dados da tela
@@ -510,6 +500,7 @@ namespace RelatorioFA.AppWinForm
 
             cbbCerimonialPoint.SelectedItem = sprint.CerimonialPoint;
             cbbSprintRanges.SelectedItem = sprint.Range.Name;
-        }
+        } 
+        #endregion
     }
 }

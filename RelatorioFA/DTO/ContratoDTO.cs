@@ -12,7 +12,7 @@ namespace RelatorioFA.DTO
         public ContratoDTO()
         {
             Collaborators = new List<ColaboradorDTO>();
-            ContractSprint = new List<ContratoSprintDTO>();
+            ContractSprint = new List<SprintContratoDTO>();
         }
 
         [XmlElement("Tipo")]
@@ -23,6 +23,6 @@ namespace RelatorioFA.DTO
         public List<ColaboradorDTO> Collaborators { get; set; }
         [XmlElement("ValorHora")]
         public double HourValue { get; set; }
-        public List<ContratoSprintDTO> ContractSprint { get; set; }
+        public List<SprintContratoDTO> ContractSprint { get; set; }
     }
 }

@@ -70,5 +70,10 @@ namespace RelatorioFA.Transacao
         {
             return Controle.CalcSprintHours(pointsPerPartner, ustValue, hourValue);
         }
+
+        public static void CreateOpsDoc(ConfigDTO config, List<SprintDevOpsDTO> opsDataList, FornecedorDTO partner, string outputDocPath)
+        {
+            ControleDoc.GenerateOpsDoc(config, opsDataList, partner, outputDocPath);
+        }
     }
 }
