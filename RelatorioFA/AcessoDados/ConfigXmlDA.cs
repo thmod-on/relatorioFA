@@ -31,7 +31,7 @@ namespace RelatorioFA.AcessoDados
             }
             catch (FileNotFoundException ex)
             {
-                throw new FileNotFoundException($"ERRO:\n\nArquivo {configFile} não encontrado em {filePath}.\n\nFavor selecione o local do arquivo utilizando o botão no canto superior esquerdo do programa.", ex);
+                throw new FileNotFoundException($"ERRO:\n\nArquivo {configFile} não encontrado em {filePath}.\n\nFavor selecione o local do arquivo utilizando o botão correspondente.", ex);
             }
             catch (Exception ex)
             {

@@ -16,6 +16,8 @@ namespace RelatorioFA.DTO
             Partners = new List<FornecedorDTO>();
         }
 
+        [XmlElement("NomeArea")]
+        public string AreaName { get; set; }
         [XmlElement("NomeTime")]
         public string TeamName { get; set; }
         [XmlElement("Autor")]

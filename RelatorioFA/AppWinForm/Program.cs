@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RelatorioFA.AppWinForm
@@ -16,7 +13,7 @@ namespace RelatorioFA.AppWinForm
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new DevOpsForm());
+            //Application.Run(new ConfigBaseForm());
             Application.Run(new ContainerForm());
         }
     }

@@ -31,7 +31,7 @@ namespace RelatorioFA.AppWinForm
         List<ColaboradorDTO> devTeam = new List<ColaboradorDTO>();
         List<SprintDTO> sprints = new List<SprintDTO>();
         List<IntervaloDTO> sprintRanges = new List<IntervaloDTO>();
-        private string outputDocPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+        private string outputDocPath = UtilDTO.GetProjectRootFolder();
         Dictionary<ColaboradorDTO, int> devAbsence = new Dictionary<ColaboradorDTO, int>();
         string sprintImagePath = string.Empty;
 

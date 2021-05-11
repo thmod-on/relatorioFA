@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace RelatorioFA.DTO
 {
@@ -37,6 +34,17 @@ namespace RelatorioFA.DTO
             DESPESA,
             INVESTIMENTO,
             NENHUM
+        }
+
+        public enum NAVIGATION
+        {
+            DEVOPS,
+            VARIOS_RELATORIOS
+        }
+
+        public static string GetProjectRootFolder()
+        {
+            return Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
         }
 
         public static string ConvertDoubleToStringWithDotAtDecimal(double myDouble)

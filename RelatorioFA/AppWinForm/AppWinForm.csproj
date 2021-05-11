@@ -46,6 +46,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigBaseForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigBaseForm.Designer.cs">
+      <DependentUpon>ConfigBaseForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigContratoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigContratoForm.Designer.cs">
+      <DependentUpon>ConfigContratoForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ContainerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -63,6 +75,18 @@
     </Compile>
     <Compile Include="DocumentacaoForm.Designer.cs">
       <DependentUpon>DocumentacaoForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SprintDevOpsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SprintDevOpsForm.Designer.cs">
+      <DependentUpon>SprintDevOpsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SprintForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SprintForm.Designer.cs">
+      <DependentUpon>SprintForm.cs</DependentUpon>
     </Compile>
     <Compile Include="VariosRelatoriosForm.cs">
       <SubType>Form</SubType>
@@ -84,6 +108,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ConfigBaseForm.resx">
+      <DependentUpon>ConfigBaseForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigContratoForm.resx">
+      <DependentUpon>ConfigContratoForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ContainerForm.resx">
       <DependentUpon>ContainerForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -92,6 +122,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DocumentacaoForm.resx">
       <DependentUpon>DocumentacaoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SprintDevOpsForm.resx">
+      <DependentUpon>SprintDevOpsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SprintForm.resx">
+      <DependentUpon>SprintForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VariosRelatoriosForm.resx">
       <DependentUpon>VariosRelatoriosForm.cs</DependentUpon>

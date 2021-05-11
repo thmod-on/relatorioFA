@@ -17,6 +17,7 @@ namespace RelatorioFA.Negocio
             using (XmlWriter writer = XmlWriter.Create(filename.ToString()))
             {
                 writer.WriteStartElement("Config");
+                writer.WriteElementString("NomeArea", config.AreaName);
                 writer.WriteElementString("NomeTime", config.TeamName);
                 writer.WriteElementString("Autor", config.AuthorName);
                 if (config.BaneseDes.Count > 0)

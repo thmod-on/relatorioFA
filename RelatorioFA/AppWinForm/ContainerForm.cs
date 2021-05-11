@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using RelatorioFA.DTO;
 
 namespace RelatorioFA.AppWinForm
 {
@@ -23,7 +18,7 @@ namespace RelatorioFA.AppWinForm
         /// Método que remove os demais forms presentes no MDIForm e abre o solicitado
         /// </summary>
         /// <param name="form"></param>
-        private void AbrirForm(Form form)
+        public void AbrirForm(Form form)
         {
             RemoverFilhos();
             form.MdiParent = this;
@@ -56,7 +51,7 @@ namespace RelatorioFA.AppWinForm
 
         private void ModeloDeArquivoDeConfiguraçãoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AbrirForm(new ModeloConfigXMLForm(this));
+            AbrirForm(new ConfigBaseForm(this));
         }
         #endregion
 
@@ -67,7 +62,7 @@ namespace RelatorioFA.AppWinForm
 
         private void DevOpsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AbrirForm(new DevOpsForm(this));
+            AbrirForm(new SprintForm(this, UtilDTO.NAVIGATION.DEVOPS));
         }
     }
 }

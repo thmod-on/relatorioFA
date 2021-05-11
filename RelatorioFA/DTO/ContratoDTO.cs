@@ -17,6 +17,8 @@ namespace RelatorioFA.DTO
 
         [XmlElement("Tipo")]
         public string Name { get; set; }
+        [XmlElement("NumeroSAP")]
+        public string NumeroSAP { get; set; }
         [XmlElement("FatorAjuste")]
         public double Factor { get; set; }
         [XmlElement("Colaborador")]

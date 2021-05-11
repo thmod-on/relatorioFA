@@ -25,7 +25,7 @@ namespace RelatorioFA.AppWinForm
             LoadConfig();
         }
 
-        private string outputDocPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+        private string outputDocPath = UtilDTO.GetProjectRootFolder();
         private string sprintImagePath = string.Empty;
         private List<IntervaloDTO> sprintRanges = new List<IntervaloDTO>();
         ConfigDTO config = new ConfigDTO();
