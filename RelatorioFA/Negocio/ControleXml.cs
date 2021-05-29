@@ -22,7 +22,6 @@ namespace RelatorioFA.Negocio
                 writer.WriteElementString("Autor", config.AuthorName);
                 if (config.BaneseDes.Count > 0)
                 {
-                    
                     foreach (var dev in config.BaneseDes)
                     {
                         writer.WriteStartElement("DesenvBanese");
@@ -30,7 +29,6 @@ namespace RelatorioFA.Negocio
                         writer.WriteElementString("UmTurno", dev.WorksHalfDay ? "true" : "false");
                         writer.WriteEndElement();//DesenvBanese 
                     }
-                    
                 }
                 foreach (var partner in config.Partners)
                 {
@@ -44,6 +42,7 @@ namespace RelatorioFA.Negocio
                         {
                             writer.WriteStartElement("Contrato");
                             writer.WriteElementString("Tipo", contract.Name);
+                            writer.WriteElementString("NumeroSAP", contract.NumeroSAP);
                             writer.WriteElementString("FatorAjuste", UtilDTO.ConvertDoubleToStringWithDotAtDecimal(contract.Factor));
                             foreach (var dev in contract.Collaborators)
                             {

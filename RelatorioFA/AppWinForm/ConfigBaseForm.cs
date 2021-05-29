@@ -233,7 +233,7 @@ namespace RelatorioFA.AppWinForm
                 string.IsNullOrEmpty(config.AreaName) ||
                 string.IsNullOrEmpty(config.TeamName))
             {
-                throw new Exception("Parece que você esqueceu algo. Preciso saber:\n- Seu nome;\n- A área que está alocado;\n- Qual time come seu juízo\n\n;)");
+                throw new Exception("Parece que você esqueceu algo. Preciso saber:\n- Seu nome;\n- A área que está alocado;\n- Qual time come seu juízo\n\n * Se já preencheu este dados, aperte no botão 'Adicionar / Atualizar'\n\n;)");
             }
 
             if (config.Partners.Count < 1)

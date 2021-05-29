@@ -301,9 +301,9 @@ namespace RelatorioFA.AppWinForm
             this.btnAddSprint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAddSprint.Location = new System.Drawing.Point(344, 482);
             this.btnAddSprint.Name = "btnAddSprint";
-            this.btnAddSprint.Size = new System.Drawing.Size(75, 23);
+            this.btnAddSprint.Size = new System.Drawing.Size(120, 23);
             this.btnAddSprint.TabIndex = 7;
-            this.btnAddSprint.Text = "Adicionar";
+            this.btnAddSprint.Text = "Adicionar / Atualizar";
             this.btnAddSprint.UseVisualStyleBackColor = true;
             this.btnAddSprint.Click += new System.EventHandler(this.BtnAdd_Click);
             // 

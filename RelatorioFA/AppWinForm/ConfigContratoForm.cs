@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
@@ -117,13 +118,18 @@ namespace RelatorioFA.AppWinForm
             try
             {
                 ValidateContractData();
-                
+
                 var newContract = new ContratoDTO()
                 {
                     Name = cbbContractType.SelectedItem.ToString(),
                     Factor = Convert.ToDouble(txbContractFactor.Text),
                     NumeroSAP = txbContractSap.Text
                 };
+
+                if (config.Partners.Find(p => p == selectedPartner).Contracts.Find(c => c.Name == newContract.Name) != null)
+                {
+                    newContract.Collaborators = config.Partners.Find(p => p == selectedPartner).Contracts.Find(c => c.Name == newContract.Name).Collaborators;
+                }
 
                 config
                     .Partners.Find(p => p == selectedPartner)
@@ -137,7 +143,6 @@ namespace RelatorioFA.AppWinForm
                 lsbContracts.Items.Remove(newContract.Name);
                 lsbContracts.Items.Add(newContract.Name);
 
-                btnNextForm.Enabled = true;
                 txbContractSap.Clear();
                 txbContractFactor.Clear();
 
@@ -205,6 +210,9 @@ namespace RelatorioFA.AppWinForm
 
                 lsbContracts.Items.Remove(selectedContract.Name);
                 selectedContract = null;
+                txbContractSap.Clear();
+                txbContractFactor.Clear();
+                ShowLog("Contrato removido.");
             }
         }
         #endregion
@@ -287,8 +295,24 @@ namespace RelatorioFA.AppWinForm
         #region BtnNextForm_Click
         private void BtnNextForm_Click(object sender, EventArgs e)
         {
-            currentScreen = SCREEN.LAST;
-            SetScreenLayout();
+            bool allPartnersHasContracts = true;
+            foreach (var partner in config.Partners)
+            {
+                if (partner.Contracts.Count < 1)
+                {
+                    allPartnersHasContracts = false;
+                    break;
+                }
+            }
+            if (allPartnersHasContracts)
+            {
+                currentScreen = SCREEN.LAST;
+                SetScreenLayout();
+            }
+            else
+            {
+                txbResult.Text = "Antes de prosseguir você deve cadastrar ao menos um contrato para cada parceiro";
+            }
         } 
         #endregion
         #endregion
@@ -393,6 +417,18 @@ namespace RelatorioFA.AppWinForm
             lblDevHouse.Visible = !toSecondPage;
             lblScreen.Text = toSecondPage ? "Tela 2/3" : "Tela 3/3";
 
+            if (lsbHouseDevs.Visible)
+            {
+                if (config.BaneseDes.Count > 0)
+                {
+                    lsbHouseDevs.Items.Clear();
+                    foreach (var dev in config.BaneseDes)
+                    {
+                        lsbHouseDevs.Items.Add(dev.Name);
+                    }
+                }
+            }
+
         }
         #endregion
 
@@ -418,7 +454,7 @@ namespace RelatorioFA.AppWinForm
             {
                 foreach (var contract in partner.Contracts)
                 {
-                    if (contract.Name != UtilDTO.CONTRACTS.BANESE.ToString() && contract.Collaborators.Count < 1)
+                    if (contract.Collaborators.Count < 1)
                     {
                         throw new Exception("Ao menos um colaborador deve ser adicionado a cada contrato.");
                     }
@@ -492,10 +528,10 @@ namespace RelatorioFA.AppWinForm
                 selectedPartner = config.Partners.Find(p => p.Name == lsbPartners.SelectedItem.ToString());
 
                 ShowLog("Para alterar os dados de um parceiro, por favor volte à tela anterior.");
+                lsbContracts.Items.Clear();
 
                 if (selectedPartner.Contracts.Count > 0)
                 {
-                    lsbContracts.Items.Clear();
                     foreach (var contract in selectedPartner.Contracts)
                     {
                         lsbContracts.Items.Add(contract.Name);
@@ -520,16 +556,15 @@ namespace RelatorioFA.AppWinForm
 
                 txbContractSap.Text = selectedContract.NumeroSAP;
                 txbContractFactor.Text = selectedContract.Factor.ToString();
-                cbbContractType.SelectedItem = selectedContract.Name;
+                cbbContractType.SelectedIndex = cbbContractType.FindStringExact(selectedContract.Name);
+                lsbDevs.Items.Clear();
 
                 if (selectedContract.Collaborators.Count > 0)
                 {
-                    lsbDevs.Items.Clear();
                     foreach (var dev in selectedContract.Collaborators)
                     {
                         lsbDevs.Items.Add(dev.Name);
                     }
-
                     lsbDevs.SelectedIndex = 0;
 
                     lblDevs.Text = $"Devs {selectedContract.Name}";
