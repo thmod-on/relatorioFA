@@ -167,7 +167,7 @@ namespace RelatorioFA.AppWinForm
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 28);
+            this.label3.Location = new System.Drawing.Point(7, 22);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(83, 13);
             this.label3.TabIndex = 5;
@@ -199,7 +199,7 @@ namespace RelatorioFA.AppWinForm
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(7, 54);
+            this.label6.Location = new System.Drawing.Point(7, 50);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(93, 13);
             this.label6.TabIndex = 7;
@@ -222,7 +222,7 @@ namespace RelatorioFA.AppWinForm
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(7, 80);
+            this.label7.Location = new System.Drawing.Point(7, 76);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(47, 13);
             this.label7.TabIndex = 9;

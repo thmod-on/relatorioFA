@@ -70,6 +70,17 @@ namespace RelatorioFA.AppWinForm
             }
         }
 
+        private void ValidateData()
+        {
+            foreach (var sprint in sprintsDevOpsList)
+            {
+                if (sprint.TeamSize < 1)
+                {
+                    throw new Exception($"Favor preencher a quantidade de plantonistas na sprint {sprint.Range.Name}");
+                }
+            }
+        }
+
         private void Processing(bool processing)
         {
             if (processing)
@@ -86,6 +97,7 @@ namespace RelatorioFA.AppWinForm
                 btnAddSprint.Enabled = !processing;
                 btnSetOutputDocPath.Enabled = !processing;
                 btnGenerate.Enabled = !processing;
+                btnChangeConfigFolder.Enabled = !processing;
 
                 lsbSprints.Enabled = !processing;
             }
@@ -162,6 +174,13 @@ namespace RelatorioFA.AppWinForm
                 selectedSprint.UsUst = Convert.ToDouble(txbOpsUsUst.Text);
                 selectedSprint.TeamSize = Convert.ToDouble(txbOpsDevsCount.Text);
 
+                if(lsbSprints.SelectedIndex < lsbSprints.Items.Count - 1)
+                {
+                    lsbSprints.SelectedIndex += 1;
+                }
+
+                txbOpsWarningUst.Focus();
+
                 ShowLog("Dados da sprint atualizados.");
             }
             catch (Exception ex)
@@ -191,6 +210,7 @@ namespace RelatorioFA.AppWinForm
         {
             try
             {
+                ValidateData();
                 Processing(true);
                 FornecedorDTO partner = new FornecedorDTO();
                 partner = config.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());

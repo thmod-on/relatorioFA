@@ -113,7 +113,6 @@ namespace RelatorioFA.Negocio
                 }
 
                 CreateFollowPages(document, partner, sprints, para1);
-                //CreateLastPageDevOps
                 CreateLastPage(document, para1, sprintDevOpsList, missing, config, partner);
                 SaveAndClose(ref document, ref winword, outputDocName, outputDocPath, missing);
             }
@@ -234,6 +233,11 @@ namespace RelatorioFA.Negocio
                 AddPAragraph(para1, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
                 strAux = "Contrato: " + partner.Contracts[0].Name;
                 AddPAragraph(para1, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
+            }
+            foreach (var contract in partner.Contracts)
+            {
+                strAux = $"Contrato / SAP: {contract.Name} / {contract.NumeroSAP}";
+                AddPAragraph(para1, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify); 
             }
         }
 
@@ -364,13 +368,13 @@ namespace RelatorioFA.Negocio
                 "B. Pts acionamento",
                 "C. Pts de US",
                 "D. Quantidade de plantonistas",
-                "E. Pontos fornecedor\n(A + B + C) * D",
+                "E. Pontos fornecedor\n(A * D) + B + C",
                 "A ser faturado\n(UST * E)"
             };
             SetGenericTableHeader(ref summaryTable, headers);
             foreach (var sprint in sprintsDevOps)
             {
-                double sprintPoints = (sprint.WarningUst + sprint.ActuationUst + sprint.UsUst) * sprint.TeamSize;
+                double sprintPoints = (sprint.WarningUst * sprint.TeamSize) + sprint.ActuationUst + sprint.UsUst;
                 summaryTable.Rows.Add(missing);
                 summaryTable.Rows[line].Range.Font.Bold = 0;
                 summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
