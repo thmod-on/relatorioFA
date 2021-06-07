@@ -2,58 +2,67 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RelatorioFA.DTO;
 using System.IO;
 
 namespace RelatorioFA.Negocio
 {
-    public class ControleDoc
+    public abstract class ControleDoc
     {
-        const string decimalFormat = "0.000";
+        public const string decimalFormat = "0.000";
 
-        public static void GenerateAllDocs(ConfigDTO config, List<SprintDTO> sprints, List<ColaboradorDTO> devTeam, string outputDocPath)
+        #region GenerateDevDoc
+        public void GenerateDevDoc(ConfigDocDTO config, FornecedorDTO partner, List<SprintDevDTO> sprints)
         {
             try
             {
-                string baseOutputDocName = $"Relatório Ágil -";
-                string outputDocName = string.Empty;
-
+                List<IntervaloDTO> ranges = new List<IntervaloDTO>();
                 foreach (var sprint in sprints)
                 {
-                    baseOutputDocName += $" {sprint.Range.Name}";
+                    ranges.Add(sprint.Range);
                 }
 
-                foreach (var partner in config.Partners)
+                List<SprintBaseDTO> baseSprints = new List<SprintBaseDTO>();
+                foreach (var sprint in sprints)
                 {
-                    outputDocName = baseOutputDocName;
-                    outputDocName += $" - {partner.Name} - {config.TeamName}.docx";
-                    //Create an instance for word app  
-                    Microsoft.Office.Interop.Word.Application winword = new Microsoft.Office.Interop.Word.Application
-                    {
-                        ShowAnimation = false,
-                        //Set status for word application is to be visible or not.  
-                        Visible = false
-                    };
-
-                    //Create a missing variable for missing value  
-                    object missing = System.Reflection.Missing.Value;
-
-                    //Create a new document  
-                    Microsoft.Office.Interop.Word.Document document = winword.Documents.Add(ref missing, ref missing, ref missing, ref missing);
-
-                    SetDocumentContent(document, ref missing, sprints, devTeam, config, partner);
-                    SetDocumentHeader(document, partner.Name, partner.CaminhoLogomarca, config.TeamName);
-                    SetDocumentFooter(document);
-                    SaveAndClose(ref document, ref winword, outputDocName, outputDocPath, missing);
+                    baseSprints.Add(sprint.GetBaseSprint());
                 }
+
+                string outputDocName = GetDocumentName(baseSprints, config, partner.Name);
+
+                Application winword = CreateWinWord();
+
+                //Create a missing variable for missing value  
+                object missing = System.Reflection.Missing.Value;
+
+                Document document = winword.Documents.Add(ref missing, ref missing, ref missing, ref missing);
+                Paragraph para1 = document.Content.Paragraphs.Add(ref missing);
+
+                CreateFirstPage(para1, ranges, config);
+                CreateFollowPages(document, partner, baseSprints, para1, config.DevTeam);
+                CreateLastPage(document, para1, baseSprints, missing, config, partner);
+                SetDocumentHeader(document, partner.Name, partner.CaminhoLogomarca, config.TeamName);
+                SetDocumentFooter(document);
+                SaveAndClose(ref document, ref winword, outputDocName, config.OutputDocPath, missing);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+
+        public static Application CreateWinWord()
+        {
+            Application winword = new Application
+            {
+                ShowAnimation = false,
+                //Set status for word application is to be visible or not.  
+                Visible = false
+            };
+
+            return winword;
+        }
+        #endregion
 
         #region SaveAndClose
         private static void SaveAndClose(ref Document document, ref Application winword, string outputDocName, string outputDocPath, object missing)
@@ -65,90 +74,15 @@ namespace RelatorioFA.Negocio
             winword.Quit(ref missing, ref missing, ref missing);
             winword = null;
         }
-
-        public static void GenerateOpsDoc(ConfigDTO config, List<SprintDevOpsDTO> sprintDevOpsList, FornecedorDTO partner, string outputDocPath)
-        {
-            try
-            {
-                //Set doc name
-                string outputDocName = $"Relatório Ágil -";
-                foreach (var sprint in sprintDevOpsList)
-                {
-                    outputDocName += $" {sprint.Range.Name}";
-                }
-                outputDocName += $" - {partner.Name} - {config.TeamName}.docx";
-
-                //Create an instance for word app  
-                Microsoft.Office.Interop.Word.Application winword = new Microsoft.Office.Interop.Word.Application
-                {
-                    ShowAnimation = false,
-                    Visible = false
-                };
-
-                //Create a missing variable for missing value  
-                object missing = System.Reflection.Missing.Value;
-
-                Microsoft.Office.Interop.Word.Document document = winword.Documents.Add(ref missing, ref missing, ref missing, ref missing);
-                Microsoft.Office.Interop.Word.Paragraph para1 = document.Content.Paragraphs.Add(ref missing);
-
-                List<IntervaloDTO> ranges = new List<IntervaloDTO>();
-                foreach (var sprint in sprintDevOpsList)
-                {
-                    ranges.Add(sprint.Range);
-                }
-
-                CreateFirstPage(para1, ranges, config.TeamName);
-
-                //Armengue T.T #cansado
-                List<SprintDTO> sprints = new List<SprintDTO>();
-                foreach (var sprintOps in sprintDevOpsList)
-                {
-                    SprintDTO sprint = new SprintDTO()
-                    {
-                        Range = sprintOps.Range,
-                        Obs = sprintOps.Obs,
-                        ImagePath = sprintOps.ImagePath
-                    };
-                    sprints.Add(sprint);
-                }
-
-                CreateFollowPages(document, partner, sprints, para1);
-                CreateLastPage(document, para1, sprintDevOpsList, missing, config, partner);
-                SaveAndClose(ref document, ref winword, outputDocName, outputDocPath, missing);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
         #endregion
 
-        #region SetDocumentContent
-        private static void SetDocumentContent(Document document, ref Object missing, List<SprintDTO> sprints, List<ColaboradorDTO> devTeam, ConfigDTO config, FornecedorDTO partner)
-        {
-            Microsoft.Office.Interop.Word.Paragraph para1 = document.Content.Paragraphs.Add(ref missing);
-
-            List<IntervaloDTO> ranges = new List<IntervaloDTO>();
-            foreach (var sprint in sprints)
-            {
-                ranges.Add(sprint.Range);
-            }
-
-            CreateFirstPage(para1, ranges, config.TeamName);
-
-            CreateFollowPages(document, partner, sprints, para1, devTeam);
-
-            CreateLastPage(document, para1, sprints, missing, config, partner);
-        }
-
         #region CreateFirstPage
-        private static void CreateFirstPage(Paragraph para1, List<IntervaloDTO> ranges, string teamName)
+        public static void CreateFirstPage(Paragraph paragraph, List<IntervaloDTO> ranges, ConfigDocDTO config)
         {
             string strAux;
             List<string> paragraphTexts = new List<string>();
 
-            AddPAragraph(para1, "RELATÓRIO DE ATIVIDADES", 20, 150, 1, 20, WdParagraphAlignment.wdAlignParagraphCenter);
+            AddPAragraph(paragraph, "RELATÓRIO DE ATIVIDADES", 20, 150, 1, 20, WdParagraphAlignment.wdAlignParagraphCenter);
 
             #region Identificação das sprints
             strAux = "ATIVIDADES DESENVOLVIDAS NAS SPRINTS: ";
@@ -164,7 +98,7 @@ namespace RelatorioFA.Negocio
             }
             paragraphTexts.Add(strAux);
 
-            strAux = "TIME: " + teamName;
+            strAux = "TIME: " + config.AreaName + " - " + config.TeamName;
             paragraphTexts.Add(strAux);
 
             strAux = $"PERÍODO: {ranges[0].IniDate:dd/MM/yyyy} a {ranges[ranges.Count - 1].EndDate:dd/MM/yyyy}";
@@ -172,19 +106,19 @@ namespace RelatorioFA.Negocio
 
             foreach (var paragraphText in paragraphTexts)
             {
-                AddPAragraph(para1, paragraphText, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphRight);
+                AddPAragraph(paragraph, paragraphText, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphRight);
             }
             #endregion
 
-            AddPAragraph(para1, "Banese – Banco do Estado de Sergipe", 150, 150, 1, 20, WdParagraphAlignment.wdAlignParagraphCenter);
+            AddPAragraph(paragraph, "Banese – Banco do Estado de Sergipe", 150, 150, 1, 20, WdParagraphAlignment.wdAlignParagraphCenter);
 
             strAux = "Aracaju, " + DateTime.Now.ToString("dddd, dd 'de' MMMM 'de' yyyy", System.Globalization.CultureInfo.GetCultureInfo("pt-BR"));
-            AddPAragraph(para1, strAux, 150, 150, 0, 14, WdParagraphAlignment.wdAlignParagraphRight);
+            AddPAragraph(paragraph, strAux, 150, 150, 0, 14, WdParagraphAlignment.wdAlignParagraphRight);
         }
         #endregion
 
         #region CreateLastPage
-        private static void CreateLastPage(Document document, Paragraph para1, List<SprintDTO> sprints, object missing, ConfigDTO config, FornecedorDTO partner)
+        private static void CreateLastPage(Document document, Paragraph para1, List<SprintBaseDTO> sprints, object missing, ConfigDocDTO config, FornecedorDTO partner)
         {
             UtilDTO.BILLING_TYPE billingType = partner.BillingType;
             SetLastPageText(document, para1, partner, billingType);
@@ -192,7 +126,7 @@ namespace RelatorioFA.Negocio
             switch (billingType)
             {
                 case (UtilDTO.BILLING_TYPE.UST):
-                    CreateSummaryTableUst(document, sprints, partner.Contracts, missing, partner.UstValue);
+                    CreateSummaryTableUst(document, sprints, missing, partner.UstValue);
                     break;
                 case (UtilDTO.BILLING_TYPE.UST_HORA):
                     CreateSummaryTableUstHour(document, sprints, partner.Contracts, missing);
@@ -204,7 +138,7 @@ namespace RelatorioFA.Negocio
             SetLastPageSignature(para1, config);
         }
 
-        private static void CreateLastPage(Document document, Paragraph para1, List<SprintDevOpsDTO> sprintsDevOps, object missing, ConfigDTO config, FornecedorDTO partner) 
+        private static void CreateLastPage(Document document, Paragraph para1, List<SprintDevOpsDTO> sprintsDevOps, object missing, ConfigDocDTO config, FornecedorDTO partner) 
         {
             UtilDTO.BILLING_TYPE billingType = partner.BillingType;
 
@@ -241,7 +175,7 @@ namespace RelatorioFA.Negocio
             }
         }
 
-        private static void SetLastPageSignature(Paragraph para1, ConfigDTO config)
+        private static void SetLastPageSignature(Paragraph para1, ConfigDocDTO config)
         {
             AddPAragraph(para1, "Atenciosamente,", 150, 30, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
             AddPAragraph(para1, "_________________________________________________", 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphCenter);
@@ -251,7 +185,7 @@ namespace RelatorioFA.Negocio
         #endregion
 
         #region CreateFollowPages
-        private static void CreateFollowPages(Document document, FornecedorDTO partner, List<SprintDTO> sprints, Paragraph paragraph, List<ColaboradorDTO> devTeam = null)
+        private static void CreateFollowPages(Document document, FornecedorDTO partner, List<SprintBaseDTO> sprints, Paragraph paragraph, List<ColaboradorDTO> devTeam = null)
         {
             string strAux;
             string strObs = string.Empty;
@@ -268,7 +202,7 @@ namespace RelatorioFA.Negocio
                 {
                     if (i > 0)
                     {
-                        document.Words.Last.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
+                        document.Words.Last.InsertBreak(WdBreakType.wdPageBreak);
                     }
 
                     //Cabecalho da sprint
@@ -310,7 +244,6 @@ namespace RelatorioFA.Negocio
                 }
             }
         }
-        #endregion
         #endregion
 
         #region Sobrecarga desnecessaria. Apagar um.
@@ -393,27 +326,27 @@ namespace RelatorioFA.Negocio
         #endregion
 
         #region CreateSummaryTableUst
-        private static void CreateSummaryTableUst(Document document, List<SprintDTO> sprints, List<ContratoDTO> contracts, object missing, double ustValue)
+        private static void CreateSummaryTableUst(Document document, List<SprintDevDTO> sprints, object missing, double ustValue)
         {
             #region DevTable
             if (contracts.Any(x => x.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString()))
             {
-                CreateSummaryTableUstDev(document, sprints, contracts, ref missing, ustValue, UtilDTO.CATEGORY.DES);
+                CreateSummaryTableUstDev(document, sprints, ref missing, ustValue, UtilDTO.CATEGORY.DES);
                 AddPAragraph(" ", 3, 3, 0, 8, WdParagraphAlignment.wdAlignParagraphLeft, document, ref missing);
-                CreateSummaryTableUstDev(document, sprints, contracts, ref missing, ustValue, UtilDTO.CATEGORY.INV);
+                CreateSummaryTableUstDev(document, sprints, ref missing, ustValue, UtilDTO.CATEGORY.INV);
             }
             #endregion
 
             #region SMTable - Fixo
             if (contracts.Any(x => x.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString()))
             {
-                CreateSummaryTableUstSmSettled(document, sprints, contracts, ref missing, ustValue);
+                CreateSummaryTableUstSmSettled(document, sprints, ref missing, ustValue);
             }
             #endregion
         }
 
         #region CreateSummaryTableUstDev
-        private static void CreateSummaryTableUstDev(Document document, List<SprintDTO> sprints, List<ContratoDTO> contracts, ref object missing, double ustValue, UtilDTO.CATEGORY category)
+        private static void CreateSummaryTableUstDev(Document document, List<SprintDevDTO> sprints, ref object missing, double ustValue, UtilDTO.CATEGORY category)
         {
             int line = 2;
             double totalPoints = 0;
@@ -426,30 +359,29 @@ namespace RelatorioFA.Negocio
 
             SetTableHeaderUstDev(ref summaryTable, category);
 
-            foreach (var contract in contracts)
+            foreach (var sprint in sprints)
             {
-                if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() && contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
+                foreach (var contract in sprint.Contracts)
                 {
-                    int sprintIndex = 0;
-                    foreach (var cs in contract.ContractSprint)
+                    if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() && contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
                     {
-                        int acceptedPoints = category == UtilDTO.CATEGORY.DES ? sprints[sprintIndex].AcceptedPointsExpenses : sprints[sprintIndex].AcceptedPointsInvestment;
-                        double pointsPerTeamMember = category == UtilDTO.CATEGORY.DES ? sprints[sprintIndex].PointsPerTeamMemberExpenses : sprints[sprintIndex].PointsPerTeamMemberInvestment;
+                        int acceptedPoints = category == UtilDTO.CATEGORY.DES ? sprint.AcceptedPointsExpenses : sprint.AcceptedPointsInvestment;
+                        double pointsPerTeamMember = category == UtilDTO.CATEGORY.DES ? sprint.PointsPerTeamMemberExpenses : sprint.PointsPerTeamMemberInvestment;
                         string cerimonialPoint = "0";
-                        if ((category == UtilDTO.CATEGORY.DES && sprints[sprintIndex].CerimonialPoint == UtilDTO.CERIMONIAL_POINT.DESPESA) ||
-                            (category == UtilDTO.CATEGORY.INV && sprints[sprintIndex].CerimonialPoint == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO))
+                        if ((category == UtilDTO.CATEGORY.DES && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.DESPESA) ||
+                            (category == UtilDTO.CATEGORY.INV && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO))
                         {
                             cerimonialPoint = "1";
                         }
-                        double pointsPerPartner = category == UtilDTO.CATEGORY.DES ? cs.PointsPerPartnerExpenses : cs.PointsPerPartnerInvestment;
+                        double pointsPerPartner = category == UtilDTO.CATEGORY.DES ? sprint.PointsPerPartnerExpenses : sprint.PointsPerPartnerInvestment;
 
                         summaryTable.Rows.Add(missing);
                         summaryTable.Rows[line].Range.Font.Bold = 0;
                         summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
-                        summaryTable.Rows[line].Cells[1].Range.Text = sprints[sprintIndex].Range.Name + "\n" + contract.Name;
+                        summaryTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name + "\n" + contract.Name;
                         summaryTable.Rows[line].Cells[2].Range.Text = acceptedPoints.ToString();
-                        summaryTable.Rows[line].Cells[3].Range.Text = sprints[sprintIndex].TeamSize.ToString();
-                        summaryTable.Rows[line].Cells[4].Range.Text = cs.EmployeesCount.ToString();
+                        summaryTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString();
+                        summaryTable.Rows[line].Cells[4].Range.Text = sprint.EmployeesCount.ToString();
                         summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString(decimalFormat);
                         summaryTable.Rows[line].Cells[6].Range.Text = contract.Factor.ToString();
                         summaryTable.Rows[line].Cells[7].Range.Text = cerimonialPoint;
@@ -457,7 +389,6 @@ namespace RelatorioFA.Negocio
 
                         totalPoints += pointsPerPartner;
                         line++;
-                        sprintIndex++;
                     }
                 }
             }
@@ -486,7 +417,7 @@ namespace RelatorioFA.Negocio
         #endregion
 
         #region CreateSummaryTableUstSmSettled
-        private static void CreateSummaryTableUstSmSettled(Document document, List<SprintDTO> sprints, List<ContratoDTO> contracts, ref object missing, double ustValue)
+        private static void CreateSummaryTableUstSmSettled(Document document, List<SprintSmDTO> sprints, ref object missing, double ustValue)
         {
             int line = 2;
             double totalPoints = 0;
@@ -503,22 +434,20 @@ namespace RelatorioFA.Negocio
             line = 2;
             totalPoints = 0;
 
-            int sprintIndex = 0;
-            foreach (var cs in smContract.ContractSprint)
+            foreach (var sprint in sprints)
             {
                 smTable.Rows.Add(missing);
                 smTable.Rows[line].Range.Font.Bold = 0;
                 smTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
-                smTable.Rows[line].Cells[1].Range.Text = sprints[sprintIndex].Range.Name;
-                smTable.Rows[line].Cells[2].Range.Text = (sprints[sprintIndex].AcceptedPointsExpenses + sprints[sprintIndex].AcceptedPointsInvestment).ToString();
-                smTable.Rows[line].Cells[3].Range.Text = sprints[sprintIndex].TeamSize.ToString();
-                smTable.Rows[line].Cells[4].Range.Text = cs.EmployeesCount.ToString();
-                smTable.Rows[line].Cells[5].Range.Text = cs.PointsPerPartnerExpenses.ToString();
-                smTable.Rows[line].Cells[6].Range.Text = cs.PointsPerPartnerExpenses.ToString();
+                smTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name;
+                smTable.Rows[line].Cells[2].Range.Text = (sprint.AcceptedPointsExpenses + sprint.AcceptedPointsInvestment).ToString();
+                smTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString();
+                smTable.Rows[line].Cells[4].Range.Text = sprint.EmployeesCount.ToString();
+                smTable.Rows[line].Cells[5].Range.Text = sprint.PointsPerPartnerExpenses.ToString();
+                smTable.Rows[line].Cells[6].Range.Text = sprint.PointsPerPartnerExpenses.ToString();
 
-                totalPoints += cs.PointsPerPartnerExpenses;
+                totalPoints += sprint.PointsPerPartnerExpenses;
                 line++;
-                sprintIndex++;
             }
 
             SetSummaryTableTotal(ref smTable, columns, line, totalPoints, ustValue, ref missing);
@@ -542,7 +471,7 @@ namespace RelatorioFA.Negocio
         #endregion
         
         #region CreateSummaryTableUstHour
-        private static void CreateSummaryTableUstHour(Document document, List<SprintDTO> sprints, List<ContratoDTO> contracts, object missing)
+        private static void CreateSummaryTableUstHour(Document document, List<SprintBaseDTO> sprints, List<ContratoDTO> contracts, object missing)
         {
             foreach (var contract in contracts)
             {
@@ -552,7 +481,7 @@ namespace RelatorioFA.Negocio
             }
         }
 
-        private static void CreateSummaryTableUstHour(Document document, List<SprintDTO> sprints, ContratoDTO contract, object missing, UtilDTO.CATEGORY category)
+        private static void CreateSummaryTableUstHour(Document document, List<SprintDevDTO> sprints, object missing, UtilDTO.CATEGORY category)
         {
             int columns = 9;
             Table summaryTable = document.Tables.Add(EndOfDocument(document, ref missing), 1, columns, ref missing, ref missing);
@@ -564,16 +493,15 @@ namespace RelatorioFA.Negocio
             int line = 2;
             double totalHours = 0;
                         
-            int sprintIndex = 0;
-            foreach (var cs in contract.ContractSprint)
+            foreach (var sprint in sprints)
             {
-                int acceptedPoints = category == UtilDTO.CATEGORY.DES ? sprints[sprintIndex].AcceptedPointsExpenses : sprints[sprintIndex].AcceptedPointsInvestment;
-                double pointsPerTeamMember = category == UtilDTO.CATEGORY.DES ? sprints[sprintIndex].PointsPerTeamMemberExpenses : sprints[sprintIndex].PointsPerTeamMemberInvestment;
-                double pointsPerPartner = category == UtilDTO.CATEGORY.DES ? cs.PointsPerPartnerExpenses : cs.PointsPerPartnerInvestment;
-                int hours = category == UtilDTO.CATEGORY.DES ? cs.HoursExpenses : cs.HoursInvestment;
-                string cerimonialPoint = "0";//category == sprints[sprintIndex].CerimonialPoint ? "1" : "0";
-                if ((category == UtilDTO.CATEGORY.DES && sprints[sprintIndex].CerimonialPoint == UtilDTO.CERIMONIAL_POINT.DESPESA) ||
-                    (category == UtilDTO.CATEGORY.INV && sprints[sprintIndex].CerimonialPoint == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO))
+                int acceptedPoints = category == UtilDTO.CATEGORY.DES ? sprint.AcceptedPointsExpenses : sprint.AcceptedPointsInvestment;
+                double pointsPerTeamMember = category == UtilDTO.CATEGORY.DES ? sprint.PointsPerTeamMemberExpenses : sprint.PointsPerTeamMemberInvestment;
+                double pointsPerPartner = category == UtilDTO.CATEGORY.DES ? sprint.PointsPerPartnerExpenses : sprint.PointsPerPartnerInvestment;
+                int hours = category == UtilDTO.CATEGORY.DES ? sprint.HoursExpenses : sprint.HoursInvestment;
+                string cerimonialPoint = "0";
+                if ((category == UtilDTO.CATEGORY.DES && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.DESPESA) ||
+                    (category == UtilDTO.CATEGORY.INV && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO))
                 {
                     cerimonialPoint = "1";
                 }
@@ -581,10 +509,10 @@ namespace RelatorioFA.Negocio
                 summaryTable.Rows.Add(missing);
                 summaryTable.Rows[line].Range.Font.Bold = 0;
                 summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
-                summaryTable.Rows[line].Cells[1].Range.Text = sprints[sprintIndex].Range.Name;
+                summaryTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name;
                 summaryTable.Rows[line].Cells[2].Range.Text = acceptedPoints.ToString();
-                summaryTable.Rows[line].Cells[3].Range.Text = sprints[sprintIndex].TeamSize.ToString();
-                summaryTable.Rows[line].Cells[4].Range.Text = cs.EmployeesCount.ToString();
+                summaryTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString();
+                summaryTable.Rows[line].Cells[4].Range.Text = sprint.EmployeesCount.ToString();
                 summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString(decimalFormat);
                 summaryTable.Rows[line].Cells[6].Range.Text = cerimonialPoint;
                 summaryTable.Rows[line].Cells[7].Range.Text = pointsPerPartner.ToString(decimalFormat);
@@ -592,7 +520,6 @@ namespace RelatorioFA.Negocio
 
                 totalHours += hours;
                 line++;
-                sprintIndex++;
             }
 
             summaryTable.Rows.Add(missing);
@@ -700,10 +627,23 @@ namespace RelatorioFA.Negocio
         }
         #endregion
 
+        #region AUX
         private static Range EndOfDocument(Document doc, ref object missing)
         {
             return doc.Range(doc.Content.End - 1, ref missing);
         }
- 
+
+        public static string GetDocumentName(List<SprintBaseDTO> sprints, ConfigDocDTO config, string partnerName)
+        {
+            string outputDocName = $"Relatório Ágil -";
+            foreach (var sprint in sprints)
+            {
+                outputDocName += $" {sprint.Range.Name}";
+            }
+            outputDocName += $" - {config.AreaName}-{config.TeamName} - {partnerName}.docx";
+
+            return outputDocName;
+        } 
+        #endregion
     }
 }

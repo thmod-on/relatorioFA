@@ -21,7 +21,7 @@ namespace RelatorioFA.AppWinForm
 
         private readonly string rootFolder = UtilDTO.GetProjectRootFolder();
        
-        public ConfigBaseForm(ContainerForm containerForm, ConfigDTO config)
+        public ConfigBaseForm(ContainerForm containerForm, ConfigXmlDTO config)
         {
             InitializeComponent();
             this.config = config;
@@ -40,7 +40,7 @@ namespace RelatorioFA.AppWinForm
             ShowLog("Seja bem vindo de volta.\n=)");
         }
 
-        private ConfigDTO config = new ConfigDTO();
+        private ConfigXmlDTO config = new ConfigXmlDTO();
         string partnerLogoPath;
         private readonly ContainerForm containerForm = new ContainerForm();
 

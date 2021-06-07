@@ -21,7 +21,7 @@ namespace RelatorioFA.AppWinForm
             SetSreenNumber(fluxo);
         }
 
-        public SprintForm(ContainerForm parentForm, UtilDTO.NAVIGATION fluxo, List<SprintDTO> sprintsList)
+        public SprintForm(ContainerForm parentForm, UtilDTO.NAVIGATION fluxo, List<SprintBaseDTO> sprintsList)
         {
             InitializeComponent();
             ResizeParent(parentForm);
@@ -45,7 +45,7 @@ namespace RelatorioFA.AppWinForm
         private readonly UtilDTO.NAVIGATION fluxo;
         private string sprintImagePath;
         private List<IntervaloDTO> sprintRanges = new List<IntervaloDTO>();
-        private readonly List<SprintDTO> sprintsList = new List<SprintDTO>();
+        private readonly List<SprintBaseDTO> sprintsList = new List<SprintBaseDTO>();
 
         #region LoadRanges
         private void LoadRanges()
@@ -72,7 +72,7 @@ namespace RelatorioFA.AppWinForm
                     EndDate = dtpEndDate.Value
                 };
 
-                SprintDTO newSprint = new SprintDTO()
+                SprintBaseDTO newSprint = new SprintBaseDTO()
                 {
                     Range = range,
                     ImagePath = sprintImagePath
@@ -171,7 +171,7 @@ namespace RelatorioFA.AppWinForm
         {
             if (lsbSprints.Items.Count > 0)
             {
-                var selectedSprint = new SprintDTO();
+                var selectedSprint = new SprintBaseDTO();
                 selectedSprint = sprintsList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
 
                 if (selectedSprint.ImagePath != null &&

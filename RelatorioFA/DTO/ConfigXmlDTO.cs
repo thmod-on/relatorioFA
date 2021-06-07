@@ -8,9 +8,9 @@ using System.Xml.Serialization;
 namespace RelatorioFA.DTO
 {
     [XmlRoot("Config")]
-    public class ConfigDTO
+    public class ConfigXmlDTO
     {
-        public ConfigDTO()
+        public ConfigXmlDTO()
         {
             BaneseDes = new List<ColaboradorDTO>();
             Partners = new List<FornecedorDTO>();

@@ -42,14 +42,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColaboradorDTO.cs" />
-    <Compile Include="ConfigDTO.cs" />
+    <Compile Include="ConfigDocDTO.cs" />
+    <Compile Include="SprintDevDTO.cs" />
+    <Compile Include="ConfigXmlDTO.cs" />
     <Compile Include="ContratoDTO.cs" />
-    <Compile Include="SprintContratoDTO.cs" />
     <Compile Include="SprintDevOpsDTO.cs" />
     <Compile Include="FornecedorDTO.cs" />
     <Compile Include="IntervaloDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SprintDTO.cs" />
+    <Compile Include="SprintBaseDTO.cs" />
+    <Compile Include="SprintSmDTO.cs" />
     <Compile Include="UtilDTO.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

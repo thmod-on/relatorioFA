@@ -9,7 +9,7 @@ namespace RelatorioFA.AppWinForm
 {
     public partial class SprintDevOpsForm : Form
     {
-        public SprintDevOpsForm(ContainerForm containerForm, List<SprintDTO> sprintsList)
+        public SprintDevOpsForm(ContainerForm containerForm, List<SprintBaseDTO> sprintsList)
         {
             InitializeComponent();
             ResizeParent(containerForm);
@@ -19,7 +19,7 @@ namespace RelatorioFA.AppWinForm
         }
 
         private List<SprintDevOpsDTO> sprintsDevOpsList;
-        private ConfigDTO config;
+        private ConfigXmlDTO config;
         private string outputDocPath = UtilDTO.GetProjectRootFolder();
         private readonly ContainerForm containerForm;
 
@@ -55,7 +55,7 @@ namespace RelatorioFA.AppWinForm
             containerForm.MinimumSize = new Size(this.Width, this.Height + 20);
         }
 
-        private void SetSprintsDevOpsList(List<SprintDTO> sprintsList)
+        private void SetSprintsDevOpsList(List<SprintBaseDTO> sprintsList)
         {
             sprintsDevOpsList = new List<SprintDevOpsDTO>();
             foreach (var sprint in sprintsList)
@@ -148,10 +148,10 @@ namespace RelatorioFA.AppWinForm
         #region Eventos de Click
         private void BtnPreviousForm_Click(object sender, System.EventArgs e)
         {
-            List<SprintDTO> sprintsList = new List<SprintDTO>();
+            List<SprintBaseDTO> sprintsList = new List<SprintBaseDTO>();
             foreach (var sprint in sprintsDevOpsList)
             {
-                SprintDTO newSprint = new SprintDTO()
+                SprintBaseDTO newSprint = new SprintBaseDTO()
                 {
                     Range = sprint.Range,
                     ImagePath = sprint.ImagePath

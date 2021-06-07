@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using RelatorioFA.DTO;
 
@@ -7,20 +8,22 @@ namespace RelatorioFA.AppWinForm
 {
     public partial class SprintAbsenceHourForm : Form
     {
-        public SprintAbsenceHourForm(ContainerForm containerForm, ConfigDTO config, List<SprintDTO> sprintsList)
+        public SprintAbsenceHourForm(ContainerForm containerForm, ConfigXmlDTO config, List<SprintBaseDTO> sprintsList)
         {
             InitializeComponent();
-            lblMessage.Text = "Este colaborador fez hora extra?\n+ Será considerado hora exxtra serviços desenvolvidos entre as 22h e 6h de um dia útil, em finais de seman ou feriado. Por isso o BANESE pagará 0,5pts por turno adicional.";
+            lblMessage.Text = "Este colaborador fez hora extra?\n+ Será considerado hora exxtra serviços desenvolvidos entre as 22h e 6h de um dia útil, em finais de seman ou feriado. Por isso o BANESE pagará 0,5pts por turno adicional, ajustando para seu proporcional quando necessário.";
             this.config = config;
             this.sprintsList = sprintsList;
             SetCbbPartners();
+            ResizeParent(containerForm);
         }
 
-        private readonly ConfigDTO config;
-        private readonly List<SprintDTO> sprintsList;
+        private readonly ConfigXmlDTO config;
+        private readonly List<SprintBaseDTO> sprintsList;
         private string outputDocPath = UtilDTO.GetProjectRootFolder();
         private FornecedorDTO selectedPartner = new FornecedorDTO();
-
+        private ColaboradorDTO selectedDev = new ColaboradorDTO();
+        
         #region Eventos automaticos
         private void SetCbbPartners()
         {
@@ -31,32 +34,19 @@ namespace RelatorioFA.AppWinForm
             }
             cbbPartners.SelectedIndex = 0;
         }
-
-        private void CbbPartners_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(cbbPartners.SelectedItem.ToString()))
-            {
-                selectedPartner = config.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
-                if (selectedPartner != null)
-                {
-                    SetPartnersDev(selectedPartner);
-                }
-                else
-                {
-                    foreach (var partner in config.Partners)
-                    {
-                        SetPartnersDev(partner);
-                    }
-                }
-            }
-        }
         #endregion
 
         #region AUX
-        private void SetPartnersDev(FornecedorDTO partner)
+        private void ResizeParent(Form containerForm)
+        {
+            containerForm.Size = new System.Drawing.Size(this.Width, this.Height + 20);
+            containerForm.MinimumSize = new Size(this.Width, this.Height + 20);
+        }
+
+        private void SetPartnersDevInLsbDevTeam(FornecedorDTO partner)
         {
             lsbDevTeam.Items.Clear();
-            foreach (var contract in selectedPartner.Contracts)
+            foreach (var contract in partner.Contracts)
             {
                 foreach (var dev in contract.Collaborators)
                 {
@@ -124,8 +114,8 @@ namespace RelatorioFA.AppWinForm
                 foreach (var dev in contract.Collaborators)
                 {
                     txbResult.AppendText($"      > Nome: {dev.Name}\n");
-                    txbResult.AppendText($"      > Ausências: {}\n");
-                    txbResult.AppendText($"      > Horas extras: {}\n");
+                    //txbResult.AppendText($"      > Ausências: {sprintsList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString()).DevAbsence[dev.Name]}\n");
+                    //txbResult.AppendText($"      > Horas extras: {sprintsList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString()).DevExtraHour[dev.Name]}\n");
                 }
             }
         }
@@ -172,6 +162,43 @@ namespace RelatorioFA.AppWinForm
             ShowLog("Caminho de saído do arquivo definodo.");
         }
         #endregion
+
+        #region CbbPartners_SelectedIndexChanged
+        private void CbbPartners_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(cbbPartners.SelectedItem.ToString()))
+            {
+                selectedPartner = config.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
+                if (selectedPartner != null)
+                {
+                    SetPartnersDevInLsbDevTeam(selectedPartner);
+                }
+                else
+                {
+                    foreach (var partner in config.Partners)
+                    {
+                        SetPartnersDevInLsbDevTeam(partner);
+                    }
+                }
+            }
+        }
         #endregion
+
+        #endregion
+
+        private void LsbDevTeam_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //foreach (var contract in selectedPartner.Contracts)
+            //{
+            //    if (contract.Collaborators.fin)
+            //    {
+
+            //    }
+            //}
+
+            //selectedDev = config
+            //                .Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString())
+            //                .Contracts
+        }
     }
 }

@@ -13,20 +13,20 @@ namespace RelatorioFA.AcessoDados
     {
         private const string configFile = "RelatorioFA.xml";
 
-        public static ConfigDTO LoadConfig(string filePath)
+        public static ConfigXmlDTO LoadConfig(string filePath)
         {
-            ConfigDTO config;
+            ConfigXmlDTO config;
             if (filePath.Substring(filePath.Length - 4).ToUpper() != ".XML")
             {
                 filePath = Path.Combine(filePath, configFile); 
             }
             try
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(ConfigDTO));
+                XmlSerializer serializer = new XmlSerializer(typeof(ConfigXmlDTO));
 
                 using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
                 {
-                    config = (ConfigDTO)serializer.Deserialize(fileStream);
+                    config = (ConfigXmlDTO)serializer.Deserialize(fileStream);
                 }
             }
             catch (FileNotFoundException ex)

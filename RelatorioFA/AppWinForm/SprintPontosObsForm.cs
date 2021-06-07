@@ -9,7 +9,7 @@ namespace RelatorioFA.AppWinForm
 {
     public partial class SprintPontosObsForm : Form
     {
-        public SprintPontosObsForm(ContainerForm containerForm, ConfigDTO config, List<SprintDTO> sprintList, UtilDTO.NAVIGATION fluxo)
+        public SprintPontosObsForm(ContainerForm containerForm, ConfigXmlDTO config, List<SprintBaseDTO> sprintList, UtilDTO.NAVIGATION fluxo)
         {
             InitializeComponent();
             SetSprintsList(sprintList);
@@ -22,9 +22,9 @@ namespace RelatorioFA.AppWinForm
         }
 
         private readonly ContainerForm containerForm;
-        private readonly List<SprintDTO> sprintList;
-        private readonly ConfigDTO config;
-        private SprintDTO selectedSprint = new SprintDTO();
+        private readonly List<SprintBaseDTO> sprintList;
+        private readonly ConfigXmlDTO config;
+        private SprintBaseDTO selectedSprint = new SprintBaseDTO();
 
         #region Eventos de Click
         private void BtnNextForm_Click(object sender, EventArgs e)
@@ -72,7 +72,7 @@ namespace RelatorioFA.AppWinForm
         #endregion
 
         #region AUX
-        private void SetSprintsList(List<SprintDTO> sprintList)
+        private void SetSprintsList(List<SprintBaseDTO> sprintList)
         {
             foreach (var sprint in sprintList)
             {

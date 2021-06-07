@@ -28,7 +28,7 @@ namespace RelatorioFA.AppWinForm
         private string outputDocPath = UtilDTO.GetProjectRootFolder();
         private string sprintImagePath = string.Empty;
         private List<IntervaloDTO> sprintRanges = new List<IntervaloDTO>();
-        ConfigDTO config = new ConfigDTO();
+        ConfigXmlDTO config = new ConfigXmlDTO();
         private readonly List<SprintDevOpsDTO> sprintDevOpsList = new List<SprintDevOpsDTO>();
 
         #region Tests

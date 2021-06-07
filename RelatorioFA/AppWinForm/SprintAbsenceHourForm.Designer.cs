@@ -201,6 +201,7 @@ namespace RelatorioFA.AppWinForm
             this.lsbDevTeam.Name = "lsbDevTeam";
             this.lsbDevTeam.Size = new System.Drawing.Size(257, 82);
             this.lsbDevTeam.TabIndex = 53;
+            this.lsbDevTeam.SelectedIndexChanged += new System.EventHandler(this.LsbDevTeam_SelectedIndexChanged);
             // 
             // label19
             // 

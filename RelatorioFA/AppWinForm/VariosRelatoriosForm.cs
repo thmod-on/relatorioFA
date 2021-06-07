@@ -27,9 +27,9 @@ namespace RelatorioFA.AppWinForm
             LoadConfig(outputDocPath);
         }
 
-        ConfigDTO config = new ConfigDTO();
+        ConfigXmlDTO config = new ConfigXmlDTO();
         List<ColaboradorDTO> devTeam = new List<ColaboradorDTO>();
-        List<SprintDTO> sprints = new List<SprintDTO>();
+        List<SprintBaseDTO> sprints = new List<SprintBaseDTO>();
         List<IntervaloDTO> sprintRanges = new List<IntervaloDTO>();
         private string outputDocPath = UtilDTO.GetProjectRootFolder();
         Dictionary<ColaboradorDTO, int> devAbsence = new Dictionary<ColaboradorDTO, int>();
@@ -224,7 +224,7 @@ namespace RelatorioFA.AppWinForm
                     EndDate = dtpEndDate.Value
                 };
 
-                SprintDTO newSprint = new SprintDTO()
+                SprintBaseDTO newSprint = new SprintBaseDTO()
                 {
                     Range = range,
                     Obs = Regex.Replace(txbObs.Text, @"\r\n?|\n", " "),
@@ -241,7 +241,7 @@ namespace RelatorioFA.AppWinForm
                 {
                     foreach (var contract in partner.Contracts)
                     {
-                        SprintContratoDTO cs = new SprintContratoDTO()
+                        Apagar cs = new Apagar()
                         {
                             EmployeesCount = PrincipalTO.CalcEmployeesPrticipation(contract, devPresence)
                         };
@@ -488,7 +488,7 @@ namespace RelatorioFA.AppWinForm
 
 
             //Carregar os novos dados
-            SprintDTO sprint = new SprintDTO();
+            SprintBaseDTO sprint = new SprintBaseDTO();
             sprint = sprints.Find(x => x.Range.Name == lsbSprints.SelectedItem.ToString());
 
             txbObs.Text = sprint.Obs;

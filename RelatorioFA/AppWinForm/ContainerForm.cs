@@ -57,7 +57,7 @@ namespace RelatorioFA.AppWinForm
 
         private void TodasEmpresasToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AbrirForm(new VariosRelatoriosForm(this));
+            AbrirForm(new SprintBaseForm(this, UtilDTO.NAVIGATION.VARIOS_RELATORIOS));
         }
 
         private void DevOpsToolStripMenuItem_Click(object sender, EventArgs e)

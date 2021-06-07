@@ -11,7 +11,7 @@ namespace RelatorioFA.Negocio
 {
     public class ControleXml
     {
-        public static void GenerateConfigXmlFile(string outputPath, string outputName, ConfigDTO config)
+        public static void GenerateConfigXmlFile(string outputPath, string outputName, ConfigXmlDTO config)
         {
             object filename = Path.Combine(outputPath, outputName);
             using (XmlWriter writer = XmlWriter.Create(filename.ToString()))

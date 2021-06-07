@@ -46,6 +46,8 @@
   <ItemGroup>
     <Compile Include="Controle.cs" />
     <Compile Include="ControleDoc.cs" />
+    <Compile Include="ControleDocDev.cs" />
+    <Compile Include="ControleDocDevOps.cs" />
     <Compile Include="ControleXml.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

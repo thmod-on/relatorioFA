@@ -10,7 +10,7 @@ namespace RelatorioFA.AppWinForm
 {
     public partial class ConfigContratoForm : Form
     {
-        public ConfigContratoForm(ContainerForm containerForm, ConfigDTO config)
+        public ConfigContratoForm(ContainerForm containerForm, ConfigXmlDTO config)
         {
             InitializeComponent();
             this.config = config;
@@ -23,7 +23,7 @@ namespace RelatorioFA.AppWinForm
             LoadContractType();
         }
 
-        private readonly ConfigDTO config = new ConfigDTO();
+        private readonly ConfigXmlDTO config = new ConfigXmlDTO();
         private readonly ContainerForm containerForm;
         private string outputDocPath = UtilDTO.GetProjectRootFolder();
         private FornecedorDTO selectedPartner = new FornecedorDTO();

@@ -11,12 +11,12 @@ namespace RelatorioFA.Transacao
 {
     public class PrincipalTO
     {
-        public static ConfigDTO LoadConfig(string outputDocPath)
+        public static ConfigXmlDTO LoadConfig(string outputDocPath)
         {
             return ConfigXmlDA.LoadConfig(outputDocPath);
         }
         
-        public static void CreateDocs(ConfigDTO config, List<SprintDTO> sprints, List<ColaboradorDTO> devTeam, string outputDocPath)
+        public static void CreateDocs(ConfigXmlDTO config, List<SprintBaseDTO> sprints, List<ColaboradorDTO> devTeam, string outputDocPath)
         {
             ControleDoc.GenerateAllDocs(config, sprints, devTeam, outputDocPath);
         }
@@ -36,7 +36,7 @@ namespace RelatorioFA.Transacao
             Controle.SetDevPresence(out devPresence, devAbsence, sprintDays);
         }
 
-        public static void CalcPointsPerTeamMember(SprintDTO newSprint)
+        public static void CalcPointsPerTeamMember(SprintBaseDTO newSprint)
         {
             Controle.CalcPointsPerTeamMember(newSprint);
         }
@@ -56,7 +56,7 @@ namespace RelatorioFA.Transacao
             return Controle.CalcBillingUst(ustValue, pointsPerPartner, factor);
         }
 
-        public static void GenerateConfigXmlFile(string outputPath, string outputName, ConfigDTO config)
+        public static void GenerateConfigXmlFile(string outputPath, string outputName, ConfigXmlDTO config)
         {
             ControleXml.GenerateConfigXmlFile(outputPath, outputName, config);
         }
@@ -71,7 +71,7 @@ namespace RelatorioFA.Transacao
             return Controle.CalcSprintHours(pointsPerPartner, ustValue, hourValue);
         }
 
-        public static void CreateOpsDoc(ConfigDTO config, List<SprintDevOpsDTO> opsDataList, FornecedorDTO partner, string outputDocPath)
+        public static void CreateOpsDoc(ConfigXmlDTO config, List<SprintDevOpsDTO> opsDataList, FornecedorDTO partner, string outputDocPath)
         {
             ControleDoc.GenerateOpsDoc(config, opsDataList, partner, outputDocPath);
         }

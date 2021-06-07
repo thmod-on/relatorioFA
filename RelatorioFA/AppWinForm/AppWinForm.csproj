@@ -76,6 +76,18 @@
     <Compile Include="DocumentacaoForm.Designer.cs">
       <DependentUpon>DocumentacaoForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SprintAbsenceHourForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SprintAbsenceHourForm.Designer.cs">
+      <DependentUpon>SprintAbsenceHourForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SprintBaseForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SprintBaseForm.Designer.cs">
+      <DependentUpon>SprintBaseForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SprintDevOpsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -87,6 +99,12 @@
     </Compile>
     <Compile Include="SprintForm.Designer.cs">
       <DependentUpon>SprintForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SprintPontosObsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SprintPontosObsForm.Designer.cs">
+      <DependentUpon>SprintPontosObsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="VariosRelatoriosForm.cs">
       <SubType>Form</SubType>
@@ -123,11 +141,20 @@
     <EmbeddedResource Include="DocumentacaoForm.resx">
       <DependentUpon>DocumentacaoForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SprintAbsenceHourForm.resx">
+      <DependentUpon>SprintAbsenceHourForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SprintBaseForm.resx">
+      <DependentUpon>SprintBaseForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SprintDevOpsForm.resx">
       <DependentUpon>SprintDevOpsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SprintForm.resx">
       <DependentUpon>SprintForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SprintPontosObsForm.resx">
+      <DependentUpon>SprintPontosObsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VariosRelatoriosForm.resx">
       <DependentUpon>VariosRelatoriosForm.cs</DependentUpon>

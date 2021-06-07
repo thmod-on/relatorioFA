@@ -54,7 +54,7 @@ namespace RelatorioFA.AppWinForm
 
         private string outputPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
         const string outputName = "RelatorioFA.xml";
-        private ConfigDTO config = new ConfigDTO();
+        private ConfigXmlDTO config = new ConfigXmlDTO();
 
         private void ResizeParent(Form containerForm)
         {
