@@ -27,10 +27,9 @@ namespace RelatorioFA.AppWinForm
             LoadConfig(outputDocPath);
         }
 
-        ConfigXmlDTO config = new ConfigXmlDTO();
+        ConfigDocDTO config = new ConfigDocDTO();
         List<ColaboradorDTO> devTeam = new List<ColaboradorDTO>();
-        List<SprintBaseDTO> sprints = new List<SprintBaseDTO>();
-        List<IntervaloDTO> sprintRanges = new List<IntervaloDTO>();
+        List<SprintDevDTO> sprints = new List<SprintDevDTO>();
         private string outputDocPath = UtilDTO.GetProjectRootFolder();
         Dictionary<ColaboradorDTO, int> devAbsence = new Dictionary<ColaboradorDTO, int>();
         string sprintImagePath = string.Empty;
@@ -54,7 +53,7 @@ namespace RelatorioFA.AppWinForm
         {
             try
             {
-                config = PrincipalTO.LoadConfig(outputDocPath);
+                //config = PrincipalTO.LoadConfig(outputDocPath);
                 SetPartnerContractType();
                 LoadTeamName();
                 LoadDevTeam();
@@ -62,8 +61,8 @@ namespace RelatorioFA.AppWinForm
                 SetDefaultDevAbsence();
                 LoadCerimonialPointCombo();
 
-                sprintRanges = PrincipalTO.GenerateRanges();
-                LoadSprintRangesCbb(sprintRanges);
+                //sprintRanges = PrincipalTO.GenerateRanges();
+                //LoadSprintRangesCbb(sprintRanges);
                 BlockFields(false);
             }
             catch (System.IO.FileNotFoundException ex)
@@ -85,18 +84,18 @@ namespace RelatorioFA.AppWinForm
         private void SetPartnerContractType()
         {
             //POG para Influir, depois melhorar, se precisar
-            foreach (var partner in config.Partners)
-            {
-                partner.BillingType = UtilDTO.BILLING_TYPE.UST;
-                foreach (var contract in partner.Contracts)
-                {
-                    if (contract.HourValue > 0)
-                    {
-                        partner.BillingType = UtilDTO.BILLING_TYPE.UST_HORA;
-                        break;
-                    }
-                }
-            }
+            //foreach (var partner in config.Partners)
+            //{
+            //    partner.BillingType = UtilDTO.BILLING_TYPE.UST;
+            //    foreach (var contract in partner.Contracts)
+            //    {
+            //        if (contract.HourValue > 0)
+            //        {
+            //            partner.BillingType = UtilDTO.BILLING_TYPE.UST_HORA;
+            //            break;
+            //        }
+            //    }
+            //}
         }
         #endregion
 
@@ -224,7 +223,7 @@ namespace RelatorioFA.AppWinForm
                     EndDate = dtpEndDate.Value
                 };
 
-                SprintBaseDTO newSprint = new SprintBaseDTO()
+                SprintDevDTO newSprint = new SprintDevDTO()
                 {
                     Range = range,
                     Obs = Regex.Replace(txbObs.Text, @"\r\n?|\n", " "),
@@ -241,27 +240,27 @@ namespace RelatorioFA.AppWinForm
                 {
                     foreach (var contract in partner.Contracts)
                     {
-                        Apagar cs = new Apagar()
-                        {
-                            EmployeesCount = PrincipalTO.CalcEmployeesPrticipation(contract, devPresence)
-                        };
+                        //Apagar cs = new Apagar()
+                        //{
+                        //    EmployeesCount = PrincipalTO.CalcEmployeesPrticipation(contract, devPresence)
+                        //};
 
-                        cs.PointsPerPartnerExpenses = PrincipalTO.CalcPartnerPoints(newSprint.PointsPerTeamMemberExpenses, contract.Factor, (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedValue == UtilDTO.CERIMONIAL_POINT.DESPESA, cs.EmployeesCount);
-                        cs.PointsPerPartnerInvestment = PrincipalTO.CalcPartnerPoints(newSprint.PointsPerTeamMemberInvestment, contract.Factor, (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedValue == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO, cs.EmployeesCount);
+                        //cs.PointsPerPartnerExpenses = PrincipalTO.CalcPartnerPoints(newSprint.PointsPerTeamMemberExpenses, contract.Factor, (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedValue == UtilDTO.CERIMONIAL_POINT.DESPESA, cs.EmployeesCount);
+                        //cs.PointsPerPartnerInvestment = PrincipalTO.CalcPartnerPoints(newSprint.PointsPerTeamMemberInvestment, contract.Factor, (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedValue == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO, cs.EmployeesCount);
 
-                        if (contract.HourValue > 0)
-                        {
-                            cs.HoursExpenses = PrincipalTO.CalcSprintHours(cs.PointsPerPartnerExpenses, partner.UstValue, contract.HourValue);
-                            cs.HoursInvestment = PrincipalTO.CalcSprintHours(cs.PointsPerPartnerInvestment, partner.UstValue, contract.HourValue);
-                        }
+                        //if (contract.HourValue > 0)
+                        //{
+                        //    cs.HoursExpenses = PrincipalTO.CalcSprintHours(cs.PointsPerPartnerExpenses, partner.UstValue, contract.HourValue);
+                        //    cs.HoursInvestment = PrincipalTO.CalcSprintHours(cs.PointsPerPartnerInvestment, partner.UstValue, contract.HourValue);
+                        //}
 
-                        if (contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString())
-                        {
-                            cs.EmployeesCount = 1;
-                            cs.PointsPerPartnerExpenses = Convert.ToDouble(txbSmPoints.Text);
-                        }
+                        //if (contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString())
+                        //{
+                        //    cs.EmployeesCount = 1;
+                        //    cs.PointsPerPartnerExpenses = Convert.ToDouble(txbSmPoints.Text);
+                        //}
 
-                        contract.ContractSprint.Add(cs);
+                        //contract.ContractSprint.Add(cs);
                     }
                 }
                 
@@ -317,7 +316,7 @@ namespace RelatorioFA.AppWinForm
 
                 Processing(true);
                 sprints.Sort((x, y) => x.Range.Name.CompareTo(y.Range.Name));
-                PrincipalTO.CreateDocs(config, sprints, devTeam, outputDocPath);
+                //PrincipalTO.CreateDevDoc(config, outputDocPath, sprints);
                 txbResult.Text = $"Arquivos gerados na pasta\n{outputDocPath}";
                 btnOpenDestinationFolder.Enabled = true;
             }
@@ -488,7 +487,7 @@ namespace RelatorioFA.AppWinForm
 
 
             //Carregar os novos dados
-            SprintBaseDTO sprint = new SprintBaseDTO();
+            SprintDevDTO sprint = new SprintDevDTO();
             sprint = sprints.Find(x => x.Range.Name == lsbSprints.SelectedItem.ToString());
 
             txbObs.Text = sprint.Obs;

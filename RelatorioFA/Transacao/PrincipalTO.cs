@@ -16,27 +16,18 @@ namespace RelatorioFA.Transacao
             return ConfigXmlDA.LoadConfig(outputDocPath);
         }
         
-        public static void CreateDocs(ConfigXmlDTO config, List<SprintBaseDTO> sprints, List<ColaboradorDTO> devTeam, string outputDocPath)
-        {
-            ControleDoc.GenerateAllDocs(config, sprints, devTeam, outputDocPath);
-        }
-
         public static List<IntervaloDTO> GenerateRanges()
         {
             return Controle.GenerateRanges();
         }
-        
+
+        #region Calc
         public static double CalcTeamSize(Dictionary<string, double> devPresence)
         {
             return Controle.CalcTeamSize(devPresence);
         }
 
-        public static void SetDevPresence(out Dictionary<string, double> devPresence, Dictionary<ColaboradorDTO, int> devAbsence, int sprintDays)
-        {
-            Controle.SetDevPresence(out devPresence, devAbsence, sprintDays);
-        }
-
-        public static void CalcPointsPerTeamMember(SprintBaseDTO newSprint)
+        public static void CalcPointsPerTeamMember(SprintDevDTO newSprint)
         {
             Controle.CalcPointsPerTeamMember(newSprint);
         }
@@ -56,11 +47,6 @@ namespace RelatorioFA.Transacao
             return Controle.CalcBillingUst(ustValue, pointsPerPartner, factor);
         }
 
-        public static void GenerateConfigXmlFile(string outputPath, string outputName, ConfigXmlDTO config)
-        {
-            ControleXml.GenerateConfigXmlFile(outputPath, outputName, config);
-        }
-
         public static double CalcBillingHour(int hours, double hourValue)
         {
             return Controle.CalcBillingHour(hours, hourValue);
@@ -71,9 +57,32 @@ namespace RelatorioFA.Transacao
             return Controle.CalcSprintHours(pointsPerPartner, ustValue, hourValue);
         }
 
-        public static void CreateOpsDoc(ConfigXmlDTO config, List<SprintDevOpsDTO> opsDataList, FornecedorDTO partner, string outputDocPath)
+        public static void GenerateConfigXmlFile(string outputPath, string outputName, ConfigXmlDTO config)
         {
-            ControleDoc.GenerateOpsDoc(config, opsDataList, partner, outputDocPath);
+            ControleXml.GenerateConfigXmlFile(outputPath, outputName, config);
+        } 
+        #endregion
+
+        #region CreateDoc
+        public static void CreateDevDoc(ConfigDocDTO config, FornecedorDTO partner, string outputDocPath, List<SprintBaseDTO> sprints)
+        {
+            ControleDocDev.GenerateDoc(config, partner, outputDocPath, sprints);
+        }
+
+        public static void GenerateDoc(ConfigDocDTO config, FornecedorDTO partner, string outputDocPath, List<SprintSmDTO> sprints)
+        {
+            ControleDocSm.GenerateDoc(config, partner, outputDocPath, sprints);
+        }
+
+        public static void CreateOpsDoc(ConfigDocDTO config, FornecedorDTO partner, string outputDocPath, List<SprintDevOpsDTO> sprints)
+        {
+            ControleDocDevOps.GenerateDoc(config, partner, outputDocPath, sprints);
+        } 
+        #endregion
+
+        public static void SetDevPresence(out Dictionary<string, double> devPresence, Dictionary<ColaboradorDTO, int> devAbsence, int sprintDays)
+        {
+            Controle.SetDevPresence(out devPresence, devAbsence, sprintDays);
         }
     }
 }

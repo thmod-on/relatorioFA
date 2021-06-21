@@ -81,7 +81,7 @@ namespace RelatorioFA.Negocio
             return Math.Round(pointsPerTeamMember * factor * emploeeCount, 3);
         }
 
-        public static void CalcPointsPerTeamMember(SprintBaseDTO newSprint)
+        public static void CalcPointsPerTeamMember(SprintDevDTO newSprint)
         {
             newSprint.PointsPerTeamMemberExpenses = Math.Round(newSprint.AcceptedPointsExpenses / newSprint.TeamSize, 3);
             newSprint.PointsPerTeamMemberInvestment = Math.Round(newSprint.AcceptedPointsInvestment / newSprint.TeamSize, 3);

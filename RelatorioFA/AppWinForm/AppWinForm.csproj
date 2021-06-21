@@ -94,12 +94,6 @@
     <Compile Include="SprintDevOpsForm.Designer.cs">
       <DependentUpon>SprintDevOpsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SprintForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SprintForm.Designer.cs">
-      <DependentUpon>SprintForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="SprintPontosObsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -149,9 +143,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SprintDevOpsForm.resx">
       <DependentUpon>SprintDevOpsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SprintForm.resx">
-      <DependentUpon>SprintForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SprintPontosObsForm.resx">
       <DependentUpon>SprintPontosObsForm.cs</DependentUpon>

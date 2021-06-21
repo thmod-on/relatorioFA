@@ -17,12 +17,12 @@ namespace RelatorioFA.AppWinForm
             ResizeParent(parentForm);
             this.fluxo = fluxo;
             containerForm = parentForm;
-            LoadConfig(UtilDTO.GetProjectRootFolder());
+            LoadXmlConfig(UtilDTO.GetProjectRootFolder());
             LoadRanges();
             SetSreenNumber(fluxo);
         }
 
-        public SprintBaseForm(ContainerForm parentForm, UtilDTO.NAVIGATION fluxo, List<SprintBaseDTO> sprintsList)
+        public SprintBaseForm(ContainerForm parentForm, UtilDTO.NAVIGATION fluxo, List<SprintDevDTO> sprintsList)
         {
             InitializeComponent();
             ResizeParent(parentForm);
@@ -34,7 +34,27 @@ namespace RelatorioFA.AppWinForm
             foreach (var sprint in sprintsList)
             {
                 lsbSprints.Items.Add(sprint.Range.Name);
-                this.sprintsList.Add(sprint);
+                sprintsDevList.Add(sprint);
+            }
+            lsbSprints.SelectedIndex = 0;
+
+            ShowLog("Bem vindo de volta\n:)");
+            btnNextForm.Enabled = true;
+        }
+
+        public SprintBaseForm(ContainerForm parentForm, UtilDTO.NAVIGATION fluxo, List<SprintDevOpsDTO> sprintsList)
+        {
+            InitializeComponent();
+            ResizeParent(parentForm);
+            this.fluxo = fluxo;
+            containerForm = parentForm;
+            LoadRanges();
+            SetSreenNumber(fluxo);
+
+            foreach (var sprint in sprintsList)
+            {
+                lsbSprints.Items.Add(sprint.Range.Name);
+                sprintsDevOpsList.Add(sprint);
             }
             lsbSprints.SelectedIndex = 0;
 
@@ -46,8 +66,10 @@ namespace RelatorioFA.AppWinForm
         private readonly UtilDTO.NAVIGATION fluxo;
         private string sprintImagePath;
         private List<IntervaloDTO> sprintRanges = new List<IntervaloDTO>();
-        private ConfigXmlDTO config;
-        private readonly List<SprintBaseDTO> sprintsList = new List<SprintBaseDTO>();
+        private ConfigXmlDTO configXml;
+        private ConfigDocDTO configDoc;
+        private readonly List<SprintDevOpsDTO> sprintsDevOpsList = new List<SprintDevOpsDTO>();
+        private readonly List<SprintDevDTO> sprintsDevList = new List<SprintDevDTO>();
 
         #region LoadRanges
         private void LoadRanges()
@@ -61,11 +83,18 @@ namespace RelatorioFA.AppWinForm
         }
         #endregion
 
-        private void LoadConfig(string path)
+        private void LoadXmlConfig(string path)
         {
             try
             {
-                config = PrincipalTO.LoadConfig(path);
+                configXml = PrincipalTO.LoadConfig(path);
+                configDoc = new ConfigDocDTO()
+                {
+                    AreaName = configXml.AreaName,
+                    AuthorName = configXml.AuthorName,
+                    OutputDocPath = path,
+                    TeamName = configXml.TeamName
+                };
             }
             catch (Exception ex)
             {
@@ -86,19 +115,43 @@ namespace RelatorioFA.AppWinForm
                     EndDate = dtpEndDate.Value
                 };
 
-                SprintBaseDTO newSprint = new SprintBaseDTO()
+                switch (fluxo)
                 {
-                    Range = range,
-                    ImagePath = sprintImagePath
-                };
+                    case UtilDTO.NAVIGATION.DEVOPS:
+                        SprintDevOpsDTO newSprint = new SprintDevOpsDTO()
+                        {
+                            Range = range,
+                            ImagePath = sprintImagePath
+                        };
 
-                //Remove e adiciona para caso ele esteja atualizando os dados
-                sprintsList.Remove(sprintsList.Find(s => s.Range.Name == newSprint.Range.Name));
-                sprintsList.Add(newSprint);
-                sprintsList.Sort((x, y) => x.Range.Name.CompareTo(y.Range.Name));
+                        //Remove e adiciona para caso ele esteja atualizando os dados
+                        sprintsDevOpsList.Remove(sprintsDevOpsList.Find(s => s.Range.Name == newSprint.Range.Name));
+                        sprintsDevOpsList.Add(newSprint);
+                        sprintsDevOpsList.Sort((x, y) => x.Range.Name.CompareTo(y.Range.Name));
 
-                lsbSprints.Items.Remove(newSprint.Range.Name);
-                lsbSprints.Items.Add(newSprint.Range.Name);
+                        lsbSprints.Items.Remove(newSprint.Range.Name);
+                        lsbSprints.Items.Add(newSprint.Range.Name);
+                        break;
+                    case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
+                        SprintDevDTO newDevSprint = new SprintDevDTO()
+                        {
+                            Range = range,
+                            ImagePath = sprintImagePath
+                        };
+
+                        SprintSmDTO newSmSprint = new SprintSmDTO()
+                        {
+                            Range = range,
+                            ImagePath = sprintImagePath
+                        };
+
+                        //Como é para organizar a lista de sprints, não precisa de cada lista pois irá se repetirs
+                        lsbSprints.Items.Remove(newDevSprint.Range.Name);
+                        lsbSprints.Items.Add(newDevSprint.Range.Name);
+                        break;
+                    default:
+                        break;
+                }
 
                 sprintImagePath = null;
                 pbxSprintImage.Image = null;
@@ -123,10 +176,10 @@ namespace RelatorioFA.AppWinForm
             switch (fluxo)
             {
                 case UtilDTO.NAVIGATION.DEVOPS:
-                    containerForm.AbrirForm(new SprintDevOpsForm(containerForm, sprintsList));
+                    containerForm.AbrirForm(new SprintDevOpsForm(containerForm, sprintsDevOpsList));
                     break;
                 case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
-                    containerForm.AbrirForm(new SprintPontosObsForm(containerForm, config, sprintsList, fluxo));
+                    containerForm.AbrirForm(new SprintPontosObsForm(containerForm, configDoc, fluxo, sprintsDevList, sprintsDevOpsList));
                     break;
                 default:
                     break;
@@ -143,7 +196,7 @@ namespace RelatorioFA.AppWinForm
             DialogResult result = folderDlg.ShowDialog();
             if (result == DialogResult.OK)
             {
-                LoadConfig(folderDlg.SelectedPath);
+                LoadXmlConfig(folderDlg.SelectedPath);
             }
         }
 

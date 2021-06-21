@@ -9,7 +9,7 @@ namespace RelatorioFA.AppWinForm
 {
     public partial class SprintDevOpsForm : Form
     {
-        public SprintDevOpsForm(ContainerForm containerForm, List<SprintBaseDTO> sprintsList)
+        public SprintDevOpsForm(ContainerForm containerForm, List<SprintDevOpsDTO> sprintsList)
         {
             InitializeComponent();
             ResizeParent(containerForm);
@@ -19,7 +19,8 @@ namespace RelatorioFA.AppWinForm
         }
 
         private List<SprintDevOpsDTO> sprintsDevOpsList;
-        private ConfigXmlDTO config;
+        private ConfigXmlDTO configXml;
+        private ConfigDocDTO configDoc;
         private string outputDocPath = UtilDTO.GetProjectRootFolder();
         private readonly ContainerForm containerForm;
 
@@ -29,10 +30,19 @@ namespace RelatorioFA.AppWinForm
             try
             {
                 //load config
-                config = PrincipalTO.LoadConfig(outputDocPath);
+                configXml = PrincipalTO.LoadConfig(outputDocPath);
+
+                //set ConfigDoc
+                configDoc = new ConfigDocDTO()
+                {
+                    AreaName = configXml.AreaName,
+                    TeamName = configXml.TeamName,
+                    OutputDocPath = outputDocPath,
+                    AuthorName = configXml.AuthorName
+                };
 
                 //set partners
-                foreach (var partner in config.Partners)
+                foreach (var partner in configXml.Partners)
                 {
                     cbbPartners.Items.Add(partner.Name);
                 }
@@ -55,18 +65,12 @@ namespace RelatorioFA.AppWinForm
             containerForm.MinimumSize = new Size(this.Width, this.Height + 20);
         }
 
-        private void SetSprintsDevOpsList(List<SprintBaseDTO> sprintsList)
+        private void SetSprintsDevOpsList(List<SprintDevOpsDTO> sprintsList)
         {
-            sprintsDevOpsList = new List<SprintDevOpsDTO>();
+            sprintsDevOpsList = sprintsList;
             foreach (var sprint in sprintsList)
             {
-                SprintDevOpsDTO newSprintDevOps = new SprintDevOpsDTO() 
-                { 
-                    Range = sprint.Range,
-                    ImagePath = sprint.ImagePath
-                };
-                sprintsDevOpsList.Add(newSprintDevOps);
-                lsbSprints.Items.Add(newSprintDevOps.Range.Name);
+                lsbSprints.Items.Add(sprint.Range.Name);
             }
         }
 
@@ -119,14 +123,14 @@ namespace RelatorioFA.AppWinForm
 
             txbResult.AppendText("Se as configurações de autor ou nome precisarem de ajuste, favor revisar o arquivo de configuração e começar o processo novamente.");
             txbResult.AppendText("\n===========\n\n");
-            txbResult.AppendText($"Autor: {config.AuthorName}\n");
-            txbResult.AppendText($"Área: {config.AreaName}\n");
-            txbResult.AppendText($"Time: {config.TeamName}");
+            txbResult.AppendText($"Autor: {configXml.AuthorName}\n");
+            txbResult.AppendText($"Área: {configXml.AreaName}\n");
+            txbResult.AppendText($"Time: {configXml.TeamName}");
             txbResult.AppendText("\n===========\n\n");
             txbResult.AppendText($"O arquivo será gerado em: {outputDocPath}");
             txbResult.AppendText("\n===========\n\n");
             txbResult.AppendText($"Fornecedor: {cbbPartners.SelectedItem}\n");
-            txbResult.AppendText($"UST: R${config.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString()).UstValue}\n\n");
+            txbResult.AppendText($"UST: R${configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString()).UstValue}\n\n");
 
             foreach (var sprint in sprintsDevOpsList)
             {
@@ -148,17 +152,7 @@ namespace RelatorioFA.AppWinForm
         #region Eventos de Click
         private void BtnPreviousForm_Click(object sender, System.EventArgs e)
         {
-            List<SprintBaseDTO> sprintsList = new List<SprintBaseDTO>();
-            foreach (var sprint in sprintsDevOpsList)
-            {
-                SprintBaseDTO newSprint = new SprintBaseDTO()
-                {
-                    Range = sprint.Range,
-                    ImagePath = sprint.ImagePath
-                };
-                sprintsList.Add(newSprint);
-            }
-            containerForm.AbrirForm(new SprintForm(containerForm, UtilDTO.NAVIGATION.DEVOPS, sprintsList));
+            containerForm.AbrirForm(new SprintBaseForm(containerForm, UtilDTO.NAVIGATION.DEVOPS, sprintsDevOpsList));
         }
 
         private void BtnAddSprint_Click(object sender, System.EventArgs e)
@@ -213,9 +207,9 @@ namespace RelatorioFA.AppWinForm
                 ValidateData();
                 Processing(true);
                 FornecedorDTO partner = new FornecedorDTO();
-                partner = config.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
+                partner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
                 partner.BillingType = UtilDTO.BILLING_TYPE.UST_DEVOPS;
-                PrincipalTO.CreateOpsDoc(config, sprintsDevOpsList, partner, outputDocPath);
+                PrincipalTO.CreateOpsDoc(configDoc, partner, outputDocPath, sprintsDevOpsList);
                 btnOpenDestinationFolder.Enabled = true;
                 txbResult.Text = $"Arquivo gerado em: {outputDocPath}";
             }
