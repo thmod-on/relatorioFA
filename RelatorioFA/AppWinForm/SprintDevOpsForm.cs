@@ -20,7 +20,6 @@ namespace RelatorioFA.AppWinForm
 
         private List<SprintDevOpsDTO> sprintsDevOpsList;
         private ConfigXmlDTO configXml;
-        private ConfigDocDTO configDoc;
         private string outputDocPath = UtilDTO.GetProjectRootFolder();
         private readonly ContainerForm containerForm;
 
@@ -31,15 +30,6 @@ namespace RelatorioFA.AppWinForm
             {
                 //load config
                 configXml = PrincipalTO.LoadConfig(outputDocPath);
-
-                //set ConfigDoc
-                configDoc = new ConfigDocDTO()
-                {
-                    AreaName = configXml.AreaName,
-                    TeamName = configXml.TeamName,
-                    OutputDocPath = outputDocPath,
-                    AuthorName = configXml.AuthorName
-                };
 
                 //set partners
                 foreach (var partner in configXml.Partners)
@@ -209,7 +199,7 @@ namespace RelatorioFA.AppWinForm
                 FornecedorDTO partner = new FornecedorDTO();
                 partner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
                 partner.BillingType = UtilDTO.BILLING_TYPE.UST_DEVOPS;
-                PrincipalTO.CreateOpsDoc(configDoc, partner, outputDocPath, sprintsDevOpsList);
+                PrincipalTO.CreateOpsDoc(configXml, partner, outputDocPath, sprintsDevOpsList);
                 btnOpenDestinationFolder.Enabled = true;
                 txbResult.Text = $"Arquivo gerado em: {outputDocPath}";
             }

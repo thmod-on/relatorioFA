@@ -1,36 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using RelatorioFA.DTO;
+using RelatorioFA.Transacao;
 
 namespace RelatorioFA.AppWinForm
 {
     public partial class SprintAbsenceHourForm : Form
     {
-        public SprintAbsenceHourForm(ContainerForm containerForm, ConfigXmlDTO config, List<SprintBaseDTO> sprintsList)
+        public SprintAbsenceHourForm(ContainerForm containerForm, ConfigXmlDTO configXml, UtilDTO.NAVIGATION fluxo, List<SprintDevDTO> sprintsDevList = null, List<SprintSmDTO> sprintsSmList = null)
         {
             InitializeComponent();
-            lblMessage.Text = "Este colaborador fez hora extra?\n+ Será considerado hora exxtra serviços desenvolvidos entre as 22h e 6h de um dia útil, em finais de seman ou feriado. Por isso o BANESE pagará 0,5pts por turno adicional, ajustando para seu proporcional quando necessário.";
-            this.config = config;
-            this.sprintsList = sprintsList;
+            this.containerForm = containerForm;
+            this.sprintsDevList = sprintsDevList;
+            this.sprintsSmList = sprintsSmList;
+            this.configXml = configXml;
+            this.fluxo = fluxo;
+            lblMessage.Text = "Este colaborador fez hora extra?\n+ Será considerado hora extra serviços desenvolvidos entre as 22h e 6h de um dia útil, em finais de semana ou feriado. Por isso o BANESE pagará 0,5pts por turno adicional, ajustando para seu proporcional quando necessário.";
             SetCbbPartners();
+            SetSprintList();
             ResizeParent(containerForm);
         }
 
-        private readonly ConfigXmlDTO config;
-        private readonly List<SprintBaseDTO> sprintsList;
+        private readonly string all = "TODOS";
+        private readonly ContainerForm containerForm;
+        private readonly UtilDTO.NAVIGATION fluxo;
+        private readonly ConfigXmlDTO configXml;
+        private readonly List<SprintDevDTO> sprintsDevList = new List<SprintDevDTO>();
+        private readonly List<SprintSmDTO> sprintsSmList = new List<SprintSmDTO>();
         private string outputDocPath = UtilDTO.GetProjectRootFolder();
         private FornecedorDTO selectedPartner = new FornecedorDTO();
+        private ContratoDTO selectedContract = new ContratoDTO();
         private ColaboradorDTO selectedDev = new ColaboradorDTO();
-        
+
         #region Eventos automaticos
         private void SetCbbPartners()
         {
-            cbbPartners.Items.Add("TODOS");
-            foreach (var partner in config.Partners)
+            cbbPartners.Items.Add(all);
+            foreach (var partner in configXml.Partners)
             {
-                cbbPartners.Items.Add(partner.Name);
+                if (partner.Contracts.Any(c => c.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString()) &&
+                    partner.Contracts.Any(c => c.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
+                    )
+                {
+                    cbbPartners.Items.Add(partner.Name);
+                }
             }
             cbbPartners.SelectedIndex = 0;
         }
@@ -39,13 +55,12 @@ namespace RelatorioFA.AppWinForm
         #region AUX
         private void ResizeParent(Form containerForm)
         {
-            containerForm.Size = new System.Drawing.Size(this.Width, this.Height + 20);
+            containerForm.Size = new Size(this.Width, this.Height + 20);
             containerForm.MinimumSize = new Size(this.Width, this.Height + 20);
         }
 
         private void SetPartnersDevInLsbDevTeam(FornecedorDTO partner)
         {
-            lsbDevTeam.Items.Clear();
             foreach (var contract in partner.Contracts)
             {
                 foreach (var dev in contract.Collaborators)
@@ -54,6 +69,29 @@ namespace RelatorioFA.AppWinForm
                 }
             }
         }
+
+        #region SetSprintList
+        private void SetSprintList()
+        {
+            if (sprintsDevList != null)
+            {
+                foreach (var sprint in sprintsDevList)
+                {
+                    lsbSprints.Items.Add(sprint.Range.Name);
+                }
+            }
+            else
+            {
+                if (sprintsSmList != null)
+                {
+                    foreach (var sprint in sprintsSmList)
+                    {
+                        lsbSprints.Items.Add(sprint.Range.Name);
+                    }
+                }
+            }
+        } 
+        #endregion
 
         #region ShowLog
         private void ShowLog(string message = "")
@@ -67,57 +105,33 @@ namespace RelatorioFA.AppWinForm
 
             txbResult.AppendText("Se as configurações de autor ou nome precisarem de ajuste, favor revisar o arquivo de configuração e começar o processo novamente.");
             txbResult.AppendText("\n===========\n\n");
-            txbResult.AppendText($"Autor: {config.AuthorName}\n");
-            txbResult.AppendText($"Área: {config.AreaName}\n");
-            txbResult.AppendText($"Time: {config.TeamName}");
+            txbResult.AppendText($"Autor: {configXml.AuthorName}\n");
+            txbResult.AppendText($"Área: {configXml.AreaName}\n");
+            txbResult.AppendText($"Time: {configXml.TeamName}");
             txbResult.AppendText("\n===========\n\n");
             txbResult.AppendText($"O arquivo será gerado em: {outputDocPath}");
-            txbResult.AppendText("\n===========\n\n");
+            txbResult.AppendText("\n===========\n");
 
-            foreach (var sprint in sprintsList)
+            if (sprintsDevList != null)
             {
-                txbResult.AppendText(sprint.Range.Name);
-                txbResult.AppendText("\n");
-                txbResult.AppendText($"   - Data inicial: {sprint.Range.IniDate:dd/MM/yyyy}\n");
-                txbResult.AppendText($"   - Data final: {sprint.Range.EndDate:dd/MM/yyyy}\n");
-                txbResult.AppendText($"   - Imagem: {sprint.ImagePath}\n");
-                txbResult.AppendText($"   - OBS.: {sprint.Obs}\n");
-
-                //fornecedor selecionado
-                if (selectedPartner != null)
+                txbResult.AppendText("\nSprints Dev");
+                txbResult.AppendText("\n===========\n\n");
+                foreach (var sprint in sprintsDevList)
                 {
-                    PrintPartnerData(selectedPartner);
+                    txbResult.AppendText(sprint.ToStringBuilder().ToString());
                 }
-                else//todos fornecedores
+            }
+
+            if (sprintsSmList != null)
+            {
+                txbResult.AppendText("\nSprints SM");
+                txbResult.AppendText("\n===========\n\n");
+                foreach (var sprint in sprintsSmList)
                 {
-                    foreach (var partner in config.Partners)
-                    {
-                        PrintPartnerData(partner);
-                    }
+                    txbResult.AppendText(sprint.ToStringBuilder().ToString());
                 }
             }
             txbResult.Select(0, 0);
-        }
-
-        private void PrintPartnerData(FornecedorDTO partner)
-        {
-            txbResult.AppendText($"Fornecedor: {partner.Name}\n");
-            txbResult.AppendText($"Logomarca: {partner.CaminhoLogomarca}\n");
-            txbResult.AppendText($"UST: R${partner.UstValue}\n");
-
-            foreach (var contract in partner.Contracts)
-            {
-                txbResult.AppendText($"   - Número SAP: {contract.NumeroSAP}\n");
-                txbResult.AppendText($"   - Tipo: {contract.Name}\n");
-                txbResult.AppendText($"   - Fator de ajuste: {contract.Factor}\n");
-                txbResult.AppendText($"   - Devs:\n");
-                foreach (var dev in contract.Collaborators)
-                {
-                    txbResult.AppendText($"      > Nome: {dev.Name}\n");
-                    //txbResult.AppendText($"      > Ausências: {sprintsList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString()).DevAbsence[dev.Name]}\n");
-                    //txbResult.AppendText($"      > Horas extras: {sprintsList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString()).DevExtraHour[dev.Name]}\n");
-                }
-            }
         }
         #endregion
         #endregion
@@ -125,12 +139,54 @@ namespace RelatorioFA.AppWinForm
         #region Eventos de Click
         private void BtnPreviousForm_Click(object sender, System.EventArgs e)
         {
-
+            switch (fluxo)
+            {
+                case UtilDTO.NAVIGATION.DEVOPS:
+                    break;
+                case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
+                    containerForm.AbrirForm(new SprintPontosObsForm(containerForm, configXml, fluxo, sprintsDevList, sprintsSmList));
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void BtnAddSprint_Click(object sender, System.EventArgs e)
         {
+            try
+            {
+                if (selectedPartner == null ||
+                    selectedContract == null ||
+                    selectedDev == null)
+                {
+                    throw new Exception("Ops, você precisa selecionar um fornecedor e um colaborador para atualizar seus dados\n;)");
+                }
 
+                foreach (var sprint in sprintsDevList)
+                {
+                    if (sprint.Contracts.Any(c => c.Name == selectedContract.Name))
+                    {
+                        sprint
+                            .Contracts.Find(c => c.Name == selectedContract.Name)
+                            .Collaborators
+                                .Remove(selectedDev);
+
+                        selectedDev.AbsenceDays = Convert.ToInt32(txbAbsence.Text);
+                        selectedDev.ExtraHours = Convert.ToDouble(txbExtraHour.Text);
+                        sprint
+                            .Contracts.Find(c => c.Name == selectedContract.Name)
+                            .Collaborators
+                                .Add(selectedDev);
+                        break;
+                    }
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                ShowLog(ex.Message);
+            }
+            ShowLog();
         }
 
         #region BtnOpenDestinationFolder_Click
@@ -142,7 +198,9 @@ namespace RelatorioFA.AppWinForm
 
         private void BtnGenerate_Click(object sender, System.EventArgs e)
         {
-
+            //realizar os calculos
+            //chamar a geracao dos relatorios
+            PrincipalTO.
         }
 
         #region BtnSetOutputDocPath_Click
@@ -162,20 +220,23 @@ namespace RelatorioFA.AppWinForm
             ShowLog("Caminho de saído do arquivo definodo.");
         }
         #endregion
+        #endregion
 
         #region CbbPartners_SelectedIndexChanged
         private void CbbPartners_SelectedIndexChanged(object sender, EventArgs e)
         {
+            selectedPartner = null;
             if (!string.IsNullOrEmpty(cbbPartners.SelectedItem.ToString()))
             {
-                selectedPartner = config.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
-                if (selectedPartner != null)
+                lsbDevTeam.Items.Clear();
+                if (cbbPartners.SelectedItem.ToString() != all)
                 {
+                    selectedPartner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
                     SetPartnersDevInLsbDevTeam(selectedPartner);
                 }
                 else
                 {
-                    foreach (var partner in config.Partners)
+                    foreach (var partner in configXml.Partners)
                     {
                         SetPartnersDevInLsbDevTeam(partner);
                     }
@@ -184,21 +245,22 @@ namespace RelatorioFA.AppWinForm
         }
         #endregion
 
-        #endregion
-
+        #region LsbDevTeam_SelectedIndexChanged
         private void LsbDevTeam_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //foreach (var contract in selectedPartner.Contracts)
-            //{
-            //    if (contract.Collaborators.fin)
-            //    {
+            foreach (var contract in selectedPartner.Contracts)
+            {
+                if (contract.Collaborators.Any(c => c.Name == lsbDevTeam.SelectedIndex.ToString()))
+                {
+                    selectedContract = contract;
+                    selectedDev = contract.Collaborators.Find(c => c.Name == lsbDevTeam.SelectedIndex.ToString());
+                    break;
+                }
+            }
 
-            //    }
-            //}
-
-            //selectedDev = config
-            //                .Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString())
-            //                .Contracts
-        }
+            txbAbsence.Text = selectedDev.AbsenceDays.ToString();
+            txbExtraHour.Text = selectedDev.ExtraHours.ToString();
+        } 
+        #endregion
     }
 }

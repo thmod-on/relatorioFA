@@ -27,7 +27,7 @@ namespace RelatorioFA.AppWinForm
             LoadConfig(outputDocPath);
         }
 
-        ConfigDocDTO config = new ConfigDocDTO();
+        ConfigXmlDTO config = new ConfigXmlDTO();
         List<ColaboradorDTO> devTeam = new List<ColaboradorDTO>();
         List<SprintDevDTO> sprints = new List<SprintDevDTO>();
         private string outputDocPath = UtilDTO.GetProjectRootFolder();

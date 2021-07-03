@@ -15,9 +15,9 @@ namespace RelatorioFA.DTO
         public int AcceptedPointsExpenses { get; set; }
         public int AcceptedPointsInvestment { get; set; }
 
-        public override StringBuilder ToString()
+        public override StringBuilder ToStringBuilder()
         {
-            StringBuilder aux = base.ToString();
+            StringBuilder aux = base.ToStringBuilder();
 
             aux.Append($"- Pts. aceitos INV: {AcceptedPointsInvestment}\n");
             aux.Append($"- Pts. aceitos DES: {AcceptedPointsExpenses}\n");

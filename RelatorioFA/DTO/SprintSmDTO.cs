@@ -13,9 +13,9 @@ namespace RelatorioFA.DTO
         public double AcceptedPointsExpenses { get; set; }
         public int SmPoints { get; set; }
 
-        public override StringBuilder ToString()
+        public override StringBuilder ToStringBuilder()
         {
-            var aux = base.ToString();
+            var aux = base.ToStringBuilder();
             aux.Append($"Pontos de SM: {SmPoints}\n");
 
             return aux;

@@ -8,7 +8,7 @@ namespace RelatorioFA.Negocio
     public class ControleDocDevOps : ControleDoc
     {
         #region GenerateDoc
-        public static void GenerateDoc(ConfigDocDTO config, FornecedorDTO partner, string outputDocPath, List<SprintDevOpsDTO> sprintDevOpsList)
+        public static void GenerateDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintDevOpsDTO> sprintDevOpsList)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace RelatorioFA.Negocio
         #endregion
 
         #region LastPage
-        private static void CreateLastPage(Document document, Paragraph paragraph, List<SprintDevOpsDTO> sprintsDevOps, object missing, ConfigDocDTO config, FornecedorDTO partner)
+        private static void CreateLastPage(Document document, Paragraph paragraph, List<SprintDevOpsDTO> sprintsDevOps, object missing, ConfigXmlDTO config, FornecedorDTO partner)
         {
             SetLastPageText(document, paragraph, partner);
             CreateSummaryTableUstDevOps(document, sprintsDevOps, missing, partner);

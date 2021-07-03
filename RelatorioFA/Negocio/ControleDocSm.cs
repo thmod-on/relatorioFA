@@ -8,20 +8,30 @@ namespace RelatorioFA.Negocio
 {
     public class ControleDocSm : ControleDoc
     {
-        public static void GenerateDoc(ConfigDocDTO config, FornecedorDTO partner, string outputDocPath, List<SprintSmDTO> sprints)
+        public static void GenerateSmDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintSmDTO> sprints)
         {
             try
             {
                 List<IntervaloDTO> ranges = new List<IntervaloDTO>();
+                List<SprintBaseDTO> baseSprints = new List<SprintBaseDTO>();
+                List<ColaboradorDTO> devTeam = new List<ColaboradorDTO>();
+
                 foreach (var sprint in sprints)
                 {
                     ranges.Add(sprint.Range);
+                    baseSprints.Add(sprint.GetBaseSprint());
                 }
 
-                List<SprintBaseDTO> baseSprints = new List<SprintBaseDTO>();
-                foreach (var sprint in sprints)
+                foreach (var contract in partner.Contracts)
                 {
-                    baseSprints.Add(sprint.GetBaseSprint());
+                    if (contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString() ||
+                        contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString())
+                    {
+                        foreach (var dev in contract.Collaborators)
+                        {
+                            devTeam.Add(dev);
+                        }
+                    }
                 }
 
                 string outputDocName = GetDocumentName(baseSprints, config, partner.Name);
@@ -35,7 +45,7 @@ namespace RelatorioFA.Negocio
                 Paragraph paragraph = document.Content.Paragraphs.Add(ref missing);
 
                 CreateFirstPage(paragraph, ranges, config);
-                CreateFollowPages(document, partner, baseSprints, paragraph, config.DevTeam);
+                CreateFollowPages(document, partner, baseSprints, paragraph, devTeam);
                 CreateLastPage(document, paragraph, sprints, missing, config, partner);
                 SetDocumentHeader(document, partner, config);
                 SetDocumentFooter(document);
@@ -47,7 +57,7 @@ namespace RelatorioFA.Negocio
             }
         }
 
-        private static void CreateLastPage(Document document, Paragraph paragraph, List<SprintSmDTO> sprints, object missing, ConfigDocDTO config, FornecedorDTO partner)
+        private static void CreateLastPage(Document document, Paragraph paragraph, List<SprintSmDTO> sprints, object missing, ConfigXmlDTO config, FornecedorDTO partner)
         {
             SetLastPageText(document, paragraph, partner);
             if (sprints[0].Contracts[0].Name == UtilDTO.CONTRACTS.SM_FIXO.ToString()) //(TODO) Cada time tem 1 SM, Melhorar  o DTO para representar

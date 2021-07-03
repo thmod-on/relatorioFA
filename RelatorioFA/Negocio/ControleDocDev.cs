@@ -8,20 +8,33 @@ namespace RelatorioFA.Negocio
     public class ControleDocDev : ControleDoc
     {
         #region GenerateDoc
-        public static void GenerateDoc(ConfigDocDTO config, FornecedorDTO partner, string outputDocPath, List<SprintDevDTO> sprints)
+        public static void GenerateDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintDevDTO> sprints)
         {
             try
             {
                 List<IntervaloDTO> ranges = new List<IntervaloDTO>();
+                List<SprintBaseDTO> baseSprints = new List<SprintBaseDTO>();
+                List<ColaboradorDTO> devTeam = new List<ColaboradorDTO>();
+
                 foreach (var sprint in sprints)
                 {
                     ranges.Add(sprint.Range);
+                    baseSprints.Add(sprint.GetBaseSprint());
                 }
 
-                List<SprintBaseDTO> baseSprints = new List<SprintBaseDTO>();
-                foreach (var sprint in sprints)
+                foreach (var configPartner in config.Partners)
                 {
-                    baseSprints.Add(sprint.GetBaseSprint());
+                    foreach (var contract in configPartner.Contracts)
+                    {
+                        if (contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString() &&
+                            contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString())
+                        {
+                            foreach (var dev in contract.Collaborators)
+                            {
+                                devTeam.Add(dev);
+                            }
+                        }
+                    }
                 }
 
                 string outputDocName = GetDocumentName(baseSprints, config, partner.Name);
@@ -35,7 +48,7 @@ namespace RelatorioFA.Negocio
                 Paragraph para1 = document.Content.Paragraphs.Add(ref missing);
 
                 CreateFirstPage(para1, ranges, config);
-                CreateFollowPages(document, partner, baseSprints, para1, config.DevTeam);
+                CreateFollowPages(document, partner, baseSprints, para1, devTeam);
                 CreateLastPage(document, para1, sprints, missing, config, partner);
                 SetDocumentHeader(document, partner, config);
                 SetDocumentFooter(document);
@@ -49,7 +62,7 @@ namespace RelatorioFA.Negocio
         #endregion
 
         #region CreateLastPage
-        public static void CreateLastPage(Document document, Paragraph para1, List<SprintDevDTO> sprints, object missing, ConfigDocDTO config, FornecedorDTO partner)
+        public static void CreateLastPage(Document document, Paragraph para1, List<SprintDevDTO> sprints, object missing, ConfigXmlDTO config, FornecedorDTO partner)
         {
             SetLastPageText(document, para1, partner);
 

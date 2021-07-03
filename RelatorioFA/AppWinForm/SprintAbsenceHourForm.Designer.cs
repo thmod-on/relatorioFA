@@ -176,6 +176,7 @@ namespace RelatorioFA.AppWinForm
             this.txbExtraHour.Name = "txbExtraHour";
             this.txbExtraHour.Size = new System.Drawing.Size(153, 20);
             this.txbExtraHour.TabIndex = 55;
+            this.txbExtraHour.Text = "0";
             // 
             // label7
             // 
@@ -217,6 +218,7 @@ namespace RelatorioFA.AppWinForm
             this.txbAbsence.Name = "txbAbsence";
             this.txbAbsence.Size = new System.Drawing.Size(153, 20);
             this.txbAbsence.TabIndex = 7;
+            this.txbAbsence.Text = "0";
             // 
             // label1
             // 

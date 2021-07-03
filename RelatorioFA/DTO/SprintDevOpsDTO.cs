@@ -12,9 +12,9 @@ namespace RelatorioFA.DTO
         public double ActuationUst { get; set; }
         public double UsUst { get; set; }
 
-        public override StringBuilder ToString()
+        public override StringBuilder ToStringBuilder()
         {
-            var aux = base.ToString();
+            var aux = base.ToStringBuilder();
             aux.Append($"- UST por sobreaviso: {WarningUst}\n");
             aux.Append($"- UST por acionamento: {ActuationUst}\n");
             aux.Append($"- UST por US: {UsUst}\n");

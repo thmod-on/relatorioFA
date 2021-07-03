@@ -64,17 +64,17 @@ namespace RelatorioFA.Transacao
         #endregion
 
         #region CreateDoc
-        public static void CreateDevDoc(ConfigDocDTO config, FornecedorDTO partner, string outputDocPath, List<SprintBaseDTO> sprints)
+        public static void CreateDevDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintDevDTO> sprints)
         {
             ControleDocDev.GenerateDoc(config, partner, outputDocPath, sprints);
         }
 
-        public static void GenerateDoc(ConfigDocDTO config, FornecedorDTO partner, string outputDocPath, List<SprintSmDTO> sprints)
+        public static void GenerateSmDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintSmDTO> sprints)
         {
-            ControleDocSm.GenerateDoc(config, partner, outputDocPath, sprints);
+            ControleDocSm.GenerateSmDoc(config, partner, outputDocPath, sprints);
         }
 
-        public static void CreateOpsDoc(ConfigDocDTO config, FornecedorDTO partner, string outputDocPath, List<SprintDevOpsDTO> sprints)
+        public static void CreateOpsDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintDevOpsDTO> sprints)
         {
             ControleDocDevOps.GenerateDoc(config, partner, outputDocPath, sprints);
         } 

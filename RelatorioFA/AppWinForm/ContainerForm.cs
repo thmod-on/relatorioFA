@@ -62,7 +62,7 @@ namespace RelatorioFA.AppWinForm
 
         private void DevOpsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AbrirForm(new SprintForm(this, UtilDTO.NAVIGATION.DEVOPS));
+            AbrirForm(new SprintBaseForm(this, UtilDTO.NAVIGATION.DEVOPS));
         }
     }
 }

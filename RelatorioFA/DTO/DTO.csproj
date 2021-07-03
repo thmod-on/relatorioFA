@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColaboradorDTO.cs" />
-    <Compile Include="ConfigDocDTO.cs" />
     <Compile Include="SprintDevDTO.cs" />
     <Compile Include="ConfigXmlDTO.cs" />
     <Compile Include="ContratoDTO.cs" />

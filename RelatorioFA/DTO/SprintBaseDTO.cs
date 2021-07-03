@@ -18,9 +18,9 @@ namespace RelatorioFA.DTO
         public UtilDTO.CERIMONIAL_POINT CerimonialPoint { get; set; }
         public List<ContratoDTO> Contracts { get; set; }
 
-        public virtual new StringBuilder ToString() 
+        public virtual StringBuilder ToStringBuilder() 
         {
-            StringBuilder aux = new StringBuilder();
+            var aux = new StringBuilder();
             aux.Append($"Sprint {Range.Name} ({Range.IniDate:d} ~ {Range.EndDate:d})\n");
             aux.Append($"- Imagem: {ImagePath}\n");
             aux.Append($"- Obs.: {Obs}\n");

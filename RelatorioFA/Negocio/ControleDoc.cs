@@ -24,7 +24,7 @@ namespace RelatorioFA.Negocio
         #endregion
 
         #region CreateFirstPage
-        public static void CreateFirstPage(Paragraph paragraph, List<IntervaloDTO> ranges, ConfigDocDTO config)
+        public static void CreateFirstPage(Paragraph paragraph, List<IntervaloDTO> ranges, ConfigXmlDTO config)
         {
             string strAux;
             List<string> paragraphTexts = new List<string>();
@@ -155,7 +155,7 @@ namespace RelatorioFA.Negocio
             }
         }
 
-        public static void SetLastPageSignature(Paragraph paragraph, ConfigDocDTO config)
+        public static void SetLastPageSignature(Paragraph paragraph, ConfigXmlDTO config)
         {
             AddPAragraph(paragraph, "Atenciosamente,", 150, 30, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
             AddPAragraph(paragraph, "_________________________________________________", 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphCenter);
@@ -253,7 +253,7 @@ namespace RelatorioFA.Negocio
         #endregion
 
         #region SetDocumentHeader
-        public static void SetDocumentHeader(Document document, FornecedorDTO partner, ConfigDocDTO config)
+        public static void SetDocumentHeader(Document document, FornecedorDTO partner, ConfigXmlDTO config)
         {
             foreach (Section section in document.Sections)
             {
@@ -282,7 +282,7 @@ namespace RelatorioFA.Negocio
             return doc.Range(doc.Content.End - 1, ref missing);
         }
 
-        public static string GetDocumentName(List<SprintBaseDTO> sprints, ConfigDocDTO config, string partnerName)
+        public static string GetDocumentName(List<SprintBaseDTO> sprints, ConfigXmlDTO config, string partnerName)
         {
             string outputDocName = $"Relatório Ágil -";
             foreach (var sprint in sprints)

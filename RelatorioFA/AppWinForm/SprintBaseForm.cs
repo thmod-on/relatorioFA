@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using RelatorioFA.DTO;
 using RelatorioFA.Transacao;
@@ -67,9 +66,9 @@ namespace RelatorioFA.AppWinForm
         private string sprintImagePath;
         private List<IntervaloDTO> sprintRanges = new List<IntervaloDTO>();
         private ConfigXmlDTO configXml;
-        private ConfigDocDTO configDoc;
         private readonly List<SprintDevOpsDTO> sprintsDevOpsList = new List<SprintDevOpsDTO>();
         private readonly List<SprintDevDTO> sprintsDevList = new List<SprintDevDTO>();
+        private readonly List<SprintSmDTO> sprintsSmList = new List<SprintSmDTO>();
 
         #region LoadRanges
         private void LoadRanges()
@@ -83,24 +82,19 @@ namespace RelatorioFA.AppWinForm
         }
         #endregion
 
+        #region LoadXmlConfig
         private void LoadXmlConfig(string path)
         {
             try
             {
                 configXml = PrincipalTO.LoadConfig(path);
-                configDoc = new ConfigDocDTO()
-                {
-                    AreaName = configXml.AreaName,
-                    AuthorName = configXml.AuthorName,
-                    OutputDocPath = path,
-                    TeamName = configXml.TeamName
-                };
             }
             catch (Exception ex)
             {
                 txbResult.Text = ex.Message;
             }
-        }
+        } 
+        #endregion
 
         #region Eventos de Click
         #region BtnAddSprint_Click
@@ -128,9 +122,6 @@ namespace RelatorioFA.AppWinForm
                         sprintsDevOpsList.Remove(sprintsDevOpsList.Find(s => s.Range.Name == newSprint.Range.Name));
                         sprintsDevOpsList.Add(newSprint);
                         sprintsDevOpsList.Sort((x, y) => x.Range.Name.CompareTo(y.Range.Name));
-
-                        lsbSprints.Items.Remove(newSprint.Range.Name);
-                        lsbSprints.Items.Add(newSprint.Range.Name);
                         break;
                     case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
                         SprintDevDTO newDevSprint = new SprintDevDTO()
@@ -139,19 +130,29 @@ namespace RelatorioFA.AppWinForm
                             ImagePath = sprintImagePath
                         };
 
+                        //Remove e adiciona para caso ele esteja atualizando os dados
+                        sprintsDevList.Remove(sprintsDevList.Find(s => s.Range.Name == newDevSprint.Range.Name));
+                        sprintsDevList.Add(newDevSprint);
+                        sprintsDevList.Sort((x, y) => x.Range.Name.CompareTo(y.Range.Name));
+
                         SprintSmDTO newSmSprint = new SprintSmDTO()
                         {
                             Range = range,
                             ImagePath = sprintImagePath
                         };
 
-                        //Como é para organizar a lista de sprints, não precisa de cada lista pois irá se repetirs
-                        lsbSprints.Items.Remove(newDevSprint.Range.Name);
-                        lsbSprints.Items.Add(newDevSprint.Range.Name);
+                        //Remove e adiciona para caso ele esteja atualizando os dados
+                        sprintsSmList.Remove(sprintsSmList.Find(s => s.Range.Name == newSmSprint.Range.Name));
+                        sprintsSmList.Add(newSmSprint);
+                        sprintsSmList.Sort((x, y) => x.Range.Name.CompareTo(y.Range.Name));
                         break;
                     default:
                         break;
                 }
+
+                //atualizar a lista de sprints
+                lsbSprints.Items.Remove(range.Name);
+                lsbSprints.Items.Add(range.Name);
 
                 sprintImagePath = null;
                 pbxSprintImage.Image = null;
@@ -179,7 +180,7 @@ namespace RelatorioFA.AppWinForm
                     containerForm.AbrirForm(new SprintDevOpsForm(containerForm, sprintsDevOpsList));
                     break;
                 case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
-                    containerForm.AbrirForm(new SprintPontosObsForm(containerForm, configDoc, fluxo, sprintsDevList, sprintsDevOpsList));
+                    containerForm.AbrirForm(new SprintPontosObsForm(containerForm, configXml, fluxo, sprintsDevList, sprintsSmList));
                     break;
                 default:
                     break;
@@ -253,21 +254,42 @@ namespace RelatorioFA.AppWinForm
         {
             if (lsbSprints.Items.Count > 0)
             {
-                var selectedSprint = new SprintBaseDTO();
-                selectedSprint = sprintsList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
-
-                if (selectedSprint.ImagePath != null &&
-                    selectedSprint.ImagePath != "")
+                //Neste caso o fluxo serve apenas para encontrar a lista preenchida
+                switch (fluxo)
                 {
-                    pbxSprintImage.Load(selectedSprint.ImagePath);
+                    case UtilDTO.NAVIGATION.DEVOPS:
+                        var selectedDevOpsSprint = sprintsDevOpsList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
+                        if (selectedDevOpsSprint.ImagePath != null &&
+                            selectedDevOpsSprint.ImagePath != "")
+                        {
+                            pbxSprintImage.Load(selectedDevOpsSprint.ImagePath);
+                        }
+                        else
+                        {
+                            pbxSprintImage.Image = null;
+                        }
+                        cbbSprintRanges.SelectedItem = selectedDevOpsSprint.Range.Name;
+                        dtpIniDate.Value = selectedDevOpsSprint.Range.IniDate;
+                        dtpEndDate.Value = selectedDevOpsSprint.Range.EndDate;
+                        break;
+                    case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
+                        var selectedSprint = sprintsDevList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
+                        if (selectedSprint.ImagePath != null &&
+                            selectedSprint.ImagePath != "")
+                        {
+                            pbxSprintImage.Load(selectedSprint.ImagePath);
+                        }
+                        else
+                        {
+                            pbxSprintImage.Image = null;
+                        }
+                        cbbSprintRanges.SelectedItem = selectedSprint.Range.Name;
+                        dtpIniDate.Value = selectedSprint.Range.IniDate;
+                        dtpEndDate.Value = selectedSprint.Range.EndDate;
+                        break;
+                    default:
+                        break;
                 }
-                else
-                {
-                    pbxSprintImage.Image = null;
-                }
-                cbbSprintRanges.SelectedItem = selectedSprint.Range.Name;
-                dtpIniDate.Value = selectedSprint.Range.IniDate;
-                dtpEndDate.Value = selectedSprint.Range.EndDate;
             }
         }
         #endregion
@@ -287,6 +309,7 @@ namespace RelatorioFA.AppWinForm
                     lblScreen.Text = "Tela 1/2";
                     break;
                 case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
+                    lblScreen.Text = "Tela 1/3";
                     break;
                 default:
                     break;
@@ -305,13 +328,31 @@ namespace RelatorioFA.AppWinForm
                 txbResult.AppendText("\n===========\n\n");
             }
 
-            foreach (var sprint in sprintsList)
+            switch (fluxo)
             {
-                txbResult.AppendText(sprint.Range.Name);
-                txbResult.AppendText("\n");
-                txbResult.AppendText($"   - Data inicial: {sprint.Range.IniDate:dd/MM/yyyy}\n");
-                txbResult.AppendText($"   - Data final: {sprint.Range.EndDate:dd/MM/yyyy}\n");
-                txbResult.AppendText($"   - Imagem: {sprint.ImagePath}\n");
+                case UtilDTO.NAVIGATION.DEVOPS:
+                    foreach (var sprint in sprintsDevOpsList)
+                    {
+                        txbResult.AppendText(sprint.ToStringBuilder().ToString());
+                    }
+                    break;
+                case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
+                    txbResult.AppendText("Sprints Dev");
+                    txbResult.AppendText("\n===========\n\n");
+                    foreach (var sprint in sprintsDevList)
+                    {
+                        txbResult.AppendText(sprint.ToStringBuilder().ToString());
+                    }
+
+                    txbResult.AppendText("\nSprints SM");
+                    txbResult.AppendText("\n===========\n\n");
+                    foreach (var sprint in sprintsSmList)
+                    {
+                        txbResult.AppendText(sprint.ToStringBuilder().ToString());
+                    }
+                    break;
+                default:
+                    break;
             }
         }
         #endregion

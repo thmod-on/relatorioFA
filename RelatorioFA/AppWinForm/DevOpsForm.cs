@@ -157,7 +157,7 @@ namespace RelatorioFA.AppWinForm
                 FornecedorDTO partner = new FornecedorDTO();
                 partner = config.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
                 partner.BillingType = UtilDTO.BILLING_TYPE.UST_DEVOPS;
-                PrincipalTO.CreateOpsDoc(config, sprintDevOpsList, partner, outputDocPath);
+                PrincipalTO.CreateOpsDoc(config, partner, outputDocPath, sprintDevOpsList);
                 btnOpenDestinationFolder.Enabled = true;
                 txbResult.Text = $"Arquivo gerado em: {outputDocPath}";
             }
