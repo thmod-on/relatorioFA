@@ -20,6 +20,8 @@ namespace RelatorioFA.AppWinForm
             this.fluxo = fluxo;
             ResizeParent(containerForm);
             SetScreenLayout(fluxo);
+            SetSprints();
+            txbResult.Text = "Para liberar os campos, selecione uma sprint como sua primeira ação.\n=]";
         }
 
         private readonly UtilDTO.NAVIGATION fluxo;
@@ -38,6 +40,11 @@ namespace RelatorioFA.AppWinForm
         {
             try
             {
+                if (lsbSprints.SelectedIndex < 0)
+                {
+                    throw new Exception("Ops, parece que você esqueceu de selecionar uma sprint\n;)");
+                }
+
                 if (sprintsDevList != null)
                 {
                     var selectedSprint = sprintsDevList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
@@ -59,7 +66,7 @@ namespace RelatorioFA.AppWinForm
             }
             catch (Exception ex)
             {
-                txbResult.Text = $"Erro não tratado ou previsto.\n\n{ex.Message}";
+                txbResult.Text = ex.Message;
             }
         }
 
@@ -70,42 +77,97 @@ namespace RelatorioFA.AppWinForm
         #endregion
 
         #region Eventos automaticos
+        #region LsbSprints_SelectedIndexChanged
         private void LsbSprints_SelectedIndexChanged(object sender, EventArgs e)
         {
-            txbAcceptedPointsExpense.Text = "0";
-            txbAcceptedPointsInvestment.Text = "0";
-            txbSmPoints.Text = "0";
-            txbObs.Clear();
-            cbbCerimonialPoint.SelectedIndex = 0;
-
-            if (sprintsDevList != null)
+            if (lsbSprints.SelectedIndex >= 0)
             {
-                var selectedSprint = sprintsDevList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
-                txbAcceptedPointsExpense.Text = selectedSprint.AcceptedPointsExpenses.ToString();
-                txbAcceptedPointsInvestment.Text = selectedSprint.AcceptedPointsInvestment.ToString();
-                txbObs.Text = string.IsNullOrEmpty(selectedSprint.Obs) ? "" : selectedSprint.Obs;
-                cbbCerimonialPoint.SelectedItem = selectedSprint.CerimonialPoint;
-            }
+                txbAcceptedPointsExpense.Text = "0";
+                txbAcceptedPointsInvestment.Text = "0";
+                txbSmPoints.Text = "0";
+                txbObs.Clear();
+                cbbCerimonialPoint.SelectedIndex = 0;
 
-            if (sprintsSmList != null)
-            {
-                var selectedSprint = sprintsSmList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
-                txbSmPoints.Text = selectedSprint.SmPoints.ToString();
-                txbObs.Text = string.IsNullOrEmpty(selectedSprint.Obs) ? "" : selectedSprint.Obs;
-                cbbCerimonialPoint.SelectedItem = selectedSprint.CerimonialPoint;
-            }
+                txbAcceptedPointsExpense.Enabled = true;
+                txbAcceptedPointsInvestment.Enabled = true;
+                txbSmPoints.Enabled = true;
+                txbObs.Enabled = true;
+                cbbCerimonialPoint.Enabled = true;
 
-            ShowLog();
+                if (sprintsDevList != null)
+                {
+                    var selectedSprint = sprintsDevList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
+                    txbAcceptedPointsExpense.Text = selectedSprint.AcceptedPointsExpenses.ToString();
+                    txbAcceptedPointsInvestment.Text = selectedSprint.AcceptedPointsInvestment.ToString();
+                    txbObs.Text = string.IsNullOrEmpty(selectedSprint.Obs) ? "" : selectedSprint.Obs;
+                    cbbCerimonialPoint.SelectedItem = selectedSprint.CerimonialPoint;
+                }
+
+                if (sprintsSmList != null)
+                {
+                    var selectedSprint = sprintsSmList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
+                    txbSmPoints.Text = selectedSprint.SmPoints.ToString();
+                    txbObs.Text = string.IsNullOrEmpty(selectedSprint.Obs) ? "" : selectedSprint.Obs;
+                    cbbCerimonialPoint.SelectedItem = selectedSprint.CerimonialPoint;
+                }
+
+                ShowLog();
+            }
         }
         #endregion
 
+        #region TxbAcceptedPointsInvestment_KeyPress
+        private void TxbAcceptedPointsInvestment_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = UtilDTO.AllowOnlyNumbers_OnKeyPress(sender, e);
+        }
+        #endregion
+
+        #region TxbAcceptedPointsExpense_KeyPress
+        private void TxbAcceptedPointsExpense_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = UtilDTO.AllowOnlyNumbers_OnKeyPress(sender, e);
+        }
+        #endregion
+
+        #region TxbSmPoints_KeyPress
+        private void TxbSmPoints_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = UtilDTO.AllowOnlyNumbers_OnKeyPress(sender, e);
+        }
+        #endregion
+        #endregion
+
         #region AUX
+        #region SetCerimonialPointCombo
         private void SetCerimonialPointCombo()
         {
             cbbCerimonialPoint.DataSource = Enum.GetValues(typeof(UtilDTO.CERIMONIAL_POINT));
             cbbCerimonialPoint.SelectedIndex = 0;
-        }
+        } 
+        #endregion
 
+        #region SetSprints
+        private void SetSprints()
+        {
+            if (sprintsDevList != null)
+            {
+                foreach (var sprint in sprintsDevList)
+                {
+                    lsbSprints.Items.Add(sprint.Range.Name);
+                }
+            }
+            else if (sprintsSmList != null)
+            {
+                foreach (var sprint in sprintsSmList)
+                {
+                    lsbSprints.Items.Add(sprint.Range.Name);
+                }
+            }
+        }
+        #endregion
+
+        #region SetScreenLayout
         private void SetScreenLayout(UtilDTO.NAVIGATION fluxo)
         {
             switch (fluxo)
@@ -119,13 +181,17 @@ namespace RelatorioFA.AppWinForm
                     break;
             }
         }
+        #endregion
 
+        #region ResizeParent
         private void ResizeParent(Form containerForm)
         {
             containerForm.Size = new Size(this.Width, this.Height + 20);
             containerForm.MinimumSize = new Size(this.Width, this.Height + 20);
-        }
+        } 
+        #endregion
 
+        #region ShowLog
         private void ShowLog(string message = "")
         {
             txbResult.Clear();
@@ -157,6 +223,8 @@ namespace RelatorioFA.AppWinForm
             }
             txbResult.Select(0, 0);
         }
+        #endregion
+
         #endregion
     }
 }

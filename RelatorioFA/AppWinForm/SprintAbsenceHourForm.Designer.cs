@@ -87,6 +87,7 @@ namespace RelatorioFA.AppWinForm
             this.lsbSprints.Size = new System.Drawing.Size(135, 95);
             this.lsbSprints.Sorted = true;
             this.lsbSprints.TabIndex = 56;
+            this.lsbSprints.SelectedIndexChanged += new System.EventHandler(this.LsbSprints_SelectedIndexChanged);
             // 
             // btnAddSprint
             // 
@@ -177,6 +178,7 @@ namespace RelatorioFA.AppWinForm
             this.txbExtraHour.Size = new System.Drawing.Size(153, 20);
             this.txbExtraHour.TabIndex = 55;
             this.txbExtraHour.Text = "0";
+            this.txbExtraHour.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbExtraHour_KeyPress);
             // 
             // label7
             // 
@@ -219,6 +221,7 @@ namespace RelatorioFA.AppWinForm
             this.txbAbsence.Size = new System.Drawing.Size(153, 20);
             this.txbAbsence.TabIndex = 7;
             this.txbAbsence.Text = "0";
+            this.txbAbsence.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbAbsence_KeyPress);
             // 
             // label1
             // 

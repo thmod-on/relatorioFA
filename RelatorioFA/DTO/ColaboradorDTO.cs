@@ -15,5 +15,6 @@ namespace RelatorioFA.DTO
         public bool WorksHalfDay { get; set; }
         public double ExtraHours { get; set; }
         public int AbsenceDays { get; set; }
+        public double Presence { get; set; }
     }
 }

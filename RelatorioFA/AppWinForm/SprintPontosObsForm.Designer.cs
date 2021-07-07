@@ -135,6 +135,7 @@ namespace RelatorioFA.AppWinForm
             // 
             // txbObs
             // 
+            this.txbObs.Enabled = false;
             this.txbObs.Location = new System.Drawing.Point(2, 197);
             this.txbObs.Name = "txbObs";
             this.txbObs.Size = new System.Drawing.Size(284, 252);
@@ -160,11 +161,13 @@ namespace RelatorioFA.AppWinForm
             // 
             // txbSmPoints
             // 
+            this.txbSmPoints.Enabled = false;
             this.txbSmPoints.Location = new System.Drawing.Point(91, 78);
             this.txbSmPoints.Name = "txbSmPoints";
             this.txbSmPoints.Size = new System.Drawing.Size(183, 20);
             this.txbSmPoints.TabIndex = 53;
             this.txbSmPoints.Text = "6";
+            this.txbSmPoints.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbSmPoints_KeyPress);
             // 
             // label1
             // 
@@ -177,13 +180,16 @@ namespace RelatorioFA.AppWinForm
             // 
             // txbAcceptedPointsInvestment
             // 
+            this.txbAcceptedPointsInvestment.Enabled = false;
             this.txbAcceptedPointsInvestment.Location = new System.Drawing.Point(92, 22);
             this.txbAcceptedPointsInvestment.Name = "txbAcceptedPointsInvestment";
             this.txbAcceptedPointsInvestment.Size = new System.Drawing.Size(182, 20);
             this.txbAcceptedPointsInvestment.TabIndex = 51;
+            this.txbAcceptedPointsInvestment.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbAcceptedPointsInvestment_KeyPress);
             // 
             // cbbCerimonialPoint
             // 
+            this.cbbCerimonialPoint.Enabled = false;
             this.cbbCerimonialPoint.FormattingEnabled = true;
             this.cbbCerimonialPoint.Location = new System.Drawing.Point(90, 106);
             this.cbbCerimonialPoint.Name = "cbbCerimonialPoint";
@@ -201,10 +207,12 @@ namespace RelatorioFA.AppWinForm
             // 
             // txbAcceptedPointsExpense
             // 
+            this.txbAcceptedPointsExpense.Enabled = false;
             this.txbAcceptedPointsExpense.Location = new System.Drawing.Point(91, 51);
             this.txbAcceptedPointsExpense.Name = "txbAcceptedPointsExpense";
             this.txbAcceptedPointsExpense.Size = new System.Drawing.Size(183, 20);
             this.txbAcceptedPointsExpense.TabIndex = 2;
+            this.txbAcceptedPointsExpense.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbAcceptedPointsExpense_KeyPress);
             // 
             // label8
             // 
@@ -257,12 +265,12 @@ namespace RelatorioFA.AppWinForm
             // 
             // btnPreviousForm
             // 
-            this.btnPreviousForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPreviousForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnPreviousForm.Location = new System.Drawing.Point(12, 485);
             this.btnPreviousForm.Name = "btnPreviousForm";
             this.btnPreviousForm.Size = new System.Drawing.Size(75, 23);
             this.btnPreviousForm.TabIndex = 74;
-            this.btnPreviousForm.Text = "<- Rtornar";
+            this.btnPreviousForm.Text = "<- Retornar";
             this.btnPreviousForm.UseVisualStyleBackColor = true;
             this.btnPreviousForm.Click += new System.EventHandler(this.BtnPreviousForm_Click);
             // 

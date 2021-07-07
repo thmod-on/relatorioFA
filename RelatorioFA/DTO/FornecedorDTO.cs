@@ -22,6 +22,6 @@ namespace RelatorioFA.DTO
         public List<ContratoDTO> Contracts { get; set; }
         [XmlElement("CaminhoLogomarca")]
         public string CaminhoLogomarca { get; set; }
-        public UtilDTO.BILLING_TYPE BillingType { get; set; }//atualmente serve apenas para o contrato da Influir
+        public UtilDTO.BILLING_TYPE BillingType { get; set; }
     }
 }

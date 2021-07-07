@@ -158,7 +158,7 @@ namespace RelatorioFA.AppWinForm
                 pbxSprintImage.Image = null;
                 btnNextForm.Enabled = true;
 
-                if (cbbSprintRanges.SelectedIndex < cbbSprintRanges.Items.Count)
+                if (cbbSprintRanges.SelectedIndex < cbbSprintRanges.Items.Count - 1)
                 {
                     cbbSprintRanges.SelectedIndex += 1;
                 }
@@ -252,7 +252,7 @@ namespace RelatorioFA.AppWinForm
 
         private void LsbSprints_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lsbSprints.Items.Count > 0)
+            if (lsbSprints.SelectedIndex >= 0)
             {
                 //Neste caso o fluxo serve apenas para encontrar a lista preenchida
                 switch (fluxo)
@@ -274,8 +274,7 @@ namespace RelatorioFA.AppWinForm
                         break;
                     case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
                         var selectedSprint = sprintsDevList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
-                        if (selectedSprint.ImagePath != null &&
-                            selectedSprint.ImagePath != "")
+                        if (!String.IsNullOrEmpty(selectedSprint.ImagePath))
                         {
                             pbxSprintImage.Load(selectedSprint.ImagePath);
                         }
@@ -338,14 +337,14 @@ namespace RelatorioFA.AppWinForm
                     break;
                 case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
                     txbResult.AppendText("Sprints Dev");
-                    txbResult.AppendText("\n===========\n\n");
+                    txbResult.AppendText("\n===========\n");
                     foreach (var sprint in sprintsDevList)
                     {
                         txbResult.AppendText(sprint.ToStringBuilder().ToString());
                     }
 
                     txbResult.AppendText("\nSprints SM");
-                    txbResult.AppendText("\n===========\n\n");
+                    txbResult.AppendText("\n===========\n");
                     foreach (var sprint in sprintsSmList)
                     {
                         txbResult.AppendText(sprint.ToStringBuilder().ToString());

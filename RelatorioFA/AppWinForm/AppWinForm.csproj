@@ -100,12 +100,6 @@
     <Compile Include="SprintPontosObsForm.Designer.cs">
       <DependentUpon>SprintPontosObsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="VariosRelatoriosForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="VariosRelatoriosForm.Designer.cs">
-      <DependentUpon>VariosRelatoriosForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="ModeloConfigXMLForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,9 +140,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SprintPontosObsForm.resx">
       <DependentUpon>SprintPontosObsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VariosRelatoriosForm.resx">
-      <DependentUpon>VariosRelatoriosForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ModeloConfigXMLForm.resx">
       <DependentUpon>ModeloConfigXMLForm.cs</DependentUpon>

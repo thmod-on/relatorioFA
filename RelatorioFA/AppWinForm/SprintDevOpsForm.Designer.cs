@@ -179,6 +179,7 @@ namespace RelatorioFA.AppWinForm
             this.txbOpsWarningUst.Name = "txbOpsWarningUst";
             this.txbOpsWarningUst.Size = new System.Drawing.Size(121, 20);
             this.txbOpsWarningUst.TabIndex = 4;
+            this.txbOpsWarningUst.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbOpsWarningUst_KeyPress);
             // 
             // txbOpsActuationUst
             // 
@@ -186,6 +187,7 @@ namespace RelatorioFA.AppWinForm
             this.txbOpsActuationUst.Name = "txbOpsActuationUst";
             this.txbOpsActuationUst.Size = new System.Drawing.Size(121, 20);
             this.txbOpsActuationUst.TabIndex = 6;
+            this.txbOpsActuationUst.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbOpsActuationUst_KeyPress);
             // 
             // label5
             // 
@@ -211,6 +213,7 @@ namespace RelatorioFA.AppWinForm
             this.txbOpsDevsCount.Name = "txbOpsDevsCount";
             this.txbOpsDevsCount.Size = new System.Drawing.Size(121, 20);
             this.txbOpsDevsCount.TabIndex = 13;
+            this.txbOpsDevsCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbOpsDevsCount_KeyPress);
             // 
             // txbOpsUsUst
             // 
@@ -218,6 +221,7 @@ namespace RelatorioFA.AppWinForm
             this.txbOpsUsUst.Name = "txbOpsUsUst";
             this.txbOpsUsUst.Size = new System.Drawing.Size(121, 20);
             this.txbOpsUsUst.TabIndex = 8;
+            this.txbOpsUsUst.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbOpsUsUst_KeyPress);
             // 
             // label7
             // 

@@ -72,7 +72,7 @@ namespace RelatorioFA.Negocio
                     CreateSummaryTableUst(document, sprints, missing, partner.UstValue);
                     break;
                 case (UtilDTO.BILLING_TYPE.UST_HORA):
-                    CreateSummaryTableUstHour(document, sprints, missing);
+                    CreateSummaryTableUstHour(document, sprints, missing, partner.UstValue);
                     break;
                 default:
                     break;
@@ -108,8 +108,12 @@ namespace RelatorioFA.Negocio
             {
                 foreach (var contract in sprint.Contracts)
                 {
-                    if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() && contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
+                    if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() && 
+                        contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString()
+                        )
                     {
+                        double employeeCount = 0;
+                        double partialPoints = 0;
                         int acceptedPoints = category == UtilDTO.CATEGORY.DES ? sprint.AcceptedPointsExpenses : sprint.AcceptedPointsInvestment;
                         double pointsPerTeamMember = category == UtilDTO.CATEGORY.DES ? sprint.PointsPerTeamMemberExpenses : sprint.PointsPerTeamMemberInvestment;
                         string cerimonialPoint = "0";
@@ -118,21 +122,24 @@ namespace RelatorioFA.Negocio
                         {
                             cerimonialPoint = "1";
                         }
-                        double pointsPerPartner = category == UtilDTO.CATEGORY.DES ? sprint.PointsPerPartnerExpenses : sprint.PointsPerPartnerInvestment;
-
+                        foreach (var dev in contract.Collaborators)
+                        {
+                            employeeCount += dev.Presence;
+                        }
+                        partialPoints = (pointsPerTeamMember + Convert.ToDouble(cerimonialPoint)) * contract.Factor * employeeCount;
                         summaryTable.Rows.Add(missing);
                         summaryTable.Rows[line].Range.Font.Bold = 0;
                         summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
                         summaryTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name + "\n" + contract.Name;
-                        summaryTable.Rows[line].Cells[2].Range.Text = acceptedPoints.ToString();
-                        summaryTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString();
-                        summaryTable.Rows[line].Cells[4].Range.Text = sprint.EmployeesCount.ToString();
-                        summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString(decimalFormat);
-                        summaryTable.Rows[line].Cells[6].Range.Text = contract.Factor.ToString();
-                        summaryTable.Rows[line].Cells[7].Range.Text = cerimonialPoint;
-                        summaryTable.Rows[line].Cells[8].Range.Text = pointsPerPartner.ToString(decimalFormat);
+                        summaryTable.Rows[line].Cells[2].Range.Text = acceptedPoints.ToString();//A
+                        summaryTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString();//B
+                        summaryTable.Rows[line].Cells[4].Range.Text = employeeCount.ToString(decimalFormat);//C
+                        summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString(decimalFormat);//D
+                        summaryTable.Rows[line].Cells[6].Range.Text = contract.Factor.ToString();//E
+                        summaryTable.Rows[line].Cells[7].Range.Text = cerimonialPoint;//F
+                        summaryTable.Rows[line].Cells[8].Range.Text = partialPoints.ToString(decimalFormat);//G
 
-                        totalPoints += pointsPerPartner;
+                        totalPoints += partialPoints;
                         line++;
                     }
                 }
@@ -162,14 +169,42 @@ namespace RelatorioFA.Negocio
         #endregion
 
         #region CreateSummaryTableUstHour
-        private static void CreateSummaryTableUstHour(Document document, List<SprintDevDTO> sprints, object missing)
+        private static void CreateSummaryTableUstHour(Document document, List<SprintDevDTO> sprints, object missing, double ustValue)
         {
-            CreateSummaryTableUstHour(document, sprints, missing, UtilDTO.CATEGORY.DES);
+            //Utilizado apenas para uma empresa. Melhroar se necessario
+            //Selecionar da lista de sprints aquelas que sao de hora.
+            List<SprintDevDTO> sprintHourList = new List<SprintDevDTO>();
+            SprintDevDTO sprintHour;
+            foreach (var sprint in sprints)
+            {
+                foreach (var contract in sprint.Contracts)
+                {
+                    if (contract.HourValue > 0)
+                    {
+                        sprintHour = new SprintDevDTO()
+                        {
+                            Range = sprint.Range,
+                            AcceptedPointsExpenses = sprint.AcceptedPointsExpenses,
+                            AcceptedPointsInvestment = sprint.AcceptedPointsInvestment,
+                            CerimonialPoint = sprint.CerimonialPoint,
+                            ImagePath = sprint.ImagePath,
+                            Obs = sprint.Obs,
+                            TeamSize = sprint.TeamSize,
+                            PointsPerTeamMemberExpenses = sprint.PointsPerTeamMemberExpenses,
+                            PointsPerTeamMemberInvestment = sprint.PointsPerTeamMemberInvestment
+                        };
+                        sprintHour.Contracts.Add(contract);
+                        sprintHourList.Add(sprintHour);
+                    }
+                }
+            }
+
+            CreateSummaryTableUstHourContent(document, sprintHourList, missing, ustValue, UtilDTO.CATEGORY.DES);
             AddPAragraph(" ", 3, 3, 0, 8, WdParagraphAlignment.wdAlignParagraphLeft, document, ref missing);
-            CreateSummaryTableUstHour(document, sprints, missing, UtilDTO.CATEGORY.INV);
+            CreateSummaryTableUstHourContent(document, sprintHourList, missing, ustValue, UtilDTO.CATEGORY.INV);
         }
 
-        private static void CreateSummaryTableUstHour(Document document, List<SprintDevDTO> sprints, object missing, UtilDTO.CATEGORY category)
+        private static void CreateSummaryTableUstHourContent(Document document, List<SprintDevDTO> sprints, object missing, double ustValue, UtilDTO.CATEGORY category)
         {
             int columns = 9;
             Table summaryTable = document.Tables.Add(EndOfDocument(document, ref missing), 1, columns, ref missing, ref missing);
@@ -183,31 +218,45 @@ namespace RelatorioFA.Negocio
 
             foreach (var sprint in sprints)
             {
-                int acceptedPoints = category == UtilDTO.CATEGORY.DES ? sprint.AcceptedPointsExpenses : sprint.AcceptedPointsInvestment;
-                double pointsPerTeamMember = category == UtilDTO.CATEGORY.DES ? sprint.PointsPerTeamMemberExpenses : sprint.PointsPerTeamMemberInvestment;
-                double pointsPerPartner = category == UtilDTO.CATEGORY.DES ? sprint.PointsPerPartnerExpenses : sprint.PointsPerPartnerInvestment;
-                int hours = category == UtilDTO.CATEGORY.DES ? sprint.HoursExpenses : sprint.HoursInvestment;
-                string cerimonialPoint = "0";
-                if ((category == UtilDTO.CATEGORY.DES && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.DESPESA) ||
-                    (category == UtilDTO.CATEGORY.INV && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO))
+                foreach (var contract in sprint.Contracts)
                 {
-                    cerimonialPoint = "1";
-                }
+                    double employeeCount = 0;
+                    double hours = 0;
+                    double pointsPerPartner = 0;
+                    string cerimonialPoint = "0";
+                    if ((category == UtilDTO.CATEGORY.DES && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.DESPESA) ||
+                        (category == UtilDTO.CATEGORY.INV && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO))
+                    {
+                        cerimonialPoint = "1";
+                    }
+                    foreach (var dev in contract.Collaborators)
+                    {
+                        employeeCount += dev.Presence;
+                    }
 
-                summaryTable.Rows.Add(missing);
-                summaryTable.Rows[line].Range.Font.Bold = 0;
-                summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
-                summaryTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name;
-                summaryTable.Rows[line].Cells[2].Range.Text = acceptedPoints.ToString();
-                summaryTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString();
-                summaryTable.Rows[line].Cells[4].Range.Text = sprint.EmployeesCount.ToString();
-                summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString(decimalFormat);
-                summaryTable.Rows[line].Cells[6].Range.Text = cerimonialPoint;
-                summaryTable.Rows[line].Cells[7].Range.Text = pointsPerPartner.ToString(decimalFormat);
-                summaryTable.Rows[line].Cells[8].Range.Text = hours.ToString();
+                    double pointsPerTeamMember = category == UtilDTO.CATEGORY.DES ? sprint.PointsPerTeamMemberExpenses : sprint.PointsPerTeamMemberInvestment;
 
-                totalHours += hours;
-                line++;
+                    pointsPerPartner = employeeCount * (pointsPerTeamMember + Convert.ToDouble(cerimonialPoint));
+
+                    hours = Math.Ceiling(pointsPerPartner * ustValue / contract.HourValue);
+
+                    int acceptedPoints = category == UtilDTO.CATEGORY.DES ? sprint.AcceptedPointsExpenses : sprint.AcceptedPointsInvestment;
+                    
+                    summaryTable.Rows.Add(missing);
+                    summaryTable.Rows[line].Range.Font.Bold = 0;
+                    summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
+                    summaryTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name;
+                    summaryTable.Rows[line].Cells[2].Range.Text = acceptedPoints.ToString();//A
+                    summaryTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString();//B
+                    summaryTable.Rows[line].Cells[4].Range.Text = employeeCount.ToString(decimalFormat);//C
+                    summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString(decimalFormat);//D
+                    summaryTable.Rows[line].Cells[6].Range.Text = cerimonialPoint;//E
+                    summaryTable.Rows[line].Cells[7].Range.Text = pointsPerPartner.ToString(decimalFormat);//F
+                    summaryTable.Rows[line].Cells[8].Range.Text = hours.ToString();//G
+
+                    totalHours += hours;
+                    line++;
+                } 
             }
 
             summaryTable.Rows.Add(missing);

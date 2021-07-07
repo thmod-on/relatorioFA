@@ -231,6 +231,7 @@ namespace RelatorioFA.AppWinForm
         }
         #endregion
 
+        #region Eventos automaticos
         private void LsbSprints_SelectedIndexChanged(object sender, EventArgs e)
         {
             var selectedSprint = sprintsDevOpsList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
@@ -241,5 +242,26 @@ namespace RelatorioFA.AppWinForm
             txbOpsDevsCount.Text = selectedSprint.TeamSize.ToString();
             txbObs.Text = selectedSprint.Obs;
         }
+
+        private void TxbOpsWarningUst_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = UtilDTO.AllowOnlyNumbers_OnKeyPress(sender, e);
+        }
+
+        private void TxbOpsActuationUst_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = UtilDTO.AllowOnlyNumbers_OnKeyPress(sender, e);
+        }
+
+        private void TxbOpsUsUst_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = UtilDTO.AllowOnlyNumbers_OnKeyPress(sender, e);
+        }
+
+        private void TxbOpsDevsCount_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = UtilDTO.AllowOnlyNumbers_OnKeyPress(sender, e);
+        }
+        #endregion
     }
 }

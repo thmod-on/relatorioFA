@@ -88,7 +88,7 @@ namespace RelatorioFA.AppWinForm
             // 
             // btnOpenDestinationFolder
             // 
-            this.btnOpenDestinationFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnOpenDestinationFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOpenDestinationFolder.Enabled = false;
             this.btnOpenDestinationFolder.Location = new System.Drawing.Point(562, 482);
             this.btnOpenDestinationFolder.Name = "btnOpenDestinationFolder";
@@ -101,7 +101,7 @@ namespace RelatorioFA.AppWinForm
             // 
             // btnSetOutputDocPath
             // 
-            this.btnSetOutputDocPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnSetOutputDocPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSetOutputDocPath.Location = new System.Drawing.Point(362, 482);
             this.btnSetOutputDocPath.Name = "btnSetOutputDocPath";
             this.btnSetOutputDocPath.Size = new System.Drawing.Size(103, 23);
@@ -113,7 +113,7 @@ namespace RelatorioFA.AppWinForm
             // 
             // btnPreviousForm
             // 
-            this.btnPreviousForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPreviousForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnPreviousForm.Location = new System.Drawing.Point(12, 482);
             this.btnPreviousForm.Name = "btnPreviousForm";
             this.btnPreviousForm.Size = new System.Drawing.Size(75, 23);
@@ -471,7 +471,7 @@ namespace RelatorioFA.AppWinForm
             // 
             // btnGenerate
             // 
-            this.btnGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnGenerate.Location = new System.Drawing.Point(476, 482);
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(75, 23);
@@ -483,7 +483,7 @@ namespace RelatorioFA.AppWinForm
             // 
             // btnNextForm
             // 
-            this.btnNextForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnNextForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnNextForm.Location = new System.Drawing.Point(671, 482);
             this.btnNextForm.Name = "btnNextForm";
             this.btnNextForm.Size = new System.Drawing.Size(103, 23);

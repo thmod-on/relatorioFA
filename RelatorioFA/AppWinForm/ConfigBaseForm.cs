@@ -175,18 +175,25 @@ namespace RelatorioFA.AppWinForm
             }
         }
 
-            private void LsbPartners_SelectedIndexChanged(object sender, EventArgs e)
+        private void LsbPartners_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lsbPartners.SelectedItem != null)
+            try
             {
-                var selectedPartner = config.Partners.Find(p => p.Name == lsbPartners.SelectedItem.ToString());
-
-                txbPartnerName.Text = selectedPartner.Name;
-                txbPartnerUstValue.Text = selectedPartner.UstValue.ToString();
-                if (!string.IsNullOrEmpty(selectedPartner.CaminhoLogomarca))
+                if (lsbPartners.SelectedItem != null)
                 {
-                    picBoxLogomarca.Load(selectedPartner.CaminhoLogomarca);
+                    var selectedPartner = config.Partners.Find(p => p.Name == lsbPartners.SelectedItem.ToString());
+
+                    txbPartnerName.Text = selectedPartner.Name;
+                    txbPartnerUstValue.Text = selectedPartner.UstValue.ToString();
+                    if (!string.IsNullOrEmpty(selectedPartner.CaminhoLogomarca))
+                    {
+                        picBoxLogomarca.Load(selectedPartner.CaminhoLogomarca);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                txbResult.Text = ex.Message;
             }
         }
 
