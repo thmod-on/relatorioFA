@@ -254,7 +254,7 @@ namespace RelatorioFA.Negocio
                     summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
                     summaryTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name;
                     summaryTable.Rows[line].Cells[2].Range.Text = acceptedPoints.ToString();//A
-                    summaryTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString();//B
+                    summaryTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString(decimalFormat);//B
                     summaryTable.Rows[line].Cells[4].Range.Text = employeeCount.ToString(decimalFormat);//C
                     summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString(decimalFormat);//D
                     summaryTable.Rows[line].Cells[6].Range.Text = cerimonialPoint;//E
