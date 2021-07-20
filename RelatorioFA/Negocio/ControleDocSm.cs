@@ -8,7 +8,7 @@ namespace RelatorioFA.Negocio
 {
     public class ControleDocSm : ControleDoc
     {
-        public static void GenerateSmDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintSmDTO> sprints)
+        public static void CreateSmDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintSmDTO> sprints)
         {
             try
             {
@@ -60,13 +60,13 @@ namespace RelatorioFA.Negocio
         private static void CreateLastPage(Document document, Paragraph paragraph, List<SprintSmDTO> sprints, object missing, ConfigXmlDTO config, FornecedorDTO partner)
         {
             SetLastPageText(document, paragraph, partner);
-            if (sprints[0].Contracts[0].Name == UtilDTO.CONTRACTS.SM_FIXO.ToString()) //(TODO) Cada time tem 1 SM, Melhorar  o DTO para representar
+            if (sprints[0].Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString())) //(TODO) Cada time tem 1 SM, Melhorar  o DTO para representar
             {
                 CreateSummaryTableUstSmSettled(document, sprints, ref missing, partner.UstValue);
             }
             else
             {
-                if (sprints[0].Contracts[0].Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString())
+                if (sprints[0].Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString()))
                 {
                     throw new NotImplementedException();
                 }
@@ -92,14 +92,14 @@ namespace RelatorioFA.Negocio
                 smTable.Rows.Add(missing);
                 smTable.Rows[line].Range.Font.Bold = 0;
                 smTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
-                smTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name;
-                smTable.Rows[line].Cells[2].Range.Text = (sprint.AcceptedPointsExpenses + sprint.AcceptedPointsInvestment).ToString();
-                smTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString();
-                smTable.Rows[line].Cells[4].Range.Text = sprint.EmployeesCount.ToString();
-                smTable.Rows[line].Cells[5].Range.Text = sprint.PointsPerPartnerExpenses.ToString();
-                smTable.Rows[line].Cells[6].Range.Text = sprint.PointsPerPartnerExpenses.ToString();
+                smTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name;//Sprint
+                smTable.Rows[line].Cells[2].Range.Text = (sprint.AcceptedPointsExpenses + sprint.AcceptedPointsInvestment).ToString();//A
+                smTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString();//B
+                smTable.Rows[line].Cells[4].Range.Text = sprint.EmployeesCount.ToString();//C
+                smTable.Rows[line].Cells[5].Range.Text = sprint.SmPoints.ToString();//D
+                smTable.Rows[line].Cells[6].Range.Text = (sprint.EmployeesCount * sprint.SmPoints).ToString();//E
 
-                totalPoints += sprint.PointsPerPartnerExpenses;
+                totalPoints += sprint.SmPoints;
                 line++;
             }
 

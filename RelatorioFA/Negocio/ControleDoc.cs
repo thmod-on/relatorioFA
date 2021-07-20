@@ -90,7 +90,7 @@ namespace RelatorioFA.Negocio
                     AddPAragraph(paragraph, strAux, 30, 30, 1, 14, WdParagraphAlignment.wdAlignParagraphJustify);
 
                     //Imagem da sprint
-                    if (sprints[i].ImagePath != string.Empty)
+                    if (!string.IsNullOrEmpty(sprints[i].ImagePath))
                     {
                         paragraph.Range.InlineShapes.AddPicture(sprints[i].ImagePath);
                         paragraph.Range.InsertParagraphAfter(); 
@@ -225,7 +225,7 @@ namespace RelatorioFA.Negocio
             summaryTable.Rows.Add(missing);
             summaryTable.Rows[line].Cells[1].Range.Text = "TOTAL A SER FATUADO:";
             summaryTable.Rows[line].Cells[1].Merge(summaryTable.Rows[line].Cells[columns - 2]);
-            summaryTable.Rows[line].Cells[2].Range.Text = totalPoints.ToString();
+            summaryTable.Rows[line].Cells[2].Range.Text = totalPoints.ToString(decimalFormat);
             summaryTable.Rows[line].Cells[2].Range.Font.Bold = 1;
             summaryTable.Rows[line].Cells[3].Range.Text = string.Format("{0:C}", totalPoints * ustValue);
             summaryTable.Rows[line].Cells[3].Range.Font.Bold = 1;

@@ -13,12 +13,8 @@ namespace RelatorioFA.Negocio
         {
             foreach (var contract in contractList)
             {
-                if (contract.Name == UtilDTO.CONTRACTS.BANESE.ToString() ||
-                    contract.Name == UtilDTO.CONTRACTS.PADRAO.ToString() ||
-                    contract.Name == UtilDTO.CONTRACTS.PLENO.ToString()  ||
-                    contract.Name == UtilDTO.CONTRACTS.SENIOR.ToString() ||
-                    contract.Name == "4600001843" //Caso especifico para Influir
-                    )
+                if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
+                    contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString() )
                 {
                     foreach (var dev in contract.Collaborators)
                     {
@@ -34,12 +30,8 @@ namespace RelatorioFA.Negocio
             double teamSize = 0;
             foreach (var contract in sprintDev.Contracts)
             {
-                if (contract.Name == UtilDTO.CONTRACTS.BANESE.ToString() ||
-                    contract.Name == UtilDTO.CONTRACTS.PADRAO.ToString() ||
-                    contract.Name == UtilDTO.CONTRACTS.PLENO.ToString()  ||
-                    contract.Name == UtilDTO.CONTRACTS.SENIOR.ToString() ||
-                    contract.Name == "4600001843" //Caso especifico para Influir
-                    )
+                if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
+                    contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString() )
                 {
                     foreach (var dev in contract.Collaborators)
                     {
@@ -107,10 +99,10 @@ namespace RelatorioFA.Negocio
             return Math.Round(pointsPerTeamMember * factor * emploeeCount, 3);
         }
 
-        public static void CalcPointsPerTeamMember(SprintDevDTO newSprint)
+        public static void CalcPointsPerTeamMember(SprintDevDTO devSprint)
         {
-            newSprint.PointsPerTeamMemberExpenses = Math.Round(newSprint.AcceptedPointsExpenses / newSprint.TeamSize, 3);
-            newSprint.PointsPerTeamMemberInvestment = Math.Round(newSprint.AcceptedPointsInvestment / newSprint.TeamSize, 3);
+            devSprint.PointsPerTeamMemberExpenses = Math.Round(devSprint.AcceptedPointsExpenses / devSprint.TeamSize, 3);
+            devSprint.PointsPerTeamMemberInvestment = Math.Round(devSprint.AcceptedPointsInvestment / devSprint.TeamSize, 3);
         }
 
         public static int CalcSprintHours(double pointsPerPartner, double ustValue, double hourValue)

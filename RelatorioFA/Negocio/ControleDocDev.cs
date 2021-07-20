@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using RelatorioFA.DTO;
+using System.Linq;
 
 namespace RelatorioFA.Negocio
 {
@@ -22,12 +23,20 @@ namespace RelatorioFA.Negocio
                     baseSprints.Add(sprint.GetBaseSprint());
                 }
 
+                if (config.BaneseDes.Count > 0)
+                {
+                    foreach (var dev in config.BaneseDes)
+                    {
+                        devTeam.Add(dev);
+                    }
+                }
+
                 foreach (var configPartner in config.Partners)
                 {
                     foreach (var contract in configPartner.Contracts)
                     {
-                        if (contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString() &&
-                            contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString())
+                        if (contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString() &&
+                            contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString())
                         {
                             foreach (var dev in contract.Collaborators)
                             {
@@ -69,7 +78,7 @@ namespace RelatorioFA.Negocio
             switch (partner.BillingType)
             {
                 case (UtilDTO.BILLING_TYPE.UST):
-                    CreateSummaryTableUst(document, sprints, missing, partner.UstValue);
+                    CreateSummaryTableUst(document, sprints, missing, partner);
                     break;
                 case (UtilDTO.BILLING_TYPE.UST_HORA):
                     CreateSummaryTableUstHour(document, sprints, missing, partner.UstValue);
@@ -83,15 +92,15 @@ namespace RelatorioFA.Negocio
         #endregion
 
         #region CreateSummaryTableUst
-        private static void CreateSummaryTableUst(Document document, List<SprintDevDTO> sprints, object missing, double ustValue)
+        private static void CreateSummaryTableUst(Document document, List<SprintDevDTO> sprints, object missing, FornecedorDTO partner)
         {
-            CreateSummaryTableUstDev(document, sprints, ref missing, ustValue, UtilDTO.CATEGORY.DES);
+            CreateSummaryTableUstDev(document, sprints, ref missing, partner, UtilDTO.CATEGORY.DES);
             AddPAragraph(" ", 3, 3, 0, 8, WdParagraphAlignment.wdAlignParagraphLeft, document, ref missing);
-            CreateSummaryTableUstDev(document, sprints, ref missing, ustValue, UtilDTO.CATEGORY.INV);
+            CreateSummaryTableUstDev(document, sprints, ref missing, partner, UtilDTO.CATEGORY.INV);
         }
 
         #region CreateSummaryTableUstDev
-        private static void CreateSummaryTableUstDev(Document document, List<SprintDevDTO> sprints, ref object missing, double ustValue, UtilDTO.CATEGORY category)
+        private static void CreateSummaryTableUstDev(Document document, List<SprintDevDTO> sprintsDevList, ref object missing, FornecedorDTO partner, UtilDTO.CATEGORY category)
         {
             int line = 2;
             double totalPoints = 0;
@@ -104,13 +113,11 @@ namespace RelatorioFA.Negocio
 
             SetTableHeaderUstDev(ref summaryTable, category);
 
-            foreach (var sprint in sprints)
+            foreach (var sprint in sprintsDevList)
             {
                 foreach (var contract in sprint.Contracts)
                 {
-                    if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() && 
-                        contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString()
-                        )
+                    if (contract.PartnerName == partner.Name)
                     {
                         double employeeCount = 0;
                         double partialPoints = 0;
@@ -132,7 +139,7 @@ namespace RelatorioFA.Negocio
                         summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
                         summaryTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name + "\n" + contract.Name;
                         summaryTable.Rows[line].Cells[2].Range.Text = acceptedPoints.ToString();//A
-                        summaryTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString();//B
+                        summaryTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString(decimalFormat);//B
                         summaryTable.Rows[line].Cells[4].Range.Text = employeeCount.ToString(decimalFormat);//C
                         summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString(decimalFormat);//D
                         summaryTable.Rows[line].Cells[6].Range.Text = contract.Factor.ToString();//E
@@ -145,7 +152,7 @@ namespace RelatorioFA.Negocio
                 }
             }
 
-            SetSummaryTableTotal(ref summaryTable, columns, line, totalPoints, ustValue, ref missing);
+            SetSummaryTableTotal(ref summaryTable, columns, line, totalPoints, partner.UstValue, ref missing);
         }
         #region SetTableHeaderUstDev
         private static void SetTableHeaderUstDev(ref Table table, UtilDTO.CATEGORY category)

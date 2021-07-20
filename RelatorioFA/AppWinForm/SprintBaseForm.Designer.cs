@@ -277,7 +277,7 @@ namespace RelatorioFA.AppWinForm
             // 
             this.btnNextForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnNextForm.Enabled = false;
-            this.btnNextForm.Location = new System.Drawing.Point(699, 488);
+            this.btnNextForm.Location = new System.Drawing.Point(699, 485);
             this.btnNextForm.Name = "btnNextForm";
             this.btnNextForm.Size = new System.Drawing.Size(75, 23);
             this.btnNextForm.TabIndex = 61;
@@ -288,7 +288,7 @@ namespace RelatorioFA.AppWinForm
             // btnAddSprint
             // 
             this.btnAddSprint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddSprint.Location = new System.Drawing.Point(344, 488);
+            this.btnAddSprint.Location = new System.Drawing.Point(344, 485);
             this.btnAddSprint.Name = "btnAddSprint";
             this.btnAddSprint.Size = new System.Drawing.Size(75, 23);
             this.btnAddSprint.TabIndex = 62;
@@ -309,7 +309,7 @@ namespace RelatorioFA.AppWinForm
             // btnChangeConfigFolder
             // 
             this.btnChangeConfigFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnChangeConfigFolder.Location = new System.Drawing.Point(16, 488);
+            this.btnChangeConfigFolder.Location = new System.Drawing.Point(16, 485);
             this.btnChangeConfigFolder.Name = "btnChangeConfigFolder";
             this.btnChangeConfigFolder.Size = new System.Drawing.Size(131, 23);
             this.btnChangeConfigFolder.TabIndex = 72;

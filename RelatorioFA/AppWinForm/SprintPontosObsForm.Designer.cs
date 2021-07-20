@@ -135,11 +135,12 @@ namespace RelatorioFA.AppWinForm
             // 
             // txbObs
             // 
-            this.txbObs.Enabled = false;
+            this.txbObs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.txbObs.Location = new System.Drawing.Point(2, 197);
             this.txbObs.Name = "txbObs";
             this.txbObs.Size = new System.Drawing.Size(284, 252);
-            this.txbObs.TabIndex = 76;
+            this.txbObs.TabIndex = 5;
             this.txbObs.Text = "";
             // 
             // groupBox4
@@ -161,11 +162,10 @@ namespace RelatorioFA.AppWinForm
             // 
             // txbSmPoints
             // 
-            this.txbSmPoints.Enabled = false;
             this.txbSmPoints.Location = new System.Drawing.Point(91, 78);
             this.txbSmPoints.Name = "txbSmPoints";
             this.txbSmPoints.Size = new System.Drawing.Size(183, 20);
-            this.txbSmPoints.TabIndex = 53;
+            this.txbSmPoints.TabIndex = 3;
             this.txbSmPoints.Text = "6";
             this.txbSmPoints.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbSmPoints_KeyPress);
             // 
@@ -180,21 +180,19 @@ namespace RelatorioFA.AppWinForm
             // 
             // txbAcceptedPointsInvestment
             // 
-            this.txbAcceptedPointsInvestment.Enabled = false;
             this.txbAcceptedPointsInvestment.Location = new System.Drawing.Point(92, 22);
             this.txbAcceptedPointsInvestment.Name = "txbAcceptedPointsInvestment";
             this.txbAcceptedPointsInvestment.Size = new System.Drawing.Size(182, 20);
-            this.txbAcceptedPointsInvestment.TabIndex = 51;
+            this.txbAcceptedPointsInvestment.TabIndex = 1;
             this.txbAcceptedPointsInvestment.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbAcceptedPointsInvestment_KeyPress);
             // 
             // cbbCerimonialPoint
             // 
-            this.cbbCerimonialPoint.Enabled = false;
             this.cbbCerimonialPoint.FormattingEnabled = true;
             this.cbbCerimonialPoint.Location = new System.Drawing.Point(90, 106);
             this.cbbCerimonialPoint.Name = "cbbCerimonialPoint";
             this.cbbCerimonialPoint.Size = new System.Drawing.Size(184, 21);
-            this.cbbCerimonialPoint.TabIndex = 54;
+            this.cbbCerimonialPoint.TabIndex = 4;
             // 
             // label22
             // 
@@ -207,7 +205,6 @@ namespace RelatorioFA.AppWinForm
             // 
             // txbAcceptedPointsExpense
             // 
-            this.txbAcceptedPointsExpense.Enabled = false;
             this.txbAcceptedPointsExpense.Location = new System.Drawing.Point(91, 51);
             this.txbAcceptedPointsExpense.Name = "txbAcceptedPointsExpense";
             this.txbAcceptedPointsExpense.Size = new System.Drawing.Size(183, 20);
@@ -258,10 +255,10 @@ namespace RelatorioFA.AppWinForm
             this.btnAddSprint.Location = new System.Drawing.Point(344, 485);
             this.btnAddSprint.Name = "btnAddSprint";
             this.btnAddSprint.Size = new System.Drawing.Size(75, 23);
-            this.btnAddSprint.TabIndex = 72;
-            this.btnAddSprint.Text = "Adicionar";
+            this.btnAddSprint.TabIndex = 6;
+            this.btnAddSprint.Text = "Atualizar";
             this.btnAddSprint.UseVisualStyleBackColor = true;
-            this.btnAddSprint.Click += new System.EventHandler(this.BtnAddSprint_Click);
+            this.btnAddSprint.Click += new System.EventHandler(this.BtnUpdateSprint_Click);
             // 
             // btnPreviousForm
             // 

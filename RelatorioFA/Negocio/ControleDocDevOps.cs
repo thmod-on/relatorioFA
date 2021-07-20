@@ -8,7 +8,7 @@ namespace RelatorioFA.Negocio
     public class ControleDocDevOps : ControleDoc
     {
         #region GenerateDoc
-        public static void GenerateDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintDevOpsDTO> sprintDevOpsList)
+        public static void CreateOpsDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintDevOpsDTO> sprintDevOpsList)
         {
             try
             {

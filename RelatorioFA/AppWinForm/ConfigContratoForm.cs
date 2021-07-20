@@ -511,7 +511,7 @@ namespace RelatorioFA.AppWinForm
             foreach (var contractType in Enum.GetValues(typeof(UtilDTO.CONTRACTS)))
             {
 
-                if (contractType.ToString() != UtilDTO.CONTRACTS.BANESE.ToString())
+                if (contractType.ToString() != UtilDTO.CONTRACTS.HOUSE.ToString())
                 {
                     cbbContractType.Items.Add(contractType);
                 }

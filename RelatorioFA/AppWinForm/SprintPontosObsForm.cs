@@ -21,7 +21,6 @@ namespace RelatorioFA.AppWinForm
             ResizeParent(containerForm);
             SetScreenLayout(fluxo);
             SetSprints();
-            txbResult.Text = "Para liberar os campos, selecione uma sprint como sua primeira ação.\n=]";
         }
 
         private readonly UtilDTO.NAVIGATION fluxo;
@@ -36,7 +35,7 @@ namespace RelatorioFA.AppWinForm
             containerForm.AbrirForm(new SprintAbsenceHourForm(containerForm, configXml, fluxo, sprintsDevList, sprintsSmList));
         }
 
-        private void BtnAddSprint_Click(object sender, EventArgs e)
+        private void BtnUpdateSprint_Click(object sender, EventArgs e)
         {
             try
             {
@@ -57,12 +56,25 @@ namespace RelatorioFA.AppWinForm
                 if (sprintsSmList != null)
                 {
                     var selectedSprint = sprintsSmList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
+                    selectedSprint.AcceptedPointsExpenses = Convert.ToInt32(txbAcceptedPointsExpense.Text);
+                    selectedSprint.AcceptedPointsInvestment = Convert.ToInt32(txbAcceptedPointsInvestment.Text);
                     selectedSprint.SmPoints = Convert.ToInt32(txbSmPoints.Text);
                     selectedSprint.Obs = Regex.Replace(txbObs.Text, @"\r\n?|\n", " ");
                     selectedSprint.CerimonialPoint = (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedItem;
                 }
 
                 ShowLog($"Dados da sprint {lsbSprints.SelectedItem} atualizados.");
+                btnNextForm.Enabled = true;
+
+                txbAcceptedPointsExpense.Text = "0";
+                txbAcceptedPointsInvestment.Text = "0";
+                txbSmPoints.Text = "0";
+                txbObs.Clear();
+                if (lsbSprints.SelectedIndex < lsbSprints.Items.Count - 1)
+                {
+                    lsbSprints.SelectedIndex += 1;
+                }
+                txbAcceptedPointsInvestment.Focus();
             }
             catch (Exception ex)
             {
@@ -72,7 +84,7 @@ namespace RelatorioFA.AppWinForm
 
         private void BtnPreviousForm_Click(object sender, EventArgs e)
         {
-            containerForm.AbrirForm(new SprintBaseForm(containerForm, UtilDTO.NAVIGATION.VARIOS_RELATORIOS));
+            containerForm.AbrirForm(new SprintBaseForm(containerForm, UtilDTO.NAVIGATION.VARIOS_RELATORIOS, sprintsDevList));
         }
         #endregion
 
@@ -87,12 +99,6 @@ namespace RelatorioFA.AppWinForm
                 txbSmPoints.Text = "0";
                 txbObs.Clear();
                 cbbCerimonialPoint.SelectedIndex = 0;
-
-                txbAcceptedPointsExpense.Enabled = true;
-                txbAcceptedPointsInvestment.Enabled = true;
-                txbSmPoints.Enabled = true;
-                txbObs.Enabled = true;
-                cbbCerimonialPoint.Enabled = true;
 
                 if (sprintsDevList != null)
                 {
@@ -164,6 +170,7 @@ namespace RelatorioFA.AppWinForm
                     lsbSprints.Items.Add(sprint.Range.Name);
                 }
             }
+            lsbSprints.SelectedIndex = 0;
         }
         #endregion
 

@@ -32,7 +32,7 @@ namespace RelatorioFA.Negocio
                 }
                 foreach (var partner in config.Partners)
                 {
-                    if (partner.Name != UtilDTO.CONTRACTS.BANESE.ToString())
+                    if (partner.Name != UtilDTO.CONTRACTS.HOUSE.ToString())
                     {
                         writer.WriteStartElement("Fornecedor");
                         writer.WriteElementString("Nome", partner.Name);

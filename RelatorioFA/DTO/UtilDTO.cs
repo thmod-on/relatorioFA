@@ -14,7 +14,7 @@ namespace RelatorioFA.DTO
 
         public enum CONTRACTS
         {
-            BANESE,
+            HOUSE,
             PADRAO,
             PLENO,
             SENIOR,

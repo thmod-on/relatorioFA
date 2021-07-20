@@ -27,9 +27,9 @@ namespace RelatorioFA.Transacao
             return Controle.CalcTeamSize(sprintDev);
         }
 
-        public static void CalcPointsPerTeamMember(SprintDevDTO newSprint)
+        public static void CalcPointsPerTeamMember(SprintDevDTO devSprint)
         {
-            Controle.CalcPointsPerTeamMember(newSprint);
+            Controle.CalcPointsPerTeamMember(devSprint);
         }
 
         //public static double CalcEmployeesPrticipation(ContratoDTO contract, Dictionary<string, double> devPresence)
@@ -56,12 +56,12 @@ namespace RelatorioFA.Transacao
         //{
         //    return Controle.CalcSprintHours(pointsPerPartner, ustValue, hourValue);
         //}
+        #endregion
 
         public static void GenerateConfigXmlFile(string outputPath, string outputName, ConfigXmlDTO config)
         {
             ControleXml.GenerateConfigXmlFile(outputPath, outputName, config);
         } 
-        #endregion
 
         #region CreateDoc
         public static void CreateDevDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintDevDTO> sprints)
@@ -69,14 +69,14 @@ namespace RelatorioFA.Transacao
             ControleDocDev.GenerateDoc(config, partner, outputDocPath, sprints);
         }
 
-        public static void GenerateSmDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintSmDTO> sprints)
+        public static void CreateSmDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintSmDTO> sprints)
         {
-            ControleDocSm.GenerateSmDoc(config, partner, outputDocPath, sprints);
+            ControleDocSm.CreateSmDoc(config, partner, outputDocPath, sprints);
         }
 
         public static void CreateOpsDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintDevOpsDTO> sprints)
         {
-            ControleDocDevOps.GenerateDoc(config, partner, outputDocPath, sprints);
+            ControleDocDevOps.CreateOpsDoc(config, partner, outputDocPath, sprints);
         } 
         #endregion
 

@@ -68,7 +68,7 @@ namespace RelatorioFA.AppWinForm
             foreach (var contractType in Enum.GetValues(typeof(UtilDTO.CONTRACTS)))
             {
 
-                if (contractType.ToString() != UtilDTO.CONTRACTS.BANESE.ToString())
+                if (contractType.ToString() != UtilDTO.CONTRACTS.HOUSE.ToString())
                 {
                     cbbContractType.Items.Add(contractType);
                 }
@@ -82,15 +82,15 @@ namespace RelatorioFA.AppWinForm
             lblOutputPath.Text = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
             FornecedorDTO fakePartner = new FornecedorDTO()
             {
-                Name = UtilDTO.CONTRACTS.BANESE.ToString()
+                Name = UtilDTO.CONTRACTS.HOUSE.ToString()
             };
             config.Partners.Add(fakePartner);
 
             ContratoDTO fakeContract = new ContratoDTO()
             {
-                Name = UtilDTO.CONTRACTS.BANESE.ToString()
+                Name = UtilDTO.CONTRACTS.HOUSE.ToString()
             };
-            config.Partners.Find(x => x.Name == UtilDTO.CONTRACTS.BANESE.ToString()).Contracts.Add(fakeContract);
+            config.Partners.Find(x => x.Name == UtilDTO.CONTRACTS.HOUSE.ToString()).Contracts.Add(fakeContract);
             txbContractHourValue.Text = "0";
         }
 
@@ -264,7 +264,7 @@ namespace RelatorioFA.AppWinForm
                 }
 
                 if (cbbContract.SelectedValue.ToString() != NOVO &&
-                    cbbContract.SelectedValue.ToString() != UtilDTO.CONTRACTS.BANESE.ToString())
+                    cbbContract.SelectedValue.ToString() != UtilDTO.CONTRACTS.HOUSE.ToString())
                 {
                     var oldContract = config
                         .Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString())
@@ -306,7 +306,7 @@ namespace RelatorioFA.AppWinForm
 
                 if (cbbDevs.SelectedItem.ToString() == NOVO)
                 {
-                    if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.BANESE.ToString())
+                    if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.HOUSE.ToString())
                     {
                         config.BaneseDes.Add(newDev);
                     }
@@ -402,7 +402,7 @@ namespace RelatorioFA.AppWinForm
             cbbPartner.Items.Add(NOVO);
             foreach (var partner in config.Partners)
             {
-                if (partner.Name != UtilDTO.CONTRACTS.BANESE.ToString())
+                if (partner.Name != UtilDTO.CONTRACTS.HOUSE.ToString())
                 {
                     cbbPartner.Items.Add(partner.Name);
                 }
@@ -418,7 +418,7 @@ namespace RelatorioFA.AppWinForm
             Dictionary<string, string> comboItens = new Dictionary<string, string>
             {
                 { NOVO, NOVO + " - " +  cbbPartner.SelectedItem.ToString()},
-                { UtilDTO.CONTRACTS.BANESE.ToString(), UtilDTO.CONTRACTS.BANESE.ToString() }
+                { UtilDTO.CONTRACTS.HOUSE.ToString(), UtilDTO.CONTRACTS.HOUSE.ToString() }
             };
             if (config.Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString()).Contracts.Count > 0)
             {
@@ -448,7 +448,7 @@ namespace RelatorioFA.AppWinForm
             cbbDevs.Items.Clear();
             cbbDevs.Items.Add(NOVO);
             List<ColaboradorDTO> colaboradores = new List<ColaboradorDTO>();
-            if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.BANESE.ToString())
+            if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.HOUSE.ToString())
             {
                 colaboradores = config.BaneseDes;
             }
@@ -543,7 +543,7 @@ namespace RelatorioFA.AppWinForm
             {
                 foreach (var contract in partner.Contracts)
                 {
-                    if (contract.Name != UtilDTO.CONTRACTS.BANESE.ToString() && contract.Collaborators.Count < 1)
+                    if (contract.Name != UtilDTO.CONTRACTS.HOUSE.ToString() && contract.Collaborators.Count < 1)
                     {
                         throw new Exception("Ao menos um colaborador deve ser aadicionado a cada contrato.");
                     }
@@ -633,7 +633,7 @@ namespace RelatorioFA.AppWinForm
                 }
                 else
                 {
-                    if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.BANESE.ToString())
+                    if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.HOUSE.ToString())
                     {
                         btnAddContract.Enabled = false;
                         txbContractFactor.Enabled = false;
@@ -667,7 +667,7 @@ namespace RelatorioFA.AppWinForm
                 btnAddDev.Text = "Atualizar";
                 ColaboradorDTO dev = new ColaboradorDTO();
 
-                if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.BANESE.ToString())
+                if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.HOUSE.ToString())
                 {
                     dev = config
                         .BaneseDes
@@ -754,7 +754,7 @@ namespace RelatorioFA.AppWinForm
             {
                 foreach (var partner in config.Partners)
                 {
-                    if (partner.Name != UtilDTO.CONTRACTS.BANESE.ToString())
+                    if (partner.Name != UtilDTO.CONTRACTS.HOUSE.ToString())
                     {
                         txbResult.AppendText($"\n\nParceiro  - {partner.Name}");
                         txbResult.AppendText($"\n   > UST: R${partner.UstValue}");

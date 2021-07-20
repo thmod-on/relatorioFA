@@ -32,7 +32,7 @@ namespace RelatorioFA.AppWinForm
             this.btnPreviousForm = new System.Windows.Forms.Button();
             this.txbResult = new System.Windows.Forms.RichTextBox();
             this.lsbSprints = new System.Windows.Forms.ListBox();
-            this.btnAddSprint = new System.Windows.Forms.Button();
+            this.btnUpdateSprint = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.cbbPartners = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -89,16 +89,16 @@ namespace RelatorioFA.AppWinForm
             this.lsbSprints.TabIndex = 56;
             this.lsbSprints.SelectedIndexChanged += new System.EventHandler(this.LsbSprints_SelectedIndexChanged);
             // 
-            // btnAddSprint
+            // btnUpdateSprint
             // 
-            this.btnAddSprint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddSprint.Location = new System.Drawing.Point(278, 485);
-            this.btnAddSprint.Name = "btnAddSprint";
-            this.btnAddSprint.Size = new System.Drawing.Size(120, 23);
-            this.btnAddSprint.TabIndex = 77;
-            this.btnAddSprint.Text = "Adicionar";
-            this.btnAddSprint.UseVisualStyleBackColor = true;
-            this.btnAddSprint.Click += new System.EventHandler(this.BtnAddSprint_Click);
+            this.btnUpdateSprint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnUpdateSprint.Location = new System.Drawing.Point(278, 485);
+            this.btnUpdateSprint.Name = "btnUpdateSprint";
+            this.btnUpdateSprint.Size = new System.Drawing.Size(120, 23);
+            this.btnUpdateSprint.TabIndex = 77;
+            this.btnUpdateSprint.Text = "Atualizar";
+            this.btnUpdateSprint.UseVisualStyleBackColor = true;
+            this.btnUpdateSprint.Click += new System.EventHandler(this.BtnUpdateSprint_Click);
             // 
             // splitContainer1
             // 
@@ -176,9 +176,10 @@ namespace RelatorioFA.AppWinForm
             this.txbExtraHour.Location = new System.Drawing.Point(113, 318);
             this.txbExtraHour.Name = "txbExtraHour";
             this.txbExtraHour.Size = new System.Drawing.Size(153, 20);
-            this.txbExtraHour.TabIndex = 55;
+            this.txbExtraHour.TabIndex = 2;
             this.txbExtraHour.Text = "0";
             this.txbExtraHour.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbExtraHour_KeyPress);
+            this.txbExtraHour.Leave += new System.EventHandler(this.TxbExtraHour_Leave);
             // 
             // label7
             // 
@@ -203,7 +204,7 @@ namespace RelatorioFA.AppWinForm
             this.lsbDevTeam.Location = new System.Drawing.Point(9, 63);
             this.lsbDevTeam.Name = "lsbDevTeam";
             this.lsbDevTeam.Size = new System.Drawing.Size(257, 82);
-            this.lsbDevTeam.TabIndex = 53;
+            this.lsbDevTeam.TabIndex = 3;
             this.lsbDevTeam.SelectedIndexChanged += new System.EventHandler(this.LsbDevTeam_SelectedIndexChanged);
             // 
             // label19
@@ -219,9 +220,10 @@ namespace RelatorioFA.AppWinForm
             this.txbAbsence.Location = new System.Drawing.Point(113, 208);
             this.txbAbsence.Name = "txbAbsence";
             this.txbAbsence.Size = new System.Drawing.Size(153, 20);
-            this.txbAbsence.TabIndex = 7;
+            this.txbAbsence.TabIndex = 1;
             this.txbAbsence.Text = "0";
             this.txbAbsence.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbAbsence_KeyPress);
+            this.txbAbsence.Leave += new System.EventHandler(this.TxbAbsence_Leave);
             // 
             // label1
             // 
@@ -263,7 +265,7 @@ namespace RelatorioFA.AppWinForm
             // 
             // btnGenerate
             // 
-            this.btnGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnGenerate.Location = new System.Drawing.Point(544, 485);
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(103, 23);
@@ -274,7 +276,7 @@ namespace RelatorioFA.AppWinForm
             // 
             // btnSetOutputDocPath
             // 
-            this.btnSetOutputDocPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnSetOutputDocPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSetOutputDocPath.Location = new System.Drawing.Point(418, 485);
             this.btnSetOutputDocPath.Name = "btnSetOutputDocPath";
             this.btnSetOutputDocPath.Size = new System.Drawing.Size(103, 23);
@@ -285,7 +287,7 @@ namespace RelatorioFA.AppWinForm
             // 
             // btnOpenDestinationFolder
             // 
-            this.btnOpenDestinationFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnOpenDestinationFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOpenDestinationFolder.Enabled = false;
             this.btnOpenDestinationFolder.Location = new System.Drawing.Point(667, 485);
             this.btnOpenDestinationFolder.Name = "btnOpenDestinationFolder";
@@ -303,7 +305,7 @@ namespace RelatorioFA.AppWinForm
             this.Controls.Add(this.btnGenerate);
             this.Controls.Add(this.btnSetOutputDocPath);
             this.Controls.Add(this.btnPreviousForm);
-            this.Controls.Add(this.btnAddSprint);
+            this.Controls.Add(this.btnUpdateSprint);
             this.Controls.Add(this.btnOpenDestinationFolder);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.lblScreen);
@@ -327,7 +329,7 @@ namespace RelatorioFA.AppWinForm
         private System.Windows.Forms.Button btnPreviousForm;
         private System.Windows.Forms.RichTextBox txbResult;
         private System.Windows.Forms.ListBox lsbSprints;
-        private System.Windows.Forms.Button btnAddSprint;
+        private System.Windows.Forms.Button btnUpdateSprint;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label2;
