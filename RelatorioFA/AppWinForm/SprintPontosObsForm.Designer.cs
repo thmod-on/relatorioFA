@@ -69,7 +69,6 @@ namespace RelatorioFA.AppWinForm
             // btnNextForm
             // 
             this.btnNextForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnNextForm.Enabled = false;
             this.btnNextForm.Location = new System.Drawing.Point(699, 485);
             this.btnNextForm.Name = "btnNextForm";
             this.btnNextForm.Size = new System.Drawing.Size(75, 23);

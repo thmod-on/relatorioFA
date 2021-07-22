@@ -21,7 +21,8 @@ namespace RelatorioFA.DTO
         public virtual StringBuilder ToStringBuilder() 
         {
             var aux = new StringBuilder();
-            aux.Append($"\nSprint {Range.Name} ({Range.IniDate:d} ~ {Range.EndDate:d})\n");
+            aux.Append("____________________________________\n");
+            aux.Append($"Sprint {Range.Name} ({Range.IniDate:d} ~ {Range.EndDate:d})\n");
             aux.Append($"- Dias da sprint: {(Range.EndDate - Range.IniDate).TotalDays}\n");
             aux.Append($"- Imagem: {ImagePath}\n");
             aux.Append($"- Obs.: {Obs}\n");

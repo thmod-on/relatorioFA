@@ -19,7 +19,7 @@ namespace RelatorioFA.Negocio
                     foreach (var dev in contract.Collaborators)
                     {
                         double factor = dev.WorksHalfDay ? 0.5 : 1;
-                        dev.Presence = Math.Round((sprintDays - dev.AbsenceDays) * factor / sprintDays, 2);
+                        dev.Presence = Math.Round((sprintDays - dev.AbsenceDays) * factor / sprintDays, 3);
                     }
                 }
             }

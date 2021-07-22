@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using RelatorioFA.DTO;
@@ -13,25 +12,25 @@ namespace RelatorioFA.AppWinForm
         public SprintAbsenceHourForm(ContainerForm containerForm, ConfigXmlDTO configXml, UtilDTO.NAVIGATION fluxo, List<SprintDevDTO> sprintsDevList, List<SprintSmDTO> sprintsSmList = null)
         {
             InitializeComponent();
-            this.containerForm = containerForm;
             this.sprintsDevList = sprintsDevList;
             this.sprintsSmList = sprintsSmList;
             this.configXml = configXml;
             this.fluxo = fluxo;
+            this.containerForm = containerForm;
             //Texto cortando
             lblMessage.Text = "Este colaborador fez hora extra?\n+ Considerado hora extra serviços entre as 22h e 6h de um dia útil, finais de semana ou feriado. Por isso o pagaremos 0,5pts por turno adicional, ajustando para seu proporcional quando necessário.";
             lblScreen.Text = "Tela 3/3";
             SetSprintListBox();
             SetDefaultDevAbsensesAndExtraHour();
+            SetDevSprintWithContractsAndDevs();
             SetCbbPartners();
-            ResizeParent(containerForm);
             ShowLog();
         }
 
         private const string all = "TODOS";
         private const string mark = "- ";
-        private readonly ContainerForm containerForm;
         private readonly UtilDTO.NAVIGATION fluxo;
+        private readonly ContainerForm containerForm;
         private readonly ConfigXmlDTO configXml;
         private readonly List<SprintDevDTO> sprintsDevList = new List<SprintDevDTO>();
         private readonly List<SprintSmDTO> sprintsSmList = new List<SprintSmDTO>();
@@ -115,7 +114,8 @@ namespace RelatorioFA.AppWinForm
             var selectedSprint = sprintsDevList.Find(sprint => sprint.Range.Name == selectedRange.Name);
             foreach (var contract in selectedSprint.Contracts)
             {
-                if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() && contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
+                if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() 
+                    && contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
                 {
                     foreach (var dev in contract.Collaborators)
                     {
@@ -187,10 +187,21 @@ namespace RelatorioFA.AppWinForm
             }
         }
 
-        private void ResizeParent(Form containerForm)
+        private void SetSprintDevAbsensesAndExtraHour()
         {
-            containerForm.Size = new Size(this.Width, this.Height + 20);
-            containerForm.MinimumSize = new Size(this.Width, this.Height + 20);
+            var selectedDevSprint = sprintsDevList.Find(sprint => sprint.Range.Name == selectedRange.Name);
+            foreach (var contratc in selectedDevSprint.Contracts)
+            {
+                if (contratc.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString()
+                    && contratc.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
+                {
+                    foreach (var dev in contratc.Collaborators)
+                    {
+                        dev.AbsenceDays = devAbsences[dev.Name];
+                        dev.ExtraHours = devExtraHour[dev.Name];
+                    }
+                }
+            }
         }
 
         private void SetPartnersDevInLsbDevTeam(FornecedorDTO partner)
@@ -204,6 +215,66 @@ namespace RelatorioFA.AppWinForm
                     {
                         lsbDevTeam.Items.Add(dev.Name);
                     } 
+                }
+            }
+        }
+
+        private void SetDevSprintWithContractsAndDevs()
+        {
+            foreach (var selectedDevSprint in sprintsDevList)
+            {
+                if (selectedDevSprint.Contracts.Count == 0)
+                {
+                    if (configXml.BaneseDes.Count > 0)
+                    {
+                        ContratoDTO houseDevContract = new ContratoDTO()
+                        {
+                            Name = UtilDTO.CONTRACTS.HOUSE.ToString()
+                        };
+                        foreach (var dev in configXml.BaneseDes)
+                        {
+                            ColaboradorDTO houseDev = new ColaboradorDTO()
+                            {
+                                Name = dev.Name,
+                                WorksHalfDay = dev.WorksHalfDay,
+                                AbsenceDays = devAbsences[dev.Name],
+                                ExtraHours = devExtraHour[dev.Name]
+                            };
+                            houseDevContract.Collaborators.Add(houseDev);
+                        }
+                        selectedDevSprint.Contracts.Add(houseDevContract);
+                    }
+
+                    foreach (var partner in configXml.Partners)
+                    {
+                        foreach (var contract in partner.Contracts)
+                        {
+                            if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
+                                contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
+                            {
+                                ContratoDTO newContract = new ContratoDTO()
+                                {
+                                    Name = contract.Name,
+                                    Factor = contract.Factor,
+                                    HourValue = contract.HourValue,
+                                    NumeroSAP = contract.NumeroSAP,
+                                    PartnerName = partner.Name
+                                };
+                                foreach (var dev in contract.Collaborators)
+                                {
+                                    ColaboradorDTO newDev = new ColaboradorDTO()
+                                    {
+                                        Name = dev.Name,
+                                        AbsenceDays = devAbsences[dev.Name],
+                                        ExtraHours = devExtraHour[dev.Name],
+                                        WorksHalfDay = dev.WorksHalfDay
+                                    };
+                                    newContract.Collaborators.Add(newDev);
+                                }
+                                selectedDevSprint.Contracts.Add(newContract);
+                            }
+                        }
+                    }  
                 }
             }
         }
@@ -256,19 +327,21 @@ namespace RelatorioFA.AppWinForm
             txbResult.AppendText("\n===========\n");
 
             txbResult.AppendText("\nSprints Dev");
-            txbResult.AppendText("\n===========\n\n");
+            txbResult.AppendText("\n===========\n");
             foreach (var sprint in sprintsDevList)
             {
                 txbResult.AppendText(sprint.ToStringBuilder().ToString());
+                txbResult.AppendText("\n");
             }
 
             if (sprintsSmList != null)
             {
-                txbResult.AppendText("\nSprints SM");
-                txbResult.AppendText("\n===========\n\n");
+                txbResult.AppendText("Sprints SM");
+                txbResult.AppendText("\n===========\n");
                 foreach (var sprint in sprintsSmList)
                 {
                     txbResult.AppendText(sprint.ToStringBuilder().ToString());
+                    txbResult.AppendText("\n");
                 }
             }
             txbResult.Select(0, 0);
@@ -298,77 +371,9 @@ namespace RelatorioFA.AppWinForm
         {
             try
             {
-                //Organizando a sprint DEV
-                var selectedSprint = sprintsDevList.Find(sprint => sprint.Range.Name == selectedRange.Name);
-                selectedSprint.Contracts.Clear();
-                if (configXml.BaneseDes.Count > 0)
-                {
-                    ContratoDTO houseDevContract = new ContratoDTO()
-                    {
-                        Name = UtilDTO.CONTRACTS.HOUSE.ToString()
-                    };
-                    foreach (var dev in configXml.BaneseDes)
-                    {
-                        ColaboradorDTO houseDev = new ColaboradorDTO()
-                        {
-                            Name = dev.Name,
-                            WorksHalfDay = dev.WorksHalfDay,
-                            AbsenceDays = devAbsences[dev.Name],
-                            ExtraHours = devExtraHour[dev.Name]
-                        };
-                        houseDevContract.Collaborators.Add(houseDev);
-                    }
-                    selectedSprint.Contracts.Add(houseDevContract);
-                }
-
-                foreach (var partner in configXml.Partners)
-                {
-                    foreach (var contract in partner.Contracts)
-                    {
-                        if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
-                            contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
-                        {
-                            ContratoDTO newContract = new ContratoDTO()
-                            {
-                                Name = contract.Name,
-                                Factor = contract.Factor,
-                                HourValue = contract.HourValue,
-                                NumeroSAP = contract.NumeroSAP,
-                                PartnerName = partner.Name
-                            };
-                            foreach (var dev in contract.Collaborators)
-                            {
-                                ColaboradorDTO newDev = new ColaboradorDTO()
-                                {
-                                    Name = dev.Name,
-                                    AbsenceDays = devAbsences[dev.Name],
-                                    ExtraHours = devExtraHour[dev.Name],
-                                    WorksHalfDay = dev.WorksHalfDay
-                                };
-                                newContract.Collaborators.Add(newDev);
-                            }
-                            selectedSprint.Contracts.Add(newContract);
-                        }
-                    }
-                }
+                SetSprintDevAbsensesAndExtraHour();
 
                 SetDefaultDevAbsensesAndExtraHour();
-
-                //Organizando devs
-                string devName = lsbDevTeam.SelectedItem.ToString();
-                if (devName.IndexOf(mark) >= 0)
-                {
-                    devName = devName.Substring(mark.Length);
-                }
-                foreach (var contract in sprintsDevList.Find(sprint => sprint.Range.Name == selectedRange.Name).Contracts)
-                {
-                    if (contract.Collaborators.Any(c => c.Name == devName))
-                    {
-                        contract.Collaborators.Find(dev => dev.Name == devName).AbsenceDays = Convert.ToInt32(txbAbsence.Text);
-                        contract.Collaborators.Find(dev => dev.Name == devName).ExtraHours = Convert.ToDouble(txbExtraHour.Text);
-                        break;
-                    }
-                }
 
                 //Organizando a sprint SM
                 if (sprintsSmList != null)
@@ -405,14 +410,14 @@ namespace RelatorioFA.AppWinForm
                 ShowLog($"Srpint {selectedRange.Name} atualizada.");
                 if (lsbSprints.SelectedIndex < lsbSprints.Items.Count - 1)
                 {
-                    lsbSprints.SelectedIndex += 1; 
+                    lsbSprints.SelectedIndex += 1;
                 }
             }
             catch (Exception ex)
             {
                 txbResult.Text = ex.Message;
             }
-        } 
+        }
         #endregion
 
         #region BtnOpenDestinationFolder_Click

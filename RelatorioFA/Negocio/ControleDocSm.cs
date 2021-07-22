@@ -94,7 +94,7 @@ namespace RelatorioFA.Negocio
                 smTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
                 smTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name;//Sprint
                 smTable.Rows[line].Cells[2].Range.Text = (sprint.AcceptedPointsExpenses + sprint.AcceptedPointsInvestment).ToString();//A
-                smTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString();//B
+                smTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString(decimalFormat);//B
                 smTable.Rows[line].Cells[4].Range.Text = sprint.EmployeesCount.ToString();//C
                 smTable.Rows[line].Cells[5].Range.Text = sprint.SmPoints.ToString();//D
                 smTable.Rows[line].Cells[6].Range.Text = (sprint.EmployeesCount * sprint.SmPoints).ToString();//E

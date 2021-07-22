@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using RelatorioFA.DTO;
@@ -18,7 +17,6 @@ namespace RelatorioFA.AppWinForm
             this.containerForm = containerForm;
             this.configXml = configXml;
             this.fluxo = fluxo;
-            ResizeParent(containerForm);
             SetScreenLayout(fluxo);
             SetSprints();
         }
@@ -84,7 +82,7 @@ namespace RelatorioFA.AppWinForm
 
         private void BtnPreviousForm_Click(object sender, EventArgs e)
         {
-            containerForm.AbrirForm(new SprintBaseForm(containerForm, UtilDTO.NAVIGATION.VARIOS_RELATORIOS, sprintsDevList));
+            containerForm.AbrirForm(new SprintBaseForm(containerForm, UtilDTO.NAVIGATION.VARIOS_RELATORIOS, sprintsDevList, sprintsSmList));
         }
         #endregion
 
@@ -190,14 +188,6 @@ namespace RelatorioFA.AppWinForm
         }
         #endregion
 
-        #region ResizeParent
-        private void ResizeParent(Form containerForm)
-        {
-            containerForm.Size = new Size(this.Width, this.Height + 20);
-            containerForm.MinimumSize = new Size(this.Width, this.Height + 20);
-        } 
-        #endregion
-
         #region ShowLog
         private void ShowLog(string message = "")
         {
@@ -212,7 +202,7 @@ namespace RelatorioFA.AppWinForm
             if (sprintsDevList != null)
             {
                 txbResult.AppendText("Sprints Dev");
-                txbResult.AppendText("\n===========\n\n");
+                txbResult.AppendText("\n===========\n");
                 foreach (var sprint in sprintsDevList)
                 {
                     txbResult.AppendText(sprint.ToStringBuilder().ToString());
@@ -222,7 +212,7 @@ namespace RelatorioFA.AppWinForm
             if (sprintsSmList != null)
             {
                 txbResult.AppendText("\nSprints SM");
-                txbResult.AppendText("\n===========\n\n");
+                txbResult.AppendText("\n===========\n");
                 foreach (var sprint in sprintsSmList)
                 {
                     txbResult.AppendText(sprint.ToStringBuilder().ToString());

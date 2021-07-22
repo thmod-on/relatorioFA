@@ -167,7 +167,7 @@ namespace RelatorioFA.Negocio
                 "E. Fator de ajuste",
                 "F. UST pelas cerimônias",
                 "G. Total de pontos\n( D + F) * E * C",
-                " - "
+                "A ser faturado\n(G * UST) "
             };
             SetGenericTableHeader(ref table, headers);
         }

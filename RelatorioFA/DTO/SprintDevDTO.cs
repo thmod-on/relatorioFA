@@ -16,13 +16,12 @@ namespace RelatorioFA.DTO
 
             aux.Append($"- Pts. aceitos INV: {AcceptedPointsInvestment}\n");
             aux.Append($"- Pts. aceitos DES: {AcceptedPointsExpenses}\n");
-            aux.Append($"- Pts. / dev (time) INV: {PointsPerTeamMemberInvestment}\n");
-            aux.Append($"- Pts. / dev (time) DES: {PointsPerTeamMemberExpenses}\n");
             if (Contracts.Count > 0)
             {
                 foreach (var contract in Contracts)
                 {
-                    aux.Append($"- {contract.Name} ({contract.NumeroSAP})\n");
+                    aux.Append("===\n");
+                    aux.Append($"- {contract.PartnerName}.{contract.Name} ({contract.NumeroSAP})\n");
                     aux.Append($"- Fator ajuste: {contract.Factor}\n");
                     foreach (var dev in contract.Collaborators)
                     {

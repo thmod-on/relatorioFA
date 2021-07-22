@@ -21,7 +21,7 @@ namespace RelatorioFA.AppWinForm
             SetSreenNumber(fluxo);
         }
 
-        public SprintBaseForm(ContainerForm parentForm, UtilDTO.NAVIGATION fluxo, List<SprintDevDTO> sprintsList)
+        public SprintBaseForm(ContainerForm parentForm, UtilDTO.NAVIGATION fluxo, List<SprintDevDTO> sprintsDevList, List<SprintSmDTO> sprintsSmList = null)
         {
             InitializeComponent();
             ResizeParent(parentForm);
@@ -30,17 +30,25 @@ namespace RelatorioFA.AppWinForm
             LoadRanges();
             SetSreenNumber(fluxo);
 
-            foreach (var sprint in sprintsList)
+            foreach (var sprint in sprintsDevList)
             {
                 lsbSprints.Items.Add(sprint.Range.Name);
-                sprintsDevList.Add(sprint);
+                this.sprintsDevList.Add(sprint);
             }
             lsbSprints.SelectedIndex = 0;
+
+            this.sprintsSmList = sprintsSmList;
 
             ShowLog("Bem vindo de volta\n:)");
             btnNextForm.Enabled = true;
         }
 
+        /// <summary>
+        /// Construtor para tratamento de fluxo DevOps
+        /// </summary>
+        /// <param name="parentForm"></param>
+        /// <param name="fluxo"></param>
+        /// <param name="sprintsList"></param>
         public SprintBaseForm(ContainerForm parentForm, UtilDTO.NAVIGATION fluxo, List<SprintDevOpsDTO> sprintsList)
         {
             InitializeComponent();
@@ -209,7 +217,7 @@ namespace RelatorioFA.AppWinForm
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "Imagens PNG (*.png)|*.png|Imagens Jpeg (*.jpg)|*.jpg";
-                openFileDialog.FilterIndex = 1;
+                openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)

@@ -164,9 +164,9 @@ namespace RelatorioFA.AppWinForm
             // 
             // lblMessage
             // 
-            this.lblMessage.Location = new System.Drawing.Point(6, 253);
+            this.lblMessage.Location = new System.Drawing.Point(6, 241);
             this.lblMessage.Name = "lblMessage";
-            this.lblMessage.Size = new System.Drawing.Size(260, 62);
+            this.lblMessage.Size = new System.Drawing.Size(260, 74);
             this.lblMessage.TabIndex = 57;
             this.lblMessage.Text = "Este colaborador fez hora extra?     + 0,5 pts se durante a semana até às 20h;   " +
     "      + 1pt se durante a semana depois das 20h ou final de semana / feriado.";
