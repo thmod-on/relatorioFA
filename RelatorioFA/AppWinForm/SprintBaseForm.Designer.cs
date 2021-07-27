@@ -328,7 +328,7 @@ namespace RelatorioFA.AppWinForm
             this.Controls.Add(this.btnNextForm);
             this.Controls.Add(this.splitContainer1);
             this.Name = "SprintBaseForm";
-            this.Text = "SprintForm";
+            this.Text = "SprintBaseForm";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbxSprintImage)).EndInit();

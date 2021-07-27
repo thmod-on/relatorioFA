@@ -32,13 +32,14 @@ namespace RelatorioFA.AppWinForm
             this.btnPreviousForm = new System.Windows.Forms.Button();
             this.txbResult = new System.Windows.Forms.RichTextBox();
             this.lsbSprints = new System.Windows.Forms.ListBox();
-            this.btnUpdateSprint = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.cbbPartners = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.txbExtraHourInvestment = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.lblMessage = new System.Windows.Forms.Label();
-            this.txbExtraHour = new System.Windows.Forms.TextBox();
+            this.txbExtraHourExpenses = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.lsbDevTeam = new System.Windows.Forms.ListBox();
@@ -89,17 +90,6 @@ namespace RelatorioFA.AppWinForm
             this.lsbSprints.TabIndex = 56;
             this.lsbSprints.SelectedIndexChanged += new System.EventHandler(this.LsbSprints_SelectedIndexChanged);
             // 
-            // btnUpdateSprint
-            // 
-            this.btnUpdateSprint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUpdateSprint.Location = new System.Drawing.Point(278, 485);
-            this.btnUpdateSprint.Name = "btnUpdateSprint";
-            this.btnUpdateSprint.Size = new System.Drawing.Size(120, 23);
-            this.btnUpdateSprint.TabIndex = 77;
-            this.btnUpdateSprint.Text = "Atualizar";
-            this.btnUpdateSprint.UseVisualStyleBackColor = true;
-            this.btnUpdateSprint.Click += new System.EventHandler(this.BtnUpdateSprint_Click);
-            // 
             // splitContainer1
             // 
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -147,8 +137,10 @@ namespace RelatorioFA.AppWinForm
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.txbExtraHourInvestment);
+            this.groupBox5.Controls.Add(this.label6);
             this.groupBox5.Controls.Add(this.lblMessage);
-            this.groupBox5.Controls.Add(this.txbExtraHour);
+            this.groupBox5.Controls.Add(this.txbExtraHourExpenses);
             this.groupBox5.Controls.Add(this.label7);
             this.groupBox5.Controls.Add(this.label5);
             this.groupBox5.Controls.Add(this.lsbDevTeam);
@@ -162,6 +154,25 @@ namespace RelatorioFA.AppWinForm
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Controle de participação";
             // 
+            // txbExtraHourInvestment
+            // 
+            this.txbExtraHourInvestment.Location = new System.Drawing.Point(113, 342);
+            this.txbExtraHourInvestment.Name = "txbExtraHourInvestment";
+            this.txbExtraHourInvestment.Size = new System.Drawing.Size(153, 20);
+            this.txbExtraHourInvestment.TabIndex = 3;
+            this.txbExtraHourInvestment.Text = "0";
+            this.txbExtraHourInvestment.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbExtraHour_KeyPress);
+            this.txbExtraHourInvestment.Leave += new System.EventHandler(this.TxbExtraHourInvestment_Leave);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 345);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(93, 13);
+            this.label6.TabIndex = 59;
+            this.label6.Text = "Horas extras (INV)";
+            // 
             // lblMessage
             // 
             this.lblMessage.Location = new System.Drawing.Point(6, 241);
@@ -171,24 +182,24 @@ namespace RelatorioFA.AppWinForm
             this.lblMessage.Text = "Este colaborador fez hora extra?     + 0,5 pts se durante a semana até às 20h;   " +
     "      + 1pt se durante a semana depois das 20h ou final de semana / feriado.";
             // 
-            // txbExtraHour
+            // txbExtraHourExpenses
             // 
-            this.txbExtraHour.Location = new System.Drawing.Point(113, 318);
-            this.txbExtraHour.Name = "txbExtraHour";
-            this.txbExtraHour.Size = new System.Drawing.Size(153, 20);
-            this.txbExtraHour.TabIndex = 2;
-            this.txbExtraHour.Text = "0";
-            this.txbExtraHour.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbExtraHour_KeyPress);
-            this.txbExtraHour.Leave += new System.EventHandler(this.TxbExtraHour_Leave);
+            this.txbExtraHourExpenses.Location = new System.Drawing.Point(113, 318);
+            this.txbExtraHourExpenses.Name = "txbExtraHourExpenses";
+            this.txbExtraHourExpenses.Size = new System.Drawing.Size(153, 20);
+            this.txbExtraHourExpenses.TabIndex = 2;
+            this.txbExtraHourExpenses.Text = "0";
+            this.txbExtraHourExpenses.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbExtraHour_KeyPress);
+            this.txbExtraHourExpenses.Leave += new System.EventHandler(this.TxbExtraHourExpenses_Leave);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(6, 321);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(101, 13);
+            this.label7.Size = new System.Drawing.Size(97, 13);
             this.label7.TabIndex = 56;
-            this.label7.Text = "Horas extras (horas)";
+            this.label7.Text = "Horas extras (DES)";
             // 
             // label5
             // 
@@ -305,7 +316,6 @@ namespace RelatorioFA.AppWinForm
             this.Controls.Add(this.btnGenerate);
             this.Controls.Add(this.btnSetOutputDocPath);
             this.Controls.Add(this.btnPreviousForm);
-            this.Controls.Add(this.btnUpdateSprint);
             this.Controls.Add(this.btnOpenDestinationFolder);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.lblScreen);
@@ -329,7 +339,6 @@ namespace RelatorioFA.AppWinForm
         private System.Windows.Forms.Button btnPreviousForm;
         private System.Windows.Forms.RichTextBox txbResult;
         private System.Windows.Forms.ListBox lsbSprints;
-        private System.Windows.Forms.Button btnUpdateSprint;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label2;
@@ -342,11 +351,13 @@ namespace RelatorioFA.AppWinForm
         private System.Windows.Forms.ComboBox cbbPartners;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblMessage;
-        private System.Windows.Forms.TextBox txbExtraHour;
+        private System.Windows.Forms.TextBox txbExtraHourExpenses;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.Button btnSetOutputDocPath;
         private System.Windows.Forms.Button btnOpenDestinationFolder;
+        private System.Windows.Forms.TextBox txbExtraHourInvestment;
+        private System.Windows.Forms.Label label6;
     }
 }

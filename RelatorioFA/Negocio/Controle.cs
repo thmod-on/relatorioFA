@@ -70,49 +70,15 @@ namespace RelatorioFA.Negocio
             return sprintRanges;
         }
 
-        public static double CalcEmployeesPrticipation(ContratoDTO contract, Dictionary<string, double> devPresence)
-        {
-            double count = 0;
-
-            foreach (var c in contract.Collaborators)
-            {
-                if (devPresence.ContainsKey(c.Name))
-                {
-                    count += devPresence[c.Name];
-                }
-            }
-
-            return count;
-        }
-
-        public static double CalcBillingUst(double ustValue, double pointsPerPartner, double factor)
-        {
-            return Math.Round(ustValue * pointsPerPartner * factor, 2);
-        }
-
-        public static double CalcPartnerPoints(double pointsPerTeamMember, double factor, bool addCerimonialPoint, double emploeeCount)
-        {
-            if (addCerimonialPoint)
-            {
-                pointsPerTeamMember += 1;
-            }
-            return Math.Round(pointsPerTeamMember * factor * emploeeCount, 3);
-        }
-
         public static void CalcPointsPerTeamMember(SprintDevDTO devSprint)
         {
             devSprint.PointsPerTeamMemberExpenses = Math.Round(devSprint.AcceptedPointsExpenses / devSprint.TeamSize, 3);
             devSprint.PointsPerTeamMemberInvestment = Math.Round(devSprint.AcceptedPointsInvestment / devSprint.TeamSize, 3);
         }
 
-        public static int CalcSprintHours(double pointsPerPartner, double ustValue, double hourValue)
+        public static double CalcUstByExtraHour(double extraHour)
         {
-            return (int)Math.Ceiling(pointsPerPartner * ustValue / hourValue);
-        }
-
-        public static double CalcBillingHour(int hours, double hourValue)
-        {
-            return Math.Round(hours * hourValue, 2);
+            return (0.5 * extraHour) / 4;
         }
     }
 }

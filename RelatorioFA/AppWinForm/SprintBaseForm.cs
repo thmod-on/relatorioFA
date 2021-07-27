@@ -97,6 +97,11 @@ namespace RelatorioFA.AppWinForm
             {
                 configXml = PrincipalTO.LoadConfig(path);
             }
+            catch (FileNotFoundException ex)
+            {
+                txbResult.Text = ex.Message;
+                BlockFields(true);
+            }
             catch (Exception ex)
             {
                 txbResult.Text = ex.Message;
@@ -206,6 +211,8 @@ namespace RelatorioFA.AppWinForm
             if (result == DialogResult.OK)
             {
                 LoadXmlConfig(folderDlg.SelectedPath);
+                BlockFields(false);
+                txbResult.Text = "Seja bem vindo de volta.";
             }
         }
 
@@ -302,6 +309,17 @@ namespace RelatorioFA.AppWinForm
         #endregion
 
         #region AUX
+        private void BlockFields(bool block)
+        {
+            txbSprintDays.Enabled = !block;
+            dtpIniDate.Enabled = !block;
+            dtpEndDate.Enabled = !block;
+            cbbSprintRanges.Enabled = !block;
+            btnAddSprint.Enabled = !block;
+            btnAddSprintImage.Enabled = !block;
+            btnRemoveSprintImage.Enabled = !block;
+        }
+
         private void ResizeParent(Form containerForm)
         {
             containerForm.Size = new System.Drawing.Size(this.Width, this.Height + 20);

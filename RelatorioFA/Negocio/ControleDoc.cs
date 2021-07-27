@@ -158,9 +158,9 @@ namespace RelatorioFA.Negocio
         public static void SetLastPageSignature(Paragraph paragraph, ConfigXmlDTO config)
         {
             AddPAragraph(paragraph, "Atenciosamente,", 150, 30, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
-            AddPAragraph(paragraph, "_________________________________________________", 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphCenter);
+            AddPAragraph(paragraph, "_______________________________________________________", 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphCenter);
             AddPAragraph(paragraph, config.AuthorName, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphCenter);
-            AddPAragraph(paragraph, config.AreaName + " - " + config.TeamName, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphCenter);
+            AddPAragraph(paragraph, "Gerente de suporte - " + config.AreaName + " - " + config.TeamName, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphCenter);
         }
         #endregion
 

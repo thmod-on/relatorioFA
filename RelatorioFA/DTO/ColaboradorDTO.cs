@@ -13,7 +13,8 @@ namespace RelatorioFA.DTO
         public string Name { get; set; }
         [XmlElement("UmTurno")]
         public bool WorksHalfDay { get; set; }
-        public double ExtraHours { get; set; }
+        public double ExtraHoursExpenses { get; set; }
+        public double ExtraHourInvestment { get; set; }
         public int AbsenceDays { get; set; }
         public double Presence { get; set; }
     }

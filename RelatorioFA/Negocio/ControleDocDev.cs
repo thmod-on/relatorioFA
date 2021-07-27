@@ -104,7 +104,7 @@ namespace RelatorioFA.Negocio
         {
             int line = 2;
             double totalPoints = 0;
-            int columns = 9;
+            int columns = 10;
 
             Table summaryTable = document.Tables.Add(EndOfDocument(document, ref missing), 1, columns, ref missing, ref missing);
 
@@ -119,6 +119,7 @@ namespace RelatorioFA.Negocio
                 {
                     if (contract.PartnerName == partner.Name)
                     {
+                        double extraHourUst = 0;
                         double employeeCount = 0;
                         double partialPoints = 0;
                         int acceptedPoints = category == UtilDTO.CATEGORY.DES ? sprint.AcceptedPointsExpenses : sprint.AcceptedPointsInvestment;
@@ -132,8 +133,9 @@ namespace RelatorioFA.Negocio
                         foreach (var dev in contract.Collaborators)
                         {
                             employeeCount += dev.Presence;
+                            extraHourUst += Controle.CalcUstByExtraHour(category == UtilDTO.CATEGORY.DES ? dev.ExtraHoursExpenses : dev.ExtraHourInvestment);
                         }
-                        partialPoints = (pointsPerTeamMember + Convert.ToDouble(cerimonialPoint)) * contract.Factor * employeeCount;
+                        partialPoints = ((pointsPerTeamMember + Convert.ToDouble(cerimonialPoint)) * contract.Factor * employeeCount) + extraHourUst;
                         summaryTable.Rows.Add(missing);
                         summaryTable.Rows[line].Range.Font.Bold = 0;
                         summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
@@ -144,7 +146,8 @@ namespace RelatorioFA.Negocio
                         summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString(decimalFormat);//D
                         summaryTable.Rows[line].Cells[6].Range.Text = contract.Factor.ToString();//E
                         summaryTable.Rows[line].Cells[7].Range.Text = cerimonialPoint;//F
-                        summaryTable.Rows[line].Cells[8].Range.Text = partialPoints.ToString(decimalFormat);//G
+                        summaryTable.Rows[line].Cells[8].Range.Text = extraHourUst.ToString(decimalFormat);//G
+                        summaryTable.Rows[line].Cells[9].Range.Text = partialPoints.ToString(decimalFormat);//H
 
                         totalPoints += partialPoints;
                         line++;
@@ -166,7 +169,8 @@ namespace RelatorioFA.Negocio
                 "D. Pts por membro do time\n(A / B)",
                 "E. Fator de ajuste",
                 "F. UST pelas cerimônias",
-                "G. Total de pontos\n( D + F) * E * C",
+                "G. UST Hora extra\n(0,5 UST a cada 4h)",
+                "H. Total de pontos\n(( D + F) * E * C) + G",
                 "A ser faturado\n(G * UST) "
             };
             SetGenericTableHeader(ref table, headers);
@@ -213,7 +217,7 @@ namespace RelatorioFA.Negocio
 
         private static void CreateSummaryTableUstHourContent(Document document, List<SprintDevDTO> sprints, object missing, double ustValue, UtilDTO.CATEGORY category)
         {
-            int columns = 9;
+            int columns = 10;
             Table summaryTable = document.Tables.Add(EndOfDocument(document, ref missing), 1, columns, ref missing, ref missing);
             summaryTable.Borders.Enable = 1;
             summaryTable.Range.Font.Size = 8;
@@ -228,6 +232,7 @@ namespace RelatorioFA.Negocio
                 foreach (var contract in sprint.Contracts)
                 {
                     double employeeCount = 0;
+                    double extraHour = 0;
                     double hours = 0;
                     double pointsPerPartner = 0;
                     string cerimonialPoint = "0";
@@ -239,14 +244,11 @@ namespace RelatorioFA.Negocio
                     foreach (var dev in contract.Collaborators)
                     {
                         employeeCount += dev.Presence;
+                        extraHour += category == UtilDTO.CATEGORY.DES ? dev.ExtraHoursExpenses : dev.ExtraHourInvestment;
                     }
-
                     double pointsPerTeamMember = category == UtilDTO.CATEGORY.DES ? sprint.PointsPerTeamMemberExpenses : sprint.PointsPerTeamMemberInvestment;
-
                     pointsPerPartner = employeeCount * (pointsPerTeamMember + Convert.ToDouble(cerimonialPoint));
-
-                    hours = Math.Ceiling(pointsPerPartner * ustValue / contract.HourValue);
-
+                    hours = Math.Ceiling(pointsPerPartner * ustValue / contract.HourValue) + extraHour;
                     int acceptedPoints = category == UtilDTO.CATEGORY.DES ? sprint.AcceptedPointsExpenses : sprint.AcceptedPointsInvestment;
                     
                     summaryTable.Rows.Add(missing);
@@ -259,7 +261,8 @@ namespace RelatorioFA.Negocio
                     summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString(decimalFormat);//D
                     summaryTable.Rows[line].Cells[6].Range.Text = cerimonialPoint;//E
                     summaryTable.Rows[line].Cells[7].Range.Text = pointsPerPartner.ToString(decimalFormat);//F
-                    summaryTable.Rows[line].Cells[8].Range.Text = hours.ToString();//G
+                    summaryTable.Rows[line].Cells[8].Range.Text = extraHour.ToString(decimalFormat);//G
+                    summaryTable.Rows[line].Cells[9].Range.Text = hours.ToString();//H
 
                     totalHours += hours;
                     line++;
@@ -290,8 +293,9 @@ namespace RelatorioFA.Negocio
                 ,"D. Pts por membro do time\n(A / B)"
                 ,"E. Pontuação de cerimônia"
                 ,"F. Pontos fornecedor\n(C *(D + E))"
-                ,"G. Horas na sprint\n(F * UST / Valor hora)"
-                ,"A ser faturado\n(G * Valor hora)"
+                ,"G. Horas extras"
+                ,"H. Horas na sprint\n(F * UST / Valor hora) + G"
+                ,"A ser faturado\n(H * Valor hora)"
             };
             SetGenericTableHeader(ref table, headers);
         }

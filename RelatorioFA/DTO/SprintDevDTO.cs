@@ -28,7 +28,8 @@ namespace RelatorioFA.DTO
                         aux.Append($"  > {dev.Name} \n");
                         aux.Append($"    . Trabalha turno único: {dev.WorksHalfDay} \n");
                         aux.Append($"    . Ausências (dias): {dev.AbsenceDays} \n");
-                        aux.Append($"    . Horas extras: {dev.ExtraHours} \n");
+                        aux.Append($"    . H.E. (INV): {dev.ExtraHourInvestment} \n");
+                        aux.Append($"    . H.E. (DES): {dev.ExtraHoursExpenses} \n");
                     }
                 }
             }
