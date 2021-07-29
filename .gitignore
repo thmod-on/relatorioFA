@@ -9,6 +9,7 @@
 /RelatorioFA/Negocio/obj
 /RelatorioFA/Transacao/bin
 /RelatorioFA/Transacao/obj
+/RelatorioFa/*.docx
 *.xml
 *.user
 *.png

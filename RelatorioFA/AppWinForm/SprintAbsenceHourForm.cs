@@ -17,7 +17,7 @@ namespace RelatorioFA.AppWinForm
             this.configXml = configXml;
             this.fluxo = fluxo;
             this.containerForm = containerForm;
-            lblMessage.Text = "Este colaborador fez hora extra?\n+ Considerado hora extra serviços entre as 22h e 6h de um dia útil, finais de semana ou feriado. Por isso o pagaremos 0,5pts por turno adicional, ajustando para seu proporcional quando necessário.";
+            lblMessage.Text = "Este colaborador fez hora extra?\nConsiderado hora extra serviços entre as 22h e 6h de um dia útil, finais de semana ou feriado. Será contabilizado 0,5pts por turno adicional, ajustando para seu proporcional quando necessário.";
             lblScreen.Text = "Tela 3/3";
             SetSprintListBox();
             SetDevSprintWithContractsAndDevs();

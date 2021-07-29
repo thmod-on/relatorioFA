@@ -47,7 +47,6 @@ namespace RelatorioFA.AppWinForm
             this.label17 = new System.Windows.Forms.Label();
             this.lsbSprints = new System.Windows.Forms.ListBox();
             this.txbResult = new System.Windows.Forms.RichTextBox();
-            this.btnAddSprint = new System.Windows.Forms.Button();
             this.btnPreviousForm = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -141,6 +140,7 @@ namespace RelatorioFA.AppWinForm
             this.txbObs.Size = new System.Drawing.Size(284, 252);
             this.txbObs.TabIndex = 5;
             this.txbObs.Text = "";
+            this.txbObs.Leave += new System.EventHandler(this.TxbObs_Leave);
             // 
             // groupBox4
             // 
@@ -167,6 +167,7 @@ namespace RelatorioFA.AppWinForm
             this.txbSmPoints.TabIndex = 3;
             this.txbSmPoints.Text = "6";
             this.txbSmPoints.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbSmPoints_KeyPress);
+            this.txbSmPoints.Leave += new System.EventHandler(this.TxbSmPoints_Leave);
             // 
             // label1
             // 
@@ -184,6 +185,7 @@ namespace RelatorioFA.AppWinForm
             this.txbAcceptedPointsInvestment.Size = new System.Drawing.Size(182, 20);
             this.txbAcceptedPointsInvestment.TabIndex = 1;
             this.txbAcceptedPointsInvestment.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbAcceptedPointsInvestment_KeyPress);
+            this.txbAcceptedPointsInvestment.Leave += new System.EventHandler(this.TxbAcceptedPointsInvestment_Leave);
             // 
             // cbbCerimonialPoint
             // 
@@ -192,6 +194,7 @@ namespace RelatorioFA.AppWinForm
             this.cbbCerimonialPoint.Name = "cbbCerimonialPoint";
             this.cbbCerimonialPoint.Size = new System.Drawing.Size(184, 21);
             this.cbbCerimonialPoint.TabIndex = 4;
+            this.cbbCerimonialPoint.SelectedIndexChanged += new System.EventHandler(this.CbbCerimonialPoint_SelectedIndexChanged);
             // 
             // label22
             // 
@@ -209,6 +212,7 @@ namespace RelatorioFA.AppWinForm
             this.txbAcceptedPointsExpense.Size = new System.Drawing.Size(183, 20);
             this.txbAcceptedPointsExpense.TabIndex = 2;
             this.txbAcceptedPointsExpense.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbAcceptedPointsExpense_KeyPress);
+            this.txbAcceptedPointsExpense.Leave += new System.EventHandler(this.TxbAcceptedPointsExpense_Leave);
             // 
             // label8
             // 
@@ -248,17 +252,6 @@ namespace RelatorioFA.AppWinForm
             this.txbResult.TabIndex = 54;
             this.txbResult.Text = "";
             // 
-            // btnAddSprint
-            // 
-            this.btnAddSprint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddSprint.Location = new System.Drawing.Point(344, 485);
-            this.btnAddSprint.Name = "btnAddSprint";
-            this.btnAddSprint.Size = new System.Drawing.Size(75, 23);
-            this.btnAddSprint.TabIndex = 6;
-            this.btnAddSprint.Text = "Atualizar";
-            this.btnAddSprint.UseVisualStyleBackColor = true;
-            this.btnAddSprint.Click += new System.EventHandler(this.BtnUpdateSprint_Click);
-            // 
             // btnPreviousForm
             // 
             this.btnPreviousForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -279,7 +272,6 @@ namespace RelatorioFA.AppWinForm
             this.Controls.Add(this.lblScreen);
             this.Controls.Add(this.btnNextForm);
             this.Controls.Add(this.splitContainer1);
-            this.Controls.Add(this.btnAddSprint);
             this.Name = "SprintPontosObsForm";
             this.Text = "SprintPontosObsForm";
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -304,7 +296,6 @@ namespace RelatorioFA.AppWinForm
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ListBox lsbSprints;
         private System.Windows.Forms.RichTextBox txbResult;
-        private System.Windows.Forms.Button btnAddSprint;
         private System.Windows.Forms.Button btnPreviousForm;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.TextBox txbSmPoints;

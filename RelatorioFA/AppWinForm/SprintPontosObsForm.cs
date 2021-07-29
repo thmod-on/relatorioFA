@@ -33,53 +33,6 @@ namespace RelatorioFA.AppWinForm
             containerForm.AbrirForm(new SprintAbsenceHourForm(containerForm, configXml, fluxo, sprintsDevList, sprintsSmList));
         }
 
-        private void BtnUpdateSprint_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (lsbSprints.SelectedIndex < 0)
-                {
-                    throw new Exception("Ops, parece que você esqueceu de selecionar uma sprint\n;)");
-                }
-
-                if (sprintsDevList != null)
-                {
-                    var selectedSprint = sprintsDevList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
-                    selectedSprint.AcceptedPointsExpenses = Convert.ToInt32(txbAcceptedPointsExpense.Text);
-                    selectedSprint.AcceptedPointsInvestment = Convert.ToInt32(txbAcceptedPointsInvestment.Text);
-                    selectedSprint.Obs = Regex.Replace(txbObs.Text, @"\r\n?|\n", " ");
-                    selectedSprint.CerimonialPoint = (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedItem;
-                }
-
-                if (sprintsSmList != null)
-                {
-                    var selectedSprint = sprintsSmList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
-                    selectedSprint.AcceptedPointsExpenses = Convert.ToInt32(txbAcceptedPointsExpense.Text);
-                    selectedSprint.AcceptedPointsInvestment = Convert.ToInt32(txbAcceptedPointsInvestment.Text);
-                    selectedSprint.SmPoints = Convert.ToInt32(txbSmPoints.Text);
-                    selectedSprint.Obs = Regex.Replace(txbObs.Text, @"\r\n?|\n", " ");
-                    selectedSprint.CerimonialPoint = (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedItem;
-                }
-
-                ShowLog($"Dados da sprint {lsbSprints.SelectedItem} atualizados.");
-                btnNextForm.Enabled = true;
-
-                txbAcceptedPointsExpense.Text = "0";
-                txbAcceptedPointsInvestment.Text = "0";
-                txbSmPoints.Text = "0";
-                txbObs.Clear();
-                if (lsbSprints.SelectedIndex < lsbSprints.Items.Count - 1)
-                {
-                    lsbSprints.SelectedIndex += 1;
-                }
-                txbAcceptedPointsInvestment.Focus();
-            }
-            catch (Exception ex)
-            {
-                txbResult.Text = ex.Message;
-            }
-        }
-
         private void BtnPreviousForm_Click(object sender, EventArgs e)
         {
             containerForm.AbrirForm(new SprintBaseForm(containerForm, UtilDTO.NAVIGATION.VARIOS_RELATORIOS, sprintsDevList, sprintsSmList));
@@ -139,6 +92,104 @@ namespace RelatorioFA.AppWinForm
         {
             e.Handled = UtilDTO.AllowOnlyNumbers_OnKeyPress(sender, e);
         }
+        #endregion
+
+        #region TxbAcceptedPointsInvestment_Leave
+        private void TxbAcceptedPointsInvestment_Leave(object sender, EventArgs e)
+        {
+            try
+            {
+                GetSelectedDevSprint().AcceptedPointsInvestment = Convert.ToInt32(txbAcceptedPointsInvestment.Text);
+                if (sprintsSmList != null)
+                {
+                    GetSelectedSmSprint().AcceptedPointsInvestment = Convert.ToInt32(txbAcceptedPointsInvestment.Text);
+                }
+                ShowLog($"Pontos aceitos de investimento atualizados na sprint {lsbSprints.SelectedItem}");
+            }
+            catch (Exception ex)
+            {
+                txbResult.Text = $"Falha ao atualizar os pontos aceitos de investimento na Sprint {lsbSprints.SelectedItem}. Erro: {ex.Message}";
+            }
+        } 
+        #endregion
+
+        #region TxbAcceptedPointsExpense_Leave
+        private void TxbAcceptedPointsExpense_Leave(object sender, EventArgs e)
+        {
+            try
+            {
+                GetSelectedDevSprint().AcceptedPointsExpenses = Convert.ToInt32(txbAcceptedPointsExpense.Text);
+                if (sprintsSmList != null)
+                {
+                    GetSelectedSmSprint().AcceptedPointsExpenses = Convert.ToInt32(txbAcceptedPointsExpense.Text);
+                }
+                ShowLog($"Pontos aceitos de despesa atualizados na sprint {lsbSprints.SelectedItem}");
+            }
+            catch (Exception ex)
+            {
+                txbResult.Text = $"Falha ao atualizar os pontos aceitos de despesa na Sprint {lsbSprints.SelectedItem}. Erro: {ex.Message}";
+            }
+        } 
+        #endregion
+
+        #region TxbSmPoints_Leave
+        private void TxbSmPoints_Leave(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sprintsSmList != null)
+                {
+                    GetSelectedSmSprint().SmPoints = Convert.ToInt32(txbSmPoints.Text);
+                }
+                ShowLog($"Pontos aceitos de scrum master atualizados na sprint {lsbSprints.SelectedItem}");
+            }
+            catch (Exception ex)
+            {
+                txbResult.Text = $"Falha ao atualizar os pontos aceitos de scrum master na Sprint {lsbSprints.SelectedItem}. Erro: {ex.Message}";
+            }
+        } 
+        #endregion
+
+        #region CbbCerimonialPoint_SelectedIndexChanged
+        private void CbbCerimonialPoint_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (GetSelectedDevSprint() != null)
+                {
+                    GetSelectedDevSprint().CerimonialPoint = (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedItem;
+                }
+                if (sprintsSmList != null &&
+                    GetSelectedSmSprint() != null)
+                {
+                    GetSelectedSmSprint().CerimonialPoint = (UtilDTO.CERIMONIAL_POINT)cbbCerimonialPoint.SelectedItem;
+                }
+                ShowLog($"Pontuação extra de cerimônia atualizada na sprint {lsbSprints.SelectedItem}");
+            }
+            catch (Exception ex)
+            {
+                txbResult.Text = $"Falha ao atualizar a pontuação extra de cerimônia na Sprint {lsbSprints.SelectedItem}. Erro: {ex.Message}";
+            }
+        } 
+        #endregion
+
+        #region TxbObs_Leave
+        private void TxbObs_Leave(object sender, EventArgs e)
+        {
+            try
+            {
+                GetSelectedDevSprint().Obs = Regex.Replace(txbObs.Text, @"\r\n?|\n", "; ");
+                if (sprintsSmList != null)
+                {
+                    GetSelectedSmSprint().Obs = Regex.Replace(txbObs.Text, @"\r\n?|\n", "; ");
+                }
+                ShowLog($"Observação atualizada na sprint {lsbSprints.SelectedItem}");
+            }
+            catch (Exception ex)
+            {
+                txbResult.Text = $"Falha ao atualizar a observação na Sprint {lsbSprints.SelectedItem}. Erro: {ex.Message}";
+            }
+        } 
         #endregion
         #endregion
 
@@ -222,6 +273,19 @@ namespace RelatorioFA.AppWinForm
         }
         #endregion
 
+        #region GetSelectedDevSprint
+        private SprintDevDTO GetSelectedDevSprint()
+        {
+            return lsbSprints.SelectedItem != null ? sprintsDevList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString()) : null;
+        } 
+        #endregion
+
+        #region GetSelectedSmSprint
+        private SprintSmDTO GetSelectedSmSprint()
+        {
+            return lsbSprints.SelectedItem != null ? sprintsSmList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString()) : null;
+        } 
+        #endregion
         #endregion
     }
 }
