@@ -159,6 +159,18 @@ namespace RelatorioFA.AppWinForm
                         sprintsSmList.Add(newSmSprint);
                         sprintsSmList.Sort((x, y) => x.Range.Name.CompareTo(y.Range.Name));
                         break;
+                    case UtilDTO.NAVIGATION.DEV:
+                        SprintDevDTO newAdaptaionSprint = new SprintDevDTO()
+                        {
+                            Range = range,
+                            ImagePath = sprintImagePath
+                        };
+
+                        //Remove e adiciona para caso ele esteja atualizando os dados
+                        sprintsDevList.Remove(sprintsDevList.Find(s => s.Range.Name == newAdaptaionSprint.Range.Name));
+                        sprintsDevList.Add(newAdaptaionSprint);
+                        sprintsDevList.Sort((x, y) => x.Range.Name.CompareTo(y.Range.Name));
+                        break;
                     default:
                         break;
                 }
@@ -194,6 +206,9 @@ namespace RelatorioFA.AppWinForm
                     break;
                 case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
                     containerForm.AbrirForm(new SprintPontosObsForm(containerForm, configXml, fluxo, sprintsDevList, sprintsSmList));
+                    break;
+                case UtilDTO.NAVIGATION.DEV:
+                    containerForm.AbrirForm(new SprintPontosObsForm(containerForm, configXml, fluxo, sprintsDevList));
                     break;
                 default:
                     break;
@@ -322,7 +337,7 @@ namespace RelatorioFA.AppWinForm
 
         private void ResizeParent(Form containerForm)
         {
-            containerForm.Size = new System.Drawing.Size(this.Width, this.Height + 20);
+            containerForm.Size = new Size(this.Width, this.Height + 20);
             containerForm.MinimumSize = new Size(this.Width, this.Height + 20);
         }
 
@@ -334,6 +349,9 @@ namespace RelatorioFA.AppWinForm
                     lblScreen.Text = "Tela 1/2";
                     break;
                 case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
+                    lblScreen.Text = "Tela 1/3";
+                    break;
+                case UtilDTO.NAVIGATION.DEV:
                     lblScreen.Text = "Tela 1/3";
                     break;
                 default:
@@ -372,6 +390,12 @@ namespace RelatorioFA.AppWinForm
                     txbResult.AppendText("\nSprints SM");
                     txbResult.AppendText("\n===========\n");
                     foreach (var sprint in sprintsSmList)
+                    {
+                        txbResult.AppendText(sprint.ToStringBuilder().ToString());
+                    }
+                    break;
+                case UtilDTO.NAVIGATION.DEV:
+                    foreach (var sprint in sprintsDevList)
                     {
                         txbResult.AppendText(sprint.ToStringBuilder().ToString());
                     }

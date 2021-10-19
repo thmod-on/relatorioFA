@@ -53,7 +53,6 @@ namespace RelatorioFA.AppWinForm
         {
             AbrirForm(new ConfigBaseForm(this));
         }
-        #endregion
 
         private void TodasEmpresasToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -64,5 +63,11 @@ namespace RelatorioFA.AppWinForm
         {
             AbrirForm(new SprintBaseForm(this, UtilDTO.NAVIGATION.DEVOPS));
         }
+
+        private void DevSprintToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AbrirForm(new SprintBaseForm(this, UtilDTO.NAVIGATION.DEV));
+        }
+        #endregion
     }
 }

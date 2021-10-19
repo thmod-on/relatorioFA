@@ -34,7 +34,7 @@ namespace RelatorioFA.Negocio
                     }
                 }
 
-                string outputDocName = GetDocumentName(baseSprints, config, partner.Name);
+                string outputDocName = SetDocumentName(baseSprints, config, partner.Name, UtilDTO.REPORT_TYPE.SM);
 
                 Application winword = CreateWinWord();
 

@@ -227,7 +227,7 @@ namespace RelatorioFA.Negocio
             summaryTable.Rows[line].Cells[1].Merge(summaryTable.Rows[line].Cells[columns - 2]);
             summaryTable.Rows[line].Cells[2].Range.Text = totalPoints.ToString(decimalFormat);
             summaryTable.Rows[line].Cells[2].Range.Font.Bold = 1;
-            summaryTable.Rows[line].Cells[3].Range.Text = string.Format("{0:C}", totalPoints * ustValue);
+            summaryTable.Rows[line].Cells[3].Range.Text = string.Format("{0:C}", Math.Round(totalPoints, 3) * ustValue);
             summaryTable.Rows[line].Cells[3].Range.Font.Bold = 1;
 
             //summaryTable.Range.Cells.AutoFit();
@@ -282,14 +282,14 @@ namespace RelatorioFA.Negocio
             return doc.Range(doc.Content.End - 1, ref missing);
         }
 
-        public static string GetDocumentName(List<SprintBaseDTO> sprints, ConfigXmlDTO config, string partnerName)
+        public static string SetDocumentName(List<SprintBaseDTO> sprints, ConfigXmlDTO config, string partnerName, UtilDTO.REPORT_TYPE reportType)
         {
             string outputDocName = $"Relatório Ágil -";
             foreach (var sprint in sprints)
             {
                 outputDocName += $" {sprint.Range.Name}";
             }
-            outputDocName += $" - {config.AreaName}-{config.TeamName} - {partnerName}.docx";
+            outputDocName += $" - {config.AreaName}-{config.TeamName} - {partnerName} - {reportType}.docx";
 
             return outputDocName;
         }

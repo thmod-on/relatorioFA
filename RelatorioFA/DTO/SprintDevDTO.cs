@@ -9,6 +9,7 @@ namespace RelatorioFA.DTO
         public double PointsPerTeamMemberInvestment { get; set; }
         public int AcceptedPointsExpenses { get; set; }
         public int AcceptedPointsInvestment { get; set; }
+        public bool AdaptaionSprint { get; set; }
 
         public override StringBuilder ToStringBuilder()
         {

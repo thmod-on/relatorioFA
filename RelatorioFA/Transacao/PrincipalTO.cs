@@ -18,9 +18,9 @@ namespace RelatorioFA.Transacao
         }
 
         #region Calc
-        public static double CalcTeamSize(SprintDevDTO sprintDev)
+        public static double CalcTeamSize(SprintDevDTO sprintDev, FornecedorDTO selectedPartner)
         {
-            return Controle.CalcTeamSize(sprintDev);
+            return Controle.CalcTeamSize(sprintDev, selectedPartner);
         }
 
         public static void CalcPointsPerTeamMember(SprintDevDTO devSprint)
@@ -51,9 +51,9 @@ namespace RelatorioFA.Transacao
         } 
         #endregion
 
-        public static void SetDevPresence(List<ContratoDTO> contractList, int sprintDays)
+        public static void SetDevPresence(List<ContratoDTO> contractList, int sprintDays, bool adaptarionSprint = false)
         {
-            Controle.SetDevPresence(contractList, sprintDays);
+            Controle.SetDevPresence(contractList, sprintDays, adaptarionSprint);
         }
     }
 }

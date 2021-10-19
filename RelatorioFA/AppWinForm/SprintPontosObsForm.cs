@@ -30,12 +30,54 @@ namespace RelatorioFA.AppWinForm
         #region Eventos de Click
         private void BtnNextForm_Click(object sender, EventArgs e)
         {
-            containerForm.AbrirForm(new SprintAbsenceHourForm(containerForm, configXml, fluxo, sprintsDevList, sprintsSmList));
+            switch (fluxo)
+            {
+                case UtilDTO.NAVIGATION.DEVOPS:
+                    break;
+                case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
+                    containerForm.AbrirForm(new SprintAbsenceHourForm(containerForm, configXml, fluxo, sprintsDevList, sprintsSmList));
+                    break;
+                case UtilDTO.NAVIGATION.DEV:
+                    containerForm.AbrirForm(new SprintAbsenceHourForm(containerForm, configXml, fluxo, sprintsDevList));
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void BtnPreviousForm_Click(object sender, EventArgs e)
         {
-            containerForm.AbrirForm(new SprintBaseForm(containerForm, UtilDTO.NAVIGATION.VARIOS_RELATORIOS, sprintsDevList, sprintsSmList));
+            switch (fluxo)
+            {
+                case UtilDTO.NAVIGATION.DEVOPS:
+                    break;
+                case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
+                    containerForm.AbrirForm(new SprintBaseForm(containerForm, UtilDTO.NAVIGATION.VARIOS_RELATORIOS, sprintsDevList, sprintsSmList));
+                    break;
+                case UtilDTO.NAVIGATION.DEV:
+                    containerForm.AbrirForm(new SprintBaseForm(containerForm, UtilDTO.NAVIGATION.VARIOS_RELATORIOS, sprintsDevList));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void CkbAdaptationSprint_CheckedChanged(object sender, EventArgs e)
+        {
+            string msg = "Por ser uma sprint de adaptação está sendo assumida uma pontuação fixa de 5 pontos.";
+            GetSelectedDevSprint().AdaptaionSprint = ckbAdaptationSprint.Checked;
+            txbAcceptedPointsExpense.Enabled = !ckbAdaptationSprint.Checked;
+            txbAcceptedPointsInvestment.Enabled = !ckbAdaptationSprint.Checked;
+            if (ckbAdaptationSprint.Checked &&
+                txbObs.Text.IndexOf(msg) == -1)
+            {   
+                txbObs.Text += $"\n{msg}";
+                txbAcceptedPointsExpense.Text = "5";
+                txbAcceptedPointsInvestment.Text = "0";
+            }
+            GetSelectedDevSprint().AcceptedPointsExpenses = Convert.ToInt32(txbAcceptedPointsExpense.Text);
+            GetSelectedDevSprint().AcceptedPointsInvestment = Convert.ToInt32(txbAcceptedPointsInvestment.Text);
+            GetSelectedDevSprint().Obs = txbObs.Text;
         }
         #endregion
 
@@ -58,6 +100,7 @@ namespace RelatorioFA.AppWinForm
                     txbAcceptedPointsInvestment.Text = selectedSprint.AcceptedPointsInvestment.ToString();
                     txbObs.Text = string.IsNullOrEmpty(selectedSprint.Obs) ? "" : selectedSprint.Obs;
                     cbbCerimonialPoint.SelectedItem = selectedSprint.CerimonialPoint;
+                    ckbAdaptationSprint.Checked = selectedSprint.AdaptaionSprint;
                 }
 
                 if (sprintsSmList != null)
@@ -233,6 +276,12 @@ namespace RelatorioFA.AppWinForm
                 case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
                     lblScreen.Text = "Tela 2/3";
                     break;
+                case UtilDTO.NAVIGATION.DEV:
+                    lblScreen.Text = "Tela 2/3";
+                    ckbAdaptationSprint.Visible = true;
+                    txbSmPoints.Visible = false;
+                    lblSmPoints.Visible = false;
+                    break;
                 default:
                     break;
             }
@@ -284,8 +333,9 @@ namespace RelatorioFA.AppWinForm
         private SprintSmDTO GetSelectedSmSprint()
         {
             return lsbSprints.SelectedItem != null ? sprintsSmList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString()) : null;
-        } 
+        }
         #endregion
+
         #endregion
     }
 }

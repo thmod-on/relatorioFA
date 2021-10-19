@@ -40,7 +40,15 @@ namespace RelatorioFA.DTO
         public enum NAVIGATION
         {
             DEVOPS,
-            VARIOS_RELATORIOS
+            VARIOS_RELATORIOS,
+            DEV
+        }
+
+        public enum REPORT_TYPE
+        {
+            DEV,
+            DEVOPS,
+            SM
         }
 
         public static string GetProjectRootFolder()

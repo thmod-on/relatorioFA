@@ -34,11 +34,12 @@ namespace RelatorioFA.AppWinForm
             this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.ckbAdaptationSprint = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txbObs = new System.Windows.Forms.RichTextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.txbSmPoints = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblSmPoints = new System.Windows.Forms.Label();
             this.txbAcceptedPointsInvestment = new System.Windows.Forms.TextBox();
             this.cbbCerimonialPoint = new System.Windows.Forms.ComboBox();
             this.label22 = new System.Windows.Forms.Label();
@@ -108,6 +109,7 @@ namespace RelatorioFA.AppWinForm
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.ckbAdaptationSprint);
             this.splitContainer1.Panel1.Controls.Add(this.label5);
             this.splitContainer1.Panel1.Controls.Add(this.txbObs);
             this.splitContainer1.Panel1.Controls.Add(this.groupBox4);
@@ -121,6 +123,18 @@ namespace RelatorioFA.AppWinForm
             this.splitContainer1.Size = new System.Drawing.Size(762, 460);
             this.splitContainer1.SplitterDistance = 445;
             this.splitContainer1.TabIndex = 70;
+            // 
+            // ckbAdaptationSprint
+            // 
+            this.ckbAdaptationSprint.AutoSize = true;
+            this.ckbAdaptationSprint.Location = new System.Drawing.Point(15, 150);
+            this.ckbAdaptationSprint.Name = "ckbAdaptationSprint";
+            this.ckbAdaptationSprint.Size = new System.Drawing.Size(128, 17);
+            this.ckbAdaptationSprint.TabIndex = 78;
+            this.ckbAdaptationSprint.Text = "Sprint de adaptação?";
+            this.ckbAdaptationSprint.UseVisualStyleBackColor = true;
+            this.ckbAdaptationSprint.Visible = false;
+            this.ckbAdaptationSprint.CheckedChanged += new System.EventHandler(this.CkbAdaptationSprint_CheckedChanged);
             // 
             // label5
             // 
@@ -145,7 +159,7 @@ namespace RelatorioFA.AppWinForm
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.txbSmPoints);
-            this.groupBox4.Controls.Add(this.label1);
+            this.groupBox4.Controls.Add(this.lblSmPoints);
             this.groupBox4.Controls.Add(this.txbAcceptedPointsInvestment);
             this.groupBox4.Controls.Add(this.cbbCerimonialPoint);
             this.groupBox4.Controls.Add(this.label22);
@@ -169,14 +183,14 @@ namespace RelatorioFA.AppWinForm
             this.txbSmPoints.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbSmPoints_KeyPress);
             this.txbSmPoints.Leave += new System.EventHandler(this.TxbSmPoints_Leave);
             // 
-            // label1
+            // lblSmPoints
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 84);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 13);
-            this.label1.TabIndex = 52;
-            this.label1.Text = "Pts. SM";
+            this.lblSmPoints.AutoSize = true;
+            this.lblSmPoints.Location = new System.Drawing.Point(6, 84);
+            this.lblSmPoints.Name = "lblSmPoints";
+            this.lblSmPoints.Size = new System.Drawing.Size(44, 13);
+            this.lblSmPoints.TabIndex = 52;
+            this.lblSmPoints.Text = "Pts. SM";
             // 
             // txbAcceptedPointsInvestment
             // 
@@ -299,7 +313,7 @@ namespace RelatorioFA.AppWinForm
         private System.Windows.Forms.Button btnPreviousForm;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.TextBox txbSmPoints;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblSmPoints;
         private System.Windows.Forms.TextBox txbAcceptedPointsInvestment;
         private System.Windows.Forms.ComboBox cbbCerimonialPoint;
         private System.Windows.Forms.Label label22;
@@ -308,5 +322,6 @@ namespace RelatorioFA.AppWinForm
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.RichTextBox txbObs;
+        private System.Windows.Forms.CheckBox ckbAdaptationSprint;
     }
 }

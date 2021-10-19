@@ -35,6 +35,7 @@
             this.avulsoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.todasEmpresasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.devOpsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.primeiraSprintToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ajudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.comoUtilizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.versõesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,9 +72,10 @@
             // relatórioDaFábricaÁgilToolStripMenuItem
             // 
             this.relatórioDaFábricaÁgilToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.avulsoToolStripMenuItem,
             this.todasEmpresasToolStripMenuItem,
-            this.devOpsToolStripMenuItem});
+            this.avulsoToolStripMenuItem,
+            this.devOpsToolStripMenuItem,
+            this.primeiraSprintToolStripMenuItem});
             this.relatórioDaFábricaÁgilToolStripMenuItem.Name = "relatórioDaFábricaÁgilToolStripMenuItem";
             this.relatórioDaFábricaÁgilToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.relatórioDaFábricaÁgilToolStripMenuItem.Text = "Relatório da fábrica ágil";
@@ -82,22 +84,29 @@
             // 
             this.avulsoToolStripMenuItem.Enabled = false;
             this.avulsoToolStripMenuItem.Name = "avulsoToolStripMenuItem";
-            this.avulsoToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.avulsoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.avulsoToolStripMenuItem.Text = "Avulso";
             // 
             // todasEmpresasToolStripMenuItem
             // 
             this.todasEmpresasToolStripMenuItem.Name = "todasEmpresasToolStripMenuItem";
-            this.todasEmpresasToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.todasEmpresasToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.todasEmpresasToolStripMenuItem.Text = "Todas empresas";
             this.todasEmpresasToolStripMenuItem.Click += new System.EventHandler(this.TodasEmpresasToolStripMenuItem_Click);
             // 
             // devOpsToolStripMenuItem
             // 
             this.devOpsToolStripMenuItem.Name = "devOpsToolStripMenuItem";
-            this.devOpsToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.devOpsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.devOpsToolStripMenuItem.Text = "DevOps";
             this.devOpsToolStripMenuItem.Click += new System.EventHandler(this.DevOpsToolStripMenuItem_Click);
+            // 
+            // primeiraSprintToolStripMenuItem
+            // 
+            this.primeiraSprintToolStripMenuItem.Name = "primeiraSprintToolStripMenuItem";
+            this.primeiraSprintToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.primeiraSprintToolStripMenuItem.Text = "Dev";
+            this.primeiraSprintToolStripMenuItem.Click += new System.EventHandler(this.DevSprintToolStripMenuItem_Click);
             // 
             // ajudaToolStripMenuItem
             // 
@@ -132,7 +141,7 @@
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "ContainerForm";
-            this.Text = "Relatório de fábrica ágil - v 4.10.2";
+            this.Text = "Relatório de fábrica ágil - v 4.11.0";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -152,5 +161,6 @@
         private System.Windows.Forms.ToolStripMenuItem avulsoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem todasEmpresasToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem devOpsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem primeiraSprintToolStripMenuItem;
     }
 }

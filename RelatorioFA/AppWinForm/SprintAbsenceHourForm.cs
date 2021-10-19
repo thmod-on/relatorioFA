@@ -26,6 +26,7 @@ namespace RelatorioFA.AppWinForm
             ShowLog();
         }
 
+        private const string house = "Da Casa";
         private const string all = "TODOS";
         private const string mark = "- ";
         private readonly UtilDTO.NAVIGATION fluxo;
@@ -40,7 +41,15 @@ namespace RelatorioFA.AppWinForm
         #region Eventos automaticos
         private void SetCbbPartners()
         {
-            cbbPartners.Items.Add(all);
+            if (fluxo == UtilDTO.NAVIGATION.VARIOS_RELATORIOS)
+            {
+                cbbPartners.Items.Add(all);
+            }
+            else
+            {
+                cbbPartners.Items.Add(house);
+            }
+
             foreach (var partner in configXml.Partners)
             {
                 if (partner.Contracts.Any(c => c.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString()) &&
@@ -62,24 +71,31 @@ namespace RelatorioFA.AppWinForm
             if (!string.IsNullOrEmpty(cbbPartners.SelectedItem.ToString()))
             {
                 lsbDevTeam.Items.Clear();
-                if (cbbPartners.SelectedItem.ToString() != all)
-                {
-                    selectedPartner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
-                    SetPartnersDevInLsbDevTeam(selectedPartner);
-                }
-                else
+                if (cbbPartners.SelectedItem.ToString() == all)
                 {
                     if (configXml.BaneseDes.Count > 0)
                     {
                         foreach (var dev in configXml.BaneseDes)
                         {
                             lsbDevTeam.Items.Add(mark + dev.Name);
-                        } 
+                        }
                     }
                     foreach (var partner in configXml.Partners)
                     {
                         SetPartnersDevInLsbDevTeam(partner);
                     }
+                }
+                else if (cbbPartners.SelectedItem.ToString() == house)
+                {
+                    foreach (var dev in configXml.BaneseDes)
+                    {
+                        lsbDevTeam.Items.Add(mark + dev.Name);
+                    }
+                }
+                else
+                {
+                    selectedPartner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
+                    SetPartnersDevInLsbDevTeam(selectedPartner);
                 }
                 lsbDevTeam.SelectedIndex = 0;
             }
@@ -233,8 +249,9 @@ namespace RelatorioFA.AppWinForm
                     {
                         ContratoDTO houseDevContract = new ContratoDTO()
                         {
-                            Name = UtilDTO.CONTRACTS.HOUSE.ToString()
-                        };
+                            Name = UtilDTO.CONTRACTS.HOUSE.ToString(),
+                            PartnerName = UtilDTO.CONTRACTS.HOUSE.ToString()
+                    };
                         foreach (var dev in configXml.BaneseDes)
                         {
                             ColaboradorDTO houseDev = new ColaboradorDTO()
@@ -364,6 +381,9 @@ namespace RelatorioFA.AppWinForm
                 case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
                     containerForm.AbrirForm(new SprintPontosObsForm(containerForm, configXml, fluxo, sprintsDevList, sprintsSmList));
                     break;
+                case UtilDTO.NAVIGATION.DEV:
+                    containerForm.AbrirForm(new SprintPontosObsForm(containerForm, configXml, fluxo, sprintsDevList));
+                    break;
                 default:
                     break;
             }
@@ -382,6 +402,11 @@ namespace RelatorioFA.AppWinForm
         {
             try
             {
+                if (cbbPartners.SelectedItem.ToString() == house)
+                {
+                    throw new Exception("Por favor ecolha um fornecedor para que o relatório seja gerado.");
+                }
+
                 BlockFields(true);
                 txbResult.Text = "Processando...";
                 //realizar os calculos e ajustar dados finais
@@ -389,38 +414,54 @@ namespace RelatorioFA.AppWinForm
                 {
                     //DEV
                     int sprintDays = (sprint.Range.EndDate - sprint.Range.IniDate).Days;
-                    PrincipalTO.SetDevPresence(sprint.Contracts, sprintDays);
-                    double teamSize = PrincipalTO.CalcTeamSize(sprint);
+                    PrincipalTO.SetDevPresence(sprint.Contracts, sprintDays, sprint.AdaptaionSprint);
+                    FornecedorDTO selectedPartner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
+                    double teamSize = PrincipalTO.CalcTeamSize(sprint, selectedPartner);
                     sprint.TeamSize = teamSize;
+                    if (sprint.AdaptaionSprint)
+                    {
+                        sprint.AcceptedPointsExpenses *= (int)teamSize;
+                    }
                     PrincipalTO.CalcPointsPerTeamMember(sprint);
                     //SM
-                    var smSprint = sprintsSmList.Find(s => s.Range.Name == sprint.Range.Name);
-                    smSprint.TeamSize = teamSize;
-                    smSprint.EmployeesCount = 1;
+                    if (sprintsSmList != null)
+                    {
+                        var smSprint = sprintsSmList.Find(s => s.Range.Name == sprint.Range.Name);
+                        smSprint.TeamSize = teamSize;
+                        smSprint.EmployeesCount = 1; 
+                    }
                 }
 
                 //chamar a geracao dos relatorios
-                foreach (var partner in configXml.Partners)
+                if (fluxo == UtilDTO.NAVIGATION.VARIOS_RELATORIOS)
                 {
-                    //(TODO) Melhorar um dia
-                    if (partner.Name == "Influir")
+                    foreach (var partner in configXml.Partners)
                     {
-                        partner.BillingType = UtilDTO.BILLING_TYPE.UST_HORA;
-                    }
+                        //(TODO) Melhorar um dia
+                        if (partner.Name == "Influir")
+                        {
+                            partner.BillingType = UtilDTO.BILLING_TYPE.UST_HORA;
+                        }
 
-                    if (partner.Contracts.Any(contract => 
-                        contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
-                        contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString()) )
-                    {
-                        PrincipalTO.CreateDevDoc(configXml, partner, outputDocPath, sprintsDevList);
-                    }
+                        if (partner.Contracts.Any(contract =>
+                            contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
+                            contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString()))
+                        {
+                            PrincipalTO.CreateDevDoc(configXml, partner, outputDocPath, sprintsDevList);
+                        }
 
-                    if (partner.Contracts.Any(contract =>
-                        contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString() ||
-                        contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString()))
-                    {
-                        PrincipalTO.CreateSmDoc(configXml, partner, outputDocPath, sprintsSmList);
+                        if (partner.Contracts.Any(contract =>
+                            contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString() ||
+                            contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString()))
+                        {
+                            PrincipalTO.CreateSmDoc(configXml, partner, outputDocPath, sprintsSmList);
+                        }
                     }
+                }
+                else
+                {
+                    var selectedPartner = configXml.Partners.Find(partner => partner.Name == cbbPartners.SelectedItem.ToString());
+                    PrincipalTO.CreateDevDoc(configXml, selectedPartner, outputDocPath, sprintsDevList);
                 }
                 txbResult.Text = $"Arquivos gerados na pasta {outputDocPath}";
                 btnOpenDestinationFolder.Enabled = true;

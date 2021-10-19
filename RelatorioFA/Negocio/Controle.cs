@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RelatorioFA.DTO;
 
 namespace RelatorioFA.Negocio
 {
     public class Controle
     {
-        public static void SetDevPresence(List<ContratoDTO> contractList, int sprintDays)
+        public static void SetDevPresence(List<ContratoDTO> contractList, int sprintDays, bool adaptaionSprint)
         {
             foreach (var contract in contractList)
             {
@@ -18,14 +16,21 @@ namespace RelatorioFA.Negocio
                 {
                     foreach (var dev in contract.Collaborators)
                     {
-                        double factor = dev.WorksHalfDay ? 0.5 : 1;
-                        dev.Presence = Math.Round((sprintDays - dev.AbsenceDays) * factor / sprintDays, 3);
+                        if (!adaptaionSprint)
+                        {
+                            double factor = dev.WorksHalfDay ? 0.5 : 1;
+                            dev.Presence = Math.Round((sprintDays - dev.AbsenceDays) * factor / sprintDays, 3);
+                        }
+                        else
+                        {
+                            dev.Presence = 1;
+                        }
                     }
                 }
             }
         }
 
-        public static double CalcTeamSize(SprintDevDTO sprintDev)
+        public static double CalcTeamSize(SprintDevDTO sprintDev, FornecedorDTO selectedPartner)
         {
             double teamSize = 0;
             foreach (var contract in sprintDev.Contracts)
@@ -33,9 +38,23 @@ namespace RelatorioFA.Negocio
                 if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
                     contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString() )
                 {
-                    foreach (var dev in contract.Collaborators)
+                    if (!sprintDev.AdaptaionSprint)
                     {
-                        teamSize += dev.Presence;
+                        foreach (var dev in contract.Collaborators)
+                        {
+                            teamSize += dev.Presence;
+                        }
+                    }
+                    else
+                    {
+                        if (selectedPartner.Contracts.Any(c => c.Name == contract.Name) &&
+                            contract.PartnerName == selectedPartner.Name)
+                        {
+                            foreach (var dev in contract.Collaborators)
+                            {
+                                teamSize += 1;
+                            }
+                        }
                     }
                 }
             }

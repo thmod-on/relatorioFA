@@ -46,7 +46,7 @@ namespace RelatorioFA.Negocio
                     }
                 }
 
-                string outputDocName = GetDocumentName(baseSprints, config, partner.Name);
+                string outputDocName = SetDocumentName(baseSprints, config, partner.Name, UtilDTO.REPORT_TYPE.DEV);
 
                 Application winword = CreateWinWord();
 
@@ -149,7 +149,7 @@ namespace RelatorioFA.Negocio
                         summaryTable.Rows[line].Cells[8].Range.Text = extraHourUst.ToString(decimalFormat);//G
                         summaryTable.Rows[line].Cells[9].Range.Text = partialPoints.ToString(decimalFormat);//H
 
-                        totalPoints += partialPoints;
+                        totalPoints += Math.Round(partialPoints, 3);
                         line++;
                     }
                 }
