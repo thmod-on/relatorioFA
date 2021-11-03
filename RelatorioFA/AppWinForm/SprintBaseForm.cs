@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using RelatorioFA.DTO;
 using RelatorioFA.Transacao;
@@ -81,6 +82,9 @@ namespace RelatorioFA.AppWinForm
             ResizeParent(parentForm);
             this.fluxo = fluxo;
             containerForm = parentForm;
+            LoadRanges();
+            SetSreenNumber(fluxo);
+
             foreach (var sprint in sprintSmList)
             {
                 lsbSprints.Items.Add(sprint.Range.Name);
@@ -119,6 +123,23 @@ namespace RelatorioFA.AppWinForm
             try
             {
                 configXml = PrincipalTO.LoadConfig(path);
+                if (fluxo == UtilDTO.NAVIGATION.SM)
+                {
+                    bool hasSharedSm = false;
+                    foreach (var partner in configXml.Partners)
+                    {
+                        if (partner.Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString()))
+                        {
+                            hasSharedSm = true;
+                        }
+                    }
+
+                    if (!hasSharedSm)
+                    {
+                        txbResult.Text = "Psiu, olha aqui!\n\nVocê não possui nenhum contrato de SM que receba pela média de times.\n\nSerá que este é o menu que queria entrar mesmo ou falta algo em sua configuração?";
+                        BlockFields(true);
+                    }
+                }
             }
             catch (FileNotFoundException ex)
             {
@@ -210,12 +231,13 @@ namespace RelatorioFA.AppWinForm
                         throw new NotImplementedException();
                 }
 
+                pbxSprintImage.Image = null;
+
                 //atualizar a lista de sprints
                 lsbSprints.Items.Remove(range.Name);
                 lsbSprints.Items.Add(range.Name);
 
                 sprintImagePath = null;
-                pbxSprintImage.Image = null;
                 btnNextForm.Enabled = true;
 
                 if (cbbSprintRanges.SelectedIndex < cbbSprintRanges.Items.Count - 1)
@@ -277,7 +299,7 @@ namespace RelatorioFA.AppWinForm
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "Imagens PNG (*.png)|*.png|Imagens Jpeg (*.jpg)|*.jpg";
-                openFileDialog.FilterIndex = 2;
+                openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -287,7 +309,7 @@ namespace RelatorioFA.AppWinForm
 
                     //Read the contents of the file into a stream
                     var fileStream = openFileDialog.OpenFile();
-
+                    
                     using (StreamReader reader = new StreamReader(fileStream))
                     {
                         pbxSprintImage.Load(sprintImagePath);
@@ -327,8 +349,7 @@ namespace RelatorioFA.AppWinForm
                 {
                     case UtilDTO.NAVIGATION.DEVOPS:
                         var selectedDevOpsSprint = sprintsDevOpsList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
-                        if (selectedDevOpsSprint.ImagePath != null &&
-                            selectedDevOpsSprint.ImagePath != "")
+                        if (!String.IsNullOrEmpty(selectedDevOpsSprint.ImagePath))
                         {
                             pbxSprintImage.Load(selectedDevOpsSprint.ImagePath);
                         }

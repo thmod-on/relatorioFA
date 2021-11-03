@@ -402,6 +402,7 @@ namespace RelatorioFA.AppWinForm
         {
             try
             {
+                bool hasSharedSM = false;
                 if (cbbPartners.SelectedItem.ToString() == house)
                 {
                     throw new Exception("Por favor ecolha um fornecedor para que o relatório seja gerado.");
@@ -443,16 +444,20 @@ namespace RelatorioFA.AppWinForm
                             partner.BillingType = UtilDTO.BILLING_TYPE.UST_HORA;
                         }
 
+                        //SM_MEDIA nao será gerado nesse fluxo
                         if (partner.Contracts.Any(contract =>
                             contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
                             contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString()))
                         {
                             PrincipalTO.CreateDevDoc(configXml, partner, outputDocPath, sprintsDevList);
                         }
-
-                        if (partner.Contracts.Any(contract =>
-                            contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString() ||
-                            contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString()))
+                        
+                        if(partner.Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString()))
+                        {
+                            hasSharedSM = true;
+                        }
+                        
+                        if (partner.Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString()))
                         {
                             PrincipalTO.CreateSmDoc(configXml, partner, outputDocPath, sprintsSmList);
                         }
@@ -463,7 +468,12 @@ namespace RelatorioFA.AppWinForm
                     var selectedPartner = configXml.Partners.Find(partner => partner.Name == cbbPartners.SelectedItem.ToString());
                     PrincipalTO.CreateDevDoc(configXml, selectedPartner, outputDocPath, sprintsDevList);
                 }
+                
                 txbResult.Text = $"Arquivos gerados na pasta {outputDocPath}";
+                if (hasSharedSM)
+                {
+                    txbResult.AppendText("\n\nRelatório para SM compartilhado deve ser gerado avulso pelo menu correspondente.");
+                }
                 btnOpenDestinationFolder.Enabled = true;
             }
             catch (Exception ex)

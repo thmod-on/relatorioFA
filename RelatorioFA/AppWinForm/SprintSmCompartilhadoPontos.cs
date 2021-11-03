@@ -31,8 +31,7 @@ namespace RelatorioFA.AppWinForm
         private string outputDocPath = UtilDTO.GetProjectRootFolder();
         private FornecedorDTO selectedPartner;
         private SprintSmDTO selectedSprint = new SprintSmDTO();
-        private IntervaloDTO selectedRange = new IntervaloDTO();
-
+        
         #region Aux
         private void ResizeParent(Form containerForm)
         {
@@ -60,29 +59,6 @@ namespace RelatorioFA.AppWinForm
                     ContratoDTO newContract = new ContratoDTO();
                     newContract = selectedPartner.Contracts.Find(c => c.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString());
                     sprintSm.Contracts.Add(newContract);
-                    //sprintsSmList.Find(sprint => sprint.Range.Name == selectedRange.Name).Contracts.Add(newContract);
-
-
-                    //foreach (var contract in selectedPartner.Contracts)
-                    //{
-                    //    if (contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString() ||
-                    //        contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString())
-                    //    {
-                    //        ContratoDTO smContract = new ContratoDTO()
-                    //        {
-                    //            Factor = contract.Factor,
-                    //            HourValue = contract.HourValue,
-                    //            Name = contract.Name,
-                    //            NumeroSAP = contract.NumeroSAP
-                    //        };
-                    //        foreach (var sm in contract.Collaborators)
-                    //        {
-                    //            smContract.Collaborators.Add(sm);
-                    //        }
-                            
-                    //    }
-                    //}
-                    
                 }
             }
         }
@@ -161,6 +137,12 @@ namespace RelatorioFA.AppWinForm
             ShowLog();
         }
 
+        private void TxbObs_Leave(object sender, EventArgs e)
+        {
+            selectedSprint.Obs = txbObs.Text;
+            ShowLog();
+        }
+
         private void LsbSprints_SelectedIndexChanged(object sender, EventArgs e)
         {
             selectedSprint = sprintsSmList.Find(sprint => sprint.Range.Name == lsbSprints.SelectedItem.ToString());
@@ -169,7 +151,6 @@ namespace RelatorioFA.AppWinForm
             txbTeamSize1.Text = selectedSprint.DevTeamSize1.ToString();
             txbTeamSize2.Text = selectedSprint.DevTeamSize2.ToString();
             txbObs.Text = selectedSprint.Obs;
-            selectedRange = selectedSprint.Range;
         }
         #endregion
 

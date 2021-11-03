@@ -19,6 +19,10 @@ namespace RelatorioFA.DTO
         public override StringBuilder ToStringBuilder()
         {
             var aux = base.ToStringBuilder();
+            aux.Append($"Pontos time 1: {AcceptedPointsTeam1}\n");
+            aux.Append($"Pontos time 2: {AcceptedPointsTeam2}\n");
+            aux.Append($"Tamanho do time 1: {DevTeamSize1}\n");
+            aux.Append($"Tamanho do time 2: {DevTeamSize2}\n");
             aux.Append($"Pontos de SM: {SmPoints}\n");
 
             return aux;

@@ -102,6 +102,7 @@ namespace RelatorioFA.AppWinForm
             this.txbObs.Size = new System.Drawing.Size(284, 252);
             this.txbObs.TabIndex = 5;
             this.txbObs.Text = "";
+            this.txbObs.Leave += new System.EventHandler(this.TxbObs_Leave);
             // 
             // groupBox4
             // 
