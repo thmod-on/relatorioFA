@@ -58,24 +58,8 @@ namespace RelatorioFA.AppWinForm
         #region BtnSetOutputDocPath_Click
         private void BtnSetOutputDocPath_Click(object sender, System.EventArgs e)
         {
-            FolderBrowserDialog folderDlg = new FolderBrowserDialog
-            {
-                ShowNewFolderButton = true
-            };
-            try
-            {
-                DialogResult result = folderDlg.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    outputDocPath = folderDlg.SelectedPath;
-
-                    txbResult.Text = $"Local de saída alterado para {folderDlg.SelectedPath}.";
-                }
-            }
-            catch (Exception ex)
-            {
-                txbResult.Text = $"ERRO. {ex.Message}";
-            }
+            outputDocPath = UtilWinForm.SetOutputDocPath();
+            txbResult.Text = $"Local de saída alterado para {outputDocPath}.";
         } 
         #endregion
 

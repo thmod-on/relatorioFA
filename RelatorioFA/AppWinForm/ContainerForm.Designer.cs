@@ -32,13 +32,14 @@
             this.gerarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modeloDeArquivoDeConfiguraçãoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.relatórioDaFábricaÁgilToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.avulsoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.todasEmpresasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.avulsoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.devOpsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.primeiraSprintToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ajudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.comoUtilizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.versõesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sMCompartilhadoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -75,36 +76,37 @@
             this.todasEmpresasToolStripMenuItem,
             this.avulsoToolStripMenuItem,
             this.devOpsToolStripMenuItem,
-            this.primeiraSprintToolStripMenuItem});
+            this.primeiraSprintToolStripMenuItem,
+            this.sMCompartilhadoToolStripMenuItem});
             this.relatórioDaFábricaÁgilToolStripMenuItem.Name = "relatórioDaFábricaÁgilToolStripMenuItem";
             this.relatórioDaFábricaÁgilToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.relatórioDaFábricaÁgilToolStripMenuItem.Text = "Relatório da fábrica ágil";
+            // 
+            // todasEmpresasToolStripMenuItem
+            // 
+            this.todasEmpresasToolStripMenuItem.Name = "todasEmpresasToolStripMenuItem";
+            this.todasEmpresasToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.todasEmpresasToolStripMenuItem.Text = "Todas empresas";
+            this.todasEmpresasToolStripMenuItem.Click += new System.EventHandler(this.TodasEmpresasToolStripMenuItem_Click);
             // 
             // avulsoToolStripMenuItem
             // 
             this.avulsoToolStripMenuItem.Enabled = false;
             this.avulsoToolStripMenuItem.Name = "avulsoToolStripMenuItem";
-            this.avulsoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.avulsoToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.avulsoToolStripMenuItem.Text = "Avulso";
-            // 
-            // todasEmpresasToolStripMenuItem
-            // 
-            this.todasEmpresasToolStripMenuItem.Name = "todasEmpresasToolStripMenuItem";
-            this.todasEmpresasToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.todasEmpresasToolStripMenuItem.Text = "Todas empresas";
-            this.todasEmpresasToolStripMenuItem.Click += new System.EventHandler(this.TodasEmpresasToolStripMenuItem_Click);
             // 
             // devOpsToolStripMenuItem
             // 
             this.devOpsToolStripMenuItem.Name = "devOpsToolStripMenuItem";
-            this.devOpsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.devOpsToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.devOpsToolStripMenuItem.Text = "DevOps";
             this.devOpsToolStripMenuItem.Click += new System.EventHandler(this.DevOpsToolStripMenuItem_Click);
             // 
             // primeiraSprintToolStripMenuItem
             // 
             this.primeiraSprintToolStripMenuItem.Name = "primeiraSprintToolStripMenuItem";
-            this.primeiraSprintToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.primeiraSprintToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.primeiraSprintToolStripMenuItem.Text = "Dev";
             this.primeiraSprintToolStripMenuItem.Click += new System.EventHandler(this.DevSprintToolStripMenuItem_Click);
             // 
@@ -131,6 +133,13 @@
             this.versõesToolStripMenuItem.Text = "Versões";
             this.versõesToolStripMenuItem.Click += new System.EventHandler(this.VersõesToolStripMenuItem_Click);
             // 
+            // sMCompartilhadoToolStripMenuItem
+            // 
+            this.sMCompartilhadoToolStripMenuItem.Name = "sMCompartilhadoToolStripMenuItem";
+            this.sMCompartilhadoToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.sMCompartilhadoToolStripMenuItem.Text = "SM - Compartilhado";
+            this.sMCompartilhadoToolStripMenuItem.Click += new System.EventHandler(this.SMCompartilhadoToolStripMenuItem_Click);
+            // 
             // ContainerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -141,7 +150,7 @@
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "ContainerForm";
-            this.Text = "Relatório de fábrica ágil - v 4.11.0";
+            this.Text = "Relatório de fábrica ágil - v 4.12.0";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -162,5 +171,6 @@
         private System.Windows.Forms.ToolStripMenuItem todasEmpresasToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem devOpsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem primeiraSprintToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sMCompartilhadoToolStripMenuItem;
     }
 }

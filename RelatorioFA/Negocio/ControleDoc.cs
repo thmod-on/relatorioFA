@@ -222,13 +222,15 @@ namespace RelatorioFA.Negocio
         #region SetSummaryTableTotal
         public static void SetSummaryTableTotal(ref Table summaryTable, int columns, int line, double totalPoints, double ustValue, ref object missing)
         {
+            Cell cell;
             summaryTable.Rows.Add(missing);
-            summaryTable.Rows[line].Cells[1].Range.Text = "TOTAL A SER FATUADO:";
-            summaryTable.Rows[line].Cells[1].Merge(summaryTable.Rows[line].Cells[columns - 2]);
-            summaryTable.Rows[line].Cells[2].Range.Text = totalPoints.ToString(decimalFormat);
-            summaryTable.Rows[line].Cells[2].Range.Font.Bold = 1;
-            summaryTable.Rows[line].Cells[3].Range.Text = string.Format("{0:C}", Math.Round(totalPoints, 3) * ustValue);
-            summaryTable.Rows[line].Cells[3].Range.Font.Bold = 1;
+            cell = summaryTable.Cell(line, 1);
+            cell.Merge(summaryTable.Cell(line, columns - 2));
+            summaryTable.Cell(line, 1).Range.Text = "TOTAL A SER FATUADO:";
+            summaryTable.Cell(line, 2).Range.Text = totalPoints.ToString(decimalFormat);
+            summaryTable.Cell(line, 2).Range.Font.Bold = 1;
+            summaryTable.Cell(line, 3).Range.Text = string.Format("{0:C}", Math.Round(totalPoints, 3) * ustValue);
+            summaryTable.Cell(line, 3).Range.Font.Bold = 1;
 
             //summaryTable.Range.Cells.AutoFit();
             //summaryTable.Range.Cells.DistributeHeight();

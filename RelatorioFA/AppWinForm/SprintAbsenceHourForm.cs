@@ -477,17 +477,8 @@ namespace RelatorioFA.AppWinForm
         #region BtnSetOutputDocPath_Click
         private void BtnSetOutputDocPath_Click(object sender, System.EventArgs e)
         {
-            FolderBrowserDialog folderDlg = new FolderBrowserDialog
-            {
-                ShowNewFolderButton = true
-            };
-
-            DialogResult result = folderDlg.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                outputDocPath = folderDlg.SelectedPath;
-            }
-
+            outputDocPath = UtilWinForm.SetOutputDocPath();
+            
             ShowLog("Caminho de saído do arquivo definodo.");
         }
         #endregion

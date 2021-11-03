@@ -41,7 +41,8 @@ namespace RelatorioFA.DTO
         {
             DEVOPS,
             VARIOS_RELATORIOS,
-            DEV
+            DEV,
+            SM
         }
 
         public enum REPORT_TYPE

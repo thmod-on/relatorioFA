@@ -68,6 +68,11 @@ namespace RelatorioFA.AppWinForm
         {
             AbrirForm(new SprintBaseForm(this, UtilDTO.NAVIGATION.DEV));
         }
+        
+        private void SMCompartilhadoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AbrirForm(new SprintBaseForm(this, UtilDTO.NAVIGATION.SM));
+        }
         #endregion
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using RelatorioFA.AcessoDados;
 using RelatorioFA.DTO;
 using RelatorioFA.Negocio;
@@ -54,6 +55,11 @@ namespace RelatorioFA.Transacao
         public static void SetDevPresence(List<ContratoDTO> contractList, int sprintDays, bool adaptarionSprint = false)
         {
             Controle.SetDevPresence(contractList, sprintDays, adaptarionSprint);
+        }
+
+        public static void CalcSmSprintData(List<SprintSmDTO> sprintsSmList)
+        {
+            Controle.CalcSmSprintData(sprintsSmList);
         }
     }
 }

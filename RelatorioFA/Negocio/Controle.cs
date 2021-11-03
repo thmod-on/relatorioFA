@@ -61,6 +61,17 @@ namespace RelatorioFA.Negocio
             return teamSize;
         }
 
+        public static void CalcSmSprintData(List<SprintSmDTO> sprintsSmList)
+        {
+            foreach (var sprint in sprintsSmList)
+            {
+                sprint.AverageTeam1 = Math.Round(sprint.AcceptedPointsTeam1 / sprint.DevTeamSize1, 3);
+                sprint.AverageTeam2 = Math.Round(sprint.AcceptedPointsTeam2 / sprint.DevTeamSize2, 3);
+                sprint.AverageSprint = Math.Round((sprint.AverageTeam1 + sprint.AverageTeam2) / 2, 3);
+                sprint.SmPoints = Math.Round(sprint.AverageSprint * sprint.Contracts[0].Factor + 1, 3);
+            }
+        }
+
         public static List<IntervaloDTO> GenerateRanges()
         {
             List<IntervaloDTO> sprintRanges = new List<IntervaloDTO>();

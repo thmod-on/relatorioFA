@@ -7,11 +7,14 @@ namespace RelatorioFA.DTO
     {
 
         public double EmployeesCount { get; set; }
-        public double PointsPerPartnerExpenses { get; set; }
-        public double PointsPerPartnerInestment { get; set; }
-        public double AcceptedPointsInvestment { get; set; }
-        public double AcceptedPointsExpenses { get; set; }
-        public int SmPoints { get; set; }
+        public double DevTeamSize1 { get; set; }
+        public double DevTeamSize2 { get; set; }
+        public double AcceptedPointsTeam1 { get; set; }
+        public double AcceptedPointsTeam2 { get; set; }
+        public double AverageTeam1 { get; set; }
+        public double AverageTeam2 { get; set; }
+        public double AverageSprint { get; set; }
+        public double SmPoints { get; set; }
 
         public override StringBuilder ToStringBuilder()
         {

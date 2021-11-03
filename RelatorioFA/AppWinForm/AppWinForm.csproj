@@ -114,6 +114,13 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SprintSmCompartilhadoPontos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SprintSmCompartilhadoPontos.Designer.cs">
+      <DependentUpon>SprintSmCompartilhadoPontos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UtilWinForm.cs" />
     <EmbeddedResource Include="ConfigBaseForm.resx">
       <DependentUpon>ConfigBaseForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -156,6 +163,9 @@
     </Compile>
     <EmbeddedResource Include="SobreForm.resx">
       <DependentUpon>SobreForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SprintSmCompartilhadoPontos.resx">
+      <DependentUpon>SprintSmCompartilhadoPontos.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

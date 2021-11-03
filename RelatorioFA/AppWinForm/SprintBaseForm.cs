@@ -69,6 +69,29 @@ namespace RelatorioFA.AppWinForm
             btnNextForm.Enabled = true;
         }
 
+        /// <summary>
+        /// Construtor para tratmento de fluxo SM
+        /// </summary>
+        /// <param name="parentForm"></param>
+        /// <param name="fluxo"></param>
+        /// <param name="sprintSmList"></param>
+        public SprintBaseForm(ContainerForm parentForm, UtilDTO.NAVIGATION fluxo, List<SprintSmDTO> sprintSmList)
+        {
+            InitializeComponent();
+            ResizeParent(parentForm);
+            this.fluxo = fluxo;
+            containerForm = parentForm;
+            foreach (var sprint in sprintSmList)
+            {
+                lsbSprints.Items.Add(sprint.Range.Name);
+                this.sprintsSmList.Add(sprint);
+            }
+            lsbSprints.SelectedIndex = 0;
+
+            ShowLog("Bem vindo de volta\n:)");
+            btnNextForm.Enabled = true;
+        }
+
         private readonly ContainerForm containerForm;
         private readonly UtilDTO.NAVIGATION fluxo;
         private string sprintImagePath;
@@ -171,8 +194,20 @@ namespace RelatorioFA.AppWinForm
                         sprintsDevList.Add(newAdaptaionSprint);
                         sprintsDevList.Sort((x, y) => x.Range.Name.CompareTo(y.Range.Name));
                         break;
-                    default:
+                    case UtilDTO.NAVIGATION.SM:
+                        SprintSmDTO newSmSprintToAdd = new SprintSmDTO()
+                        {
+                            Range = range,
+                            ImagePath = sprintImagePath
+                        };
+
+                        //Remove e adiciona para caso ele esteja atualizando os dados
+                        sprintsSmList.Remove(sprintsSmList.Find(s => s.Range.Name == newSmSprintToAdd.Range.Name));
+                        sprintsSmList.Add(newSmSprintToAdd);
+                        sprintsSmList.Sort((x, y) => x.Range.Name.CompareTo(y.Range.Name));
                         break;
+                    default:
+                        throw new NotImplementedException();
                 }
 
                 //atualizar a lista de sprints
@@ -210,8 +245,11 @@ namespace RelatorioFA.AppWinForm
                 case UtilDTO.NAVIGATION.DEV:
                     containerForm.AbrirForm(new SprintPontosObsForm(containerForm, configXml, fluxo, sprintsDevList));
                     break;
-                default:
+                case UtilDTO.NAVIGATION.SM:
+                    containerForm.AbrirForm(new SprintSmCompartilhadoPontos(containerForm, configXml, fluxo, sprintsSmList));
                     break;
+                default:
+                    throw new NotImplementedException();
             }
         }
 
@@ -354,6 +392,9 @@ namespace RelatorioFA.AppWinForm
                 case UtilDTO.NAVIGATION.DEV:
                     lblScreen.Text = "Tela 1/3";
                     break;
+                case UtilDTO.NAVIGATION.SM:
+                    lblScreen.Text = "Tela 1/2";
+                    break;
                 default:
                     break;
             }
@@ -400,8 +441,14 @@ namespace RelatorioFA.AppWinForm
                         txbResult.AppendText(sprint.ToStringBuilder().ToString());
                     }
                     break;
-                default:
+                case UtilDTO.NAVIGATION.SM:
+                    foreach (var sprint in sprintsSmList)
+                    {
+                        txbResult.AppendText(sprint.ToStringBuilder().ToString());
+                    }
                     break;
+                default:
+                    throw new NotImplementedException("Não implementado log para este fluxo");
             }
         }
         #endregion

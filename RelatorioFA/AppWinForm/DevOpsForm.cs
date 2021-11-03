@@ -125,18 +125,11 @@ namespace RelatorioFA.AppWinForm
         #region BtnSetOutputDocPath_Click
         private void BtnSetOutputDocPath_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog folderDlg = new FolderBrowserDialog
+            outputDocPath = UtilWinForm.SetOutputDocPath();
+            if (!string.IsNullOrEmpty(outputDocPath))
             {
-                ShowNewFolderButton = true
-            };
-
-            DialogResult result = folderDlg.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                lblOutputPath.Text = folderDlg.SelectedPath;
+                lblOutputPath.Text = outputDocPath;
                 lblOutputPath.Visible = true;
-
-                outputDocPath = folderDlg.SelectedPath;
             }
         }
         #endregion

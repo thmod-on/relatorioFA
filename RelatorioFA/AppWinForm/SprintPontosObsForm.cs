@@ -145,7 +145,7 @@ namespace RelatorioFA.AppWinForm
                 GetSelectedDevSprint().AcceptedPointsInvestment = Convert.ToInt32(txbAcceptedPointsInvestment.Text);
                 if (sprintsSmList != null)
                 {
-                    GetSelectedSmSprint().AcceptedPointsInvestment = Convert.ToInt32(txbAcceptedPointsInvestment.Text);
+                    GetSelectedSmSprint().AcceptedPointsTeam1 = Convert.ToInt32(txbAcceptedPointsInvestment.Text) + Convert.ToInt32(txbAcceptedPointsExpense.Text);
                 }
                 ShowLog($"Pontos aceitos de investimento atualizados na sprint {lsbSprints.SelectedItem}");
             }
@@ -164,7 +164,7 @@ namespace RelatorioFA.AppWinForm
                 GetSelectedDevSprint().AcceptedPointsExpenses = Convert.ToInt32(txbAcceptedPointsExpense.Text);
                 if (sprintsSmList != null)
                 {
-                    GetSelectedSmSprint().AcceptedPointsExpenses = Convert.ToInt32(txbAcceptedPointsExpense.Text);
+                    GetSelectedSmSprint().AcceptedPointsTeam1 = Convert.ToInt32(txbAcceptedPointsInvestment.Text) + Convert.ToInt32(txbAcceptedPointsExpense.Text);
                 }
                 ShowLog($"Pontos aceitos de despesa atualizados na sprint {lsbSprints.SelectedItem}");
             }

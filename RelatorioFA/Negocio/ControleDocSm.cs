@@ -68,7 +68,7 @@ namespace RelatorioFA.Negocio
             {
                 if (sprints[0].Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString()))
                 {
-                    throw new NotImplementedException();
+                    CreateSummaryTableUstSmShared(document, sprints, ref missing, partner.UstValue);
                 }
             }
             SetLastPageSignature(paragraph, config);
@@ -93,7 +93,7 @@ namespace RelatorioFA.Negocio
                 smTable.Rows[line].Range.Font.Bold = 0;
                 smTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
                 smTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name;//Sprint
-                smTable.Rows[line].Cells[2].Range.Text = (sprint.AcceptedPointsExpenses + sprint.AcceptedPointsInvestment).ToString();//A
+                smTable.Rows[line].Cells[2].Range.Text = (sprint.AcceptedPointsTeam1).ToString();//A
                 smTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString(decimalFormat);//B
                 smTable.Rows[line].Cells[4].Range.Text = sprint.EmployeesCount.ToString();//C
                 smTable.Rows[line].Cells[5].Range.Text = sprint.SmPoints.ToString();//D
@@ -122,6 +122,90 @@ namespace RelatorioFA.Negocio
             SetGenericTableHeader(ref smTable, headers);
         }
         #endregion
+        #endregion
+
+        private static void CreateSummaryTableUstSmShared(Document document, List<SprintSmDTO> sprints, ref object missing, double ustValue)
+        {
+            int startLine = 2;
+            double totalPoints = 0;
+            int columns = 9;
+            int qtdBaseLines = (sprints.Count() * 2) + 2;//Multiplica por 2 devido a quantidade de times atendidos pelo SM e soma com 2 para compensar o cabecalho da tabela
+
+            Table smTable = document.Tables.Add(EndOfDocument(document, ref missing), 1, columns, ref missing, ref missing);
+            smTable.Borders.Enable = 1;
+            smTable.Range.Font.Size = 8;
+
+            SetTableHeaderUstSmShared(ref smTable);
+
+            //Definir esqueleto
+            for (int i = startLine; i < qtdBaseLines; i++)
+            {
+                smTable.Rows.Add(missing);
+                smTable.Rows[i].Range.Font.Bold = 0;
+                smTable.Rows[i].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
+            }
+
+            //Adicionar merges
+            Cell cel;
+            int[] columnsToSpan = { 5, 6, 7, 8, 9 };
+            for (int i = startLine; i < qtdBaseLines; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    int rowSpanStart = i;
+                    int rowSpanEnd = i + 1;
+                    foreach (var col in columnsToSpan)
+                    {
+                        cel = smTable.Cell(rowSpanStart, col);
+                        cel.Merge(smTable.Cell(rowSpanEnd, col));
+                    }
+                }
+            }
+
+            //Adicionar os dados
+            int line = 2;
+            foreach (var sprint in sprints)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    smTable.Cell(line, 1).Range.Text = sprint.Range.Name;//Sprint
+                    smTable.Cell(line, 2).Range.Text = i == 0 ? sprint.AcceptedPointsTeam1.ToString() : sprint.AcceptedPointsTeam2.ToString();//A
+                    smTable.Cell(line, 3).Range.Text = i == 0 ? sprint.DevTeamSize1.ToString() : sprint.DevTeamSize2.ToString();//B
+                    smTable.Cell(line, 4).Range.Text = i == 0 ? sprint.AverageTeam1.ToString(decimalFormat) : sprint.AverageTeam2.ToString(decimalFormat);//C
+                    if (line % 2 == 0)
+                    {
+                        smTable.Cell(line, 5).Range.Text = sprint.AverageSprint.ToString(decimalFormat);//D
+                        smTable.Cell(line, 6).Range.Text = sprint.Contracts[0].Factor.ToString(decimalFormat);//E
+                        smTable.Cell(line, 7).Range.Text = "1,000";//F
+                        smTable.Cell(line, 8).Range.Text = sprint.SmPoints.ToString(decimalFormat);//G
+
+                        totalPoints += sprint.SmPoints;
+                    }
+
+                    line++;
+                }
+            }
+
+            SetSummaryTableTotal(ref smTable, columns, line, totalPoints, ustValue, ref missing);
+        }
+
+        #region SetTableHeaderUstSmShared
+        private static void SetTableHeaderUstSmShared(ref Table smTable)
+        {
+            List<string> headers = new List<string>
+            {
+                "Sprint",
+                "A. Pts entregues",
+                "B. Tamanho do time",
+                "C. Média de pontos\n(A / B)",
+                "D. Média de pontos / sprint\n((Cn + Cn) / 2)",
+                "E. Fator de ajuste",
+                "F. UST das cerimônias",
+                "G. Pontos ajustados\n(D * E + F)",
+                "A ser faturado\n(G * UST)"
+            };
+            SetGenericTableHeader(ref smTable, headers);
+        } 
         #endregion
     }
 }
