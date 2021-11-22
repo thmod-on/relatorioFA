@@ -28,8 +28,6 @@ namespace RelatorioFA.AppWinForm
             LoadContractType();
             cbbPartner.Items.Add(NOVO);
             cbbPartner.SelectedIndex = 0;
-
-            //Tests();
         }
 
         public ModeloConfigXMLForm()
@@ -39,17 +37,6 @@ namespace RelatorioFA.AppWinForm
             LoadContractType();
             cbbPartner.Items.Add(NOVO);
             cbbPartner.SelectedIndex = 0;
-
-            //Tests();
-        }
-
-        private void Tests()
-        {
-            txbAuthor.Text = "Thiago de Mendonça Modesto";
-            txbTeamName.Text = "ACAFS - Governo";
-            txbPartnerName.Text = "Influir";
-            txbPartnerUstValue.Text = "750";
-            txbContractFactor.Text = "1";
         }
 
         private string outputPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;

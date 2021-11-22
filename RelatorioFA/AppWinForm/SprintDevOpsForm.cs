@@ -22,6 +22,7 @@ namespace RelatorioFA.AppWinForm
         private ConfigXmlDTO configXml;
         private string outputDocPath = UtilDTO.GetProjectRootFolder();
         private readonly ContainerForm containerForm;
+        private SprintDevOpsDTO selectedSprint = new SprintDevOpsDTO();
 
         #region LoadConfig
         private void LoadConfig()
@@ -224,7 +225,7 @@ namespace RelatorioFA.AppWinForm
         #region Eventos automaticos
         private void LsbSprints_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var selectedSprint = sprintsDevOpsList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
+            selectedSprint = sprintsDevOpsList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
 
             txbOpsWarningUst.Text = selectedSprint.WarningUst.ToString();
             txbOpsActuationUst.Text = selectedSprint.ActuationUst.ToString();
@@ -253,5 +254,35 @@ namespace RelatorioFA.AppWinForm
             e.Handled = UtilDTO.AllowOnlyNumbers_OnKeyPress(sender, e);
         }
         #endregion
+
+        private void TxbOpsWarningUst_Leave(object sender, EventArgs e)
+        {
+            selectedSprint.WarningUst = Convert.ToDouble(txbOpsWarningUst.Text);
+            ShowLog();
+        }
+
+        private void TxbOpsActuationUst_Leave(object sender, EventArgs e)
+        {
+            selectedSprint.ActuationUst = Convert.ToDouble(txbOpsActuationUst.Text);
+            ShowLog();
+        }
+
+        private void TxbOpsUsUst_Leave(object sender, EventArgs e)
+        {
+            selectedSprint.UsUst = Convert.ToDouble(txbOpsUsUst.Text);
+            ShowLog();
+        }
+
+        private void TxbOpsDevsCount_Leave(object sender, EventArgs e)
+        {
+            selectedSprint.TeamSize = Convert.ToDouble(txbOpsDevsCount.Text);
+            ShowLog();
+        }
+
+        private void TxbObs_Leave(object sender, EventArgs e)
+        {
+            selectedSprint.Obs = txbObs.Text;
+            ShowLog();
+        }
     }
 }

@@ -33,10 +33,10 @@ namespace RelatorioFA.AppWinForm
 
         private int SetDropDownWidth(ComboBox myCombo)
         {
-            int maxWidth = 0, temp = 0;
+            int maxWidth = 0;
             foreach (var obj in myCombo.Items)
             {
-                temp = TextRenderer.MeasureText(obj.ToString(), myCombo.Font).Width;
+                int temp = TextRenderer.MeasureText(obj.ToString(), myCombo.Font).Width;
                 if (temp > maxWidth)
                 {
                     maxWidth = temp;
@@ -47,8 +47,7 @@ namespace RelatorioFA.AppWinForm
 
         private void CbbGuide_SelectedIndexChanged(object sender, EventArgs e)
         {
-            GUIDE_OPTION option;
-            Enum.TryParse<GUIDE_OPTION>(cbbGuide.SelectedValue.ToString(), out option);
+            Enum.TryParse<GUIDE_OPTION>(cbbGuide.SelectedValue.ToString(), out GUIDE_OPTION option);
             LoadGuideText(option);
         }
 

@@ -36,10 +36,10 @@
             this.avulsoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.devOpsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.primeiraSprintToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sMCompartilhadoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ajudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.comoUtilizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.versõesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sMCompartilhadoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -110,6 +110,13 @@
             this.primeiraSprintToolStripMenuItem.Text = "Dev";
             this.primeiraSprintToolStripMenuItem.Click += new System.EventHandler(this.DevSprintToolStripMenuItem_Click);
             // 
+            // sMCompartilhadoToolStripMenuItem
+            // 
+            this.sMCompartilhadoToolStripMenuItem.Name = "sMCompartilhadoToolStripMenuItem";
+            this.sMCompartilhadoToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.sMCompartilhadoToolStripMenuItem.Text = "SM - Compartilhado";
+            this.sMCompartilhadoToolStripMenuItem.Click += new System.EventHandler(this.SMCompartilhadoToolStripMenuItem_Click);
+            // 
             // ajudaToolStripMenuItem
             // 
             this.ajudaToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -133,13 +140,6 @@
             this.versõesToolStripMenuItem.Text = "Versões";
             this.versõesToolStripMenuItem.Click += new System.EventHandler(this.VersõesToolStripMenuItem_Click);
             // 
-            // sMCompartilhadoToolStripMenuItem
-            // 
-            this.sMCompartilhadoToolStripMenuItem.Name = "sMCompartilhadoToolStripMenuItem";
-            this.sMCompartilhadoToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-            this.sMCompartilhadoToolStripMenuItem.Text = "SM - Compartilhado";
-            this.sMCompartilhadoToolStripMenuItem.Click += new System.EventHandler(this.SMCompartilhadoToolStripMenuItem_Click);
-            // 
             // ContainerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -150,7 +150,7 @@
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "ContainerForm";
-            this.Text = "Relatório de fábrica ágil - v 4.12.0";
+            this.Text = "Relatório de fábrica ágil - v 4.12.1";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);

@@ -137,6 +137,7 @@ namespace RelatorioFA.AppWinForm
             this.txbObs.Size = new System.Drawing.Size(262, 114);
             this.txbObs.TabIndex = 59;
             this.txbObs.Text = "";
+            this.txbObs.Leave += new System.EventHandler(this.TxbObs_Leave);
             // 
             // lsbSprints
             // 
@@ -180,6 +181,7 @@ namespace RelatorioFA.AppWinForm
             this.txbOpsWarningUst.Size = new System.Drawing.Size(121, 20);
             this.txbOpsWarningUst.TabIndex = 4;
             this.txbOpsWarningUst.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbOpsWarningUst_KeyPress);
+            this.txbOpsWarningUst.Leave += new System.EventHandler(this.TxbOpsWarningUst_Leave);
             // 
             // txbOpsActuationUst
             // 
@@ -188,6 +190,7 @@ namespace RelatorioFA.AppWinForm
             this.txbOpsActuationUst.Size = new System.Drawing.Size(121, 20);
             this.txbOpsActuationUst.TabIndex = 6;
             this.txbOpsActuationUst.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbOpsActuationUst_KeyPress);
+            this.txbOpsActuationUst.Leave += new System.EventHandler(this.TxbOpsActuationUst_Leave);
             // 
             // label5
             // 
@@ -214,6 +217,7 @@ namespace RelatorioFA.AppWinForm
             this.txbOpsDevsCount.Size = new System.Drawing.Size(121, 20);
             this.txbOpsDevsCount.TabIndex = 13;
             this.txbOpsDevsCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbOpsDevsCount_KeyPress);
+            this.txbOpsDevsCount.Leave += new System.EventHandler(this.TxbOpsDevsCount_Leave);
             // 
             // txbOpsUsUst
             // 
@@ -222,6 +226,7 @@ namespace RelatorioFA.AppWinForm
             this.txbOpsUsUst.Size = new System.Drawing.Size(121, 20);
             this.txbOpsUsUst.TabIndex = 8;
             this.txbOpsUsUst.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbOpsUsUst_KeyPress);
+            this.txbOpsUsUst.Leave += new System.EventHandler(this.TxbOpsUsUst_Leave);
             // 
             // label7
             // 
