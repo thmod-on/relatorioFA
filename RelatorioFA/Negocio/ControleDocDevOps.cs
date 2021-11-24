@@ -61,34 +61,37 @@ namespace RelatorioFA.Negocio
         private static void CreateSummaryTableUstDevOps(Document document, List<SprintDevOpsDTO> sprintsDevOps, object missing, FornecedorDTO partner)
         {
             double totalPoints = 0;
-            int columns = 7;
+            List<string> headers = new List<string>
+            {
+                "Sprint",
+                "A. Pts suporte",
+                "B. Pts sobreaviso",
+                "C. Pts acionamento",
+                "D. Pts de US",
+                "E. Quantidade de plantonistas",
+                "F. Pontos fornecedor\n((A + B) * E) + C + D",
+                "A ser faturado\n(UST * F)"
+            };
+            int columns = headers.Count;
 
             Table summaryTable = document.Tables.Add(EndOfDocument(document, ref missing), 1, columns, ref missing, ref missing);
             summaryTable.Borders.Enable = 1;
             summaryTable.Range.Font.Size = 8;
-            List<string> headers = new List<string>
-            {
-                "Sprint",
-                "A. Pts sobreaviso",
-                "B. Pts acionamento",
-                "C. Pts de US",
-                "D. Quantidade de plantonistas",
-                "E. Pontos fornecedor\n(A * D) + B + C",
-                "A ser faturado\n(UST * E)"
-            };
+            
             int line = SetGenericTableHeader(ref summaryTable, headers, UtilDTO.CATEGORY.DESPESA);
             foreach (var sprint in sprintsDevOps)
             {
-                double sprintPoints = (sprint.WarningUst * sprint.TeamSize) + sprint.ActuationUst + sprint.UsUst;
+                double sprintPoints = ((sprint.SupportUst + sprint.WarningUst) * sprint.TeamSize) + sprint.ActuationUst + sprint.UsUst;
                 summaryTable.Rows.Add(missing);
                 summaryTable.Rows[line].Range.Font.Bold = 0;
                 summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
                 summaryTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name;
-                summaryTable.Rows[line].Cells[2].Range.Text = sprint.WarningUst.ToString();
-                summaryTable.Rows[line].Cells[3].Range.Text = sprint.ActuationUst.ToString();
-                summaryTable.Rows[line].Cells[4].Range.Text = sprint.UsUst.ToString();
-                summaryTable.Rows[line].Cells[5].Range.Text = sprint.TeamSize.ToString();
-                summaryTable.Rows[line].Cells[6].Range.Text = sprintPoints.ToString();
+                summaryTable.Rows[line].Cells[2].Range.Text = sprint.SupportUst.ToString();
+                summaryTable.Rows[line].Cells[3].Range.Text = sprint.WarningUst.ToString();
+                summaryTable.Rows[line].Cells[4].Range.Text = sprint.ActuationUst.ToString();
+                summaryTable.Rows[line].Cells[5].Range.Text = sprint.UsUst.ToString();
+                summaryTable.Rows[line].Cells[6].Range.Text = sprint.TeamSize.ToString();
+                summaryTable.Rows[line].Cells[7].Range.Text = sprintPoints.ToString();
 
                 totalPoints += sprintPoints;
                 line++;

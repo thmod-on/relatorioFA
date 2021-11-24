@@ -29,7 +29,6 @@ namespace RelatorioFA.AppWinForm
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnAddSprint = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -37,6 +36,8 @@ namespace RelatorioFA.AppWinForm
             this.txbObs = new System.Windows.Forms.RichTextBox();
             this.lsbSprints = new System.Windows.Forms.ListBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.txbOpsSupportUst = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.txbOpsWarningUst = new System.Windows.Forms.TextBox();
             this.txbOpsActuationUst = new System.Windows.Forms.TextBox();
@@ -63,17 +64,6 @@ namespace RelatorioFA.AppWinForm
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // btnAddSprint
-            // 
-            this.btnAddSprint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddSprint.Location = new System.Drawing.Point(344, 488);
-            this.btnAddSprint.Name = "btnAddSprint";
-            this.btnAddSprint.Size = new System.Drawing.Size(75, 23);
-            this.btnAddSprint.TabIndex = 65;
-            this.btnAddSprint.Text = "Adicionar";
-            this.btnAddSprint.UseVisualStyleBackColor = true;
-            this.btnAddSprint.Click += new System.EventHandler(this.BtnAddSprint_Click);
             // 
             // label4
             // 
@@ -135,7 +125,7 @@ namespace RelatorioFA.AppWinForm
             this.txbObs.Location = new System.Drawing.Point(12, 30);
             this.txbObs.Name = "txbObs";
             this.txbObs.Size = new System.Drawing.Size(262, 114);
-            this.txbObs.TabIndex = 59;
+            this.txbObs.TabIndex = 6;
             this.txbObs.Text = "";
             this.txbObs.Leave += new System.EventHandler(this.TxbObs_Leave);
             // 
@@ -150,6 +140,8 @@ namespace RelatorioFA.AppWinForm
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label9);
+            this.groupBox2.Controls.Add(this.txbOpsSupportUst);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.txbOpsWarningUst);
             this.groupBox2.Controls.Add(this.txbOpsActuationUst);
@@ -158,83 +150,101 @@ namespace RelatorioFA.AppWinForm
             this.groupBox2.Controls.Add(this.txbOpsDevsCount);
             this.groupBox2.Controls.Add(this.txbOpsUsUst);
             this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.Location = new System.Drawing.Point(3, 105);
+            this.groupBox2.Location = new System.Drawing.Point(3, 94);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(280, 131);
+            this.groupBox2.Size = new System.Drawing.Size(280, 164);
             this.groupBox2.TabIndex = 55;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Dados de pagamento";
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(9, 25);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(67, 13);
+            this.label9.TabIndex = 16;
+            this.label9.Text = "UST suporte";
+            // 
+            // txbOpsSupportUst
+            // 
+            this.txbOpsSupportUst.Location = new System.Drawing.Point(112, 22);
+            this.txbOpsSupportUst.Name = "txbOpsSupportUst";
+            this.txbOpsSupportUst.Size = new System.Drawing.Size(121, 20);
+            this.txbOpsSupportUst.TabIndex = 1;
+            this.txbOpsSupportUst.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbOpsSupportUst_KeyPress);
+            this.txbOpsSupportUst.Leave += new System.EventHandler(this.TxbOpsSupportUst_Leave);
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 22);
+            this.label3.Location = new System.Drawing.Point(9, 51);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(83, 13);
-            this.label3.TabIndex = 5;
+            this.label3.TabIndex = 16;
             this.label3.Text = "UST sobreaviso";
             // 
             // txbOpsWarningUst
             // 
-            this.txbOpsWarningUst.Location = new System.Drawing.Point(110, 19);
+            this.txbOpsWarningUst.Location = new System.Drawing.Point(112, 48);
             this.txbOpsWarningUst.Name = "txbOpsWarningUst";
             this.txbOpsWarningUst.Size = new System.Drawing.Size(121, 20);
-            this.txbOpsWarningUst.TabIndex = 4;
+            this.txbOpsWarningUst.TabIndex = 2;
             this.txbOpsWarningUst.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbOpsWarningUst_KeyPress);
             this.txbOpsWarningUst.Leave += new System.EventHandler(this.TxbOpsWarningUst_Leave);
             // 
             // txbOpsActuationUst
             // 
-            this.txbOpsActuationUst.Location = new System.Drawing.Point(110, 47);
+            this.txbOpsActuationUst.Location = new System.Drawing.Point(112, 76);
             this.txbOpsActuationUst.Name = "txbOpsActuationUst";
             this.txbOpsActuationUst.Size = new System.Drawing.Size(121, 20);
-            this.txbOpsActuationUst.TabIndex = 6;
+            this.txbOpsActuationUst.TabIndex = 3;
             this.txbOpsActuationUst.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbOpsActuationUst_KeyPress);
             this.txbOpsActuationUst.Leave += new System.EventHandler(this.TxbOpsActuationUst_Leave);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(7, 106);
+            this.label5.Location = new System.Drawing.Point(9, 135);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(86, 13);
-            this.label5.TabIndex = 14;
+            this.label5.TabIndex = 16;
             this.label5.Text = "Qtd. plantonistas";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(7, 50);
+            this.label6.Location = new System.Drawing.Point(9, 79);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(93, 13);
-            this.label6.TabIndex = 7;
+            this.label6.TabIndex = 16;
             this.label6.Text = "UST acionamento";
             // 
             // txbOpsDevsCount
             // 
-            this.txbOpsDevsCount.Location = new System.Drawing.Point(109, 103);
+            this.txbOpsDevsCount.Location = new System.Drawing.Point(111, 132);
             this.txbOpsDevsCount.Name = "txbOpsDevsCount";
             this.txbOpsDevsCount.Size = new System.Drawing.Size(121, 20);
-            this.txbOpsDevsCount.TabIndex = 13;
+            this.txbOpsDevsCount.TabIndex = 5;
             this.txbOpsDevsCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbOpsDevsCount_KeyPress);
             this.txbOpsDevsCount.Leave += new System.EventHandler(this.TxbOpsDevsCount_Leave);
             // 
             // txbOpsUsUst
             // 
-            this.txbOpsUsUst.Location = new System.Drawing.Point(110, 73);
+            this.txbOpsUsUst.Location = new System.Drawing.Point(112, 102);
             this.txbOpsUsUst.Name = "txbOpsUsUst";
             this.txbOpsUsUst.Size = new System.Drawing.Size(121, 20);
-            this.txbOpsUsUst.TabIndex = 8;
+            this.txbOpsUsUst.TabIndex = 4;
             this.txbOpsUsUst.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbOpsUsUst_KeyPress);
             this.txbOpsUsUst.Leave += new System.EventHandler(this.TxbOpsUsUst_Leave);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(7, 76);
+            this.label7.Location = new System.Drawing.Point(9, 105);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(47, 13);
-            this.label7.TabIndex = 9;
+            this.label7.TabIndex = 16;
             this.label7.Text = "UST US";
             // 
             // groupBox4
@@ -289,7 +299,7 @@ namespace RelatorioFA.AppWinForm
             // 
             // btnOpenDestinationFolder
             // 
-            this.btnOpenDestinationFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnOpenDestinationFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOpenDestinationFolder.Enabled = false;
             this.btnOpenDestinationFolder.Location = new System.Drawing.Point(669, 488);
             this.btnOpenDestinationFolder.Name = "btnOpenDestinationFolder";
@@ -301,7 +311,7 @@ namespace RelatorioFA.AppWinForm
             // 
             // btnSetOutputDocPath
             // 
-            this.btnSetOutputDocPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnSetOutputDocPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSetOutputDocPath.Location = new System.Drawing.Point(469, 488);
             this.btnSetOutputDocPath.Name = "btnSetOutputDocPath";
             this.btnSetOutputDocPath.Size = new System.Drawing.Size(103, 23);
@@ -312,8 +322,7 @@ namespace RelatorioFA.AppWinForm
             // 
             // btnGenerate
             // 
-            this.btnGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnGenerate.Enabled = false;
+            this.btnGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnGenerate.Location = new System.Drawing.Point(583, 488);
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(75, 23);
@@ -354,7 +363,6 @@ namespace RelatorioFA.AppWinForm
             this.Controls.Add(this.btnSetOutputDocPath);
             this.Controls.Add(this.btnGenerate);
             this.Controls.Add(this.btnPreviousForm);
-            this.Controls.Add(this.btnAddSprint);
             this.Controls.Add(this.splitContainer1);
             this.Name = "SprintDevOpsForm";
             this.Text = "SprintDevOpsForm";
@@ -375,8 +383,6 @@ namespace RelatorioFA.AppWinForm
         }
 
         #endregion
-
-        private System.Windows.Forms.Button btnAddSprint;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.SplitContainer splitContainer1;
@@ -402,5 +408,7 @@ namespace RelatorioFA.AppWinForm
         private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button btnChangeConfigFolder;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox txbOpsSupportUst;
     }
 }

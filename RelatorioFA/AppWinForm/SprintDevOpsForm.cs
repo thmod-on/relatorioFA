@@ -12,7 +12,6 @@ namespace RelatorioFA.AppWinForm
         public SprintDevOpsForm(ContainerForm containerForm, List<SprintDevOpsDTO> sprintsList)
         {
             InitializeComponent();
-            ResizeParent(containerForm);
             SetSprintsDevOpsList(sprintsList);
             this.containerForm = containerForm;
             LoadConfig();
@@ -50,12 +49,6 @@ namespace RelatorioFA.AppWinForm
         #endregion
 
         #region AUX
-        private void ResizeParent(Form containerForm)
-        {
-            containerForm.Size = new System.Drawing.Size(this.Width, this.Height + 20);
-            containerForm.MinimumSize = new Size(this.Width, this.Height + 20);
-        }
-
         private void SetSprintsDevOpsList(List<SprintDevOpsDTO> sprintsList)
         {
             sprintsDevOpsList = sprintsList;
@@ -82,6 +75,9 @@ namespace RelatorioFA.AppWinForm
             {
                 txbResult.Text = "Processando...";
 
+                cbbPartners.Enabled = !processing;
+
+                txbOpsSupportUst.Enabled = !processing;
                 txbOpsActuationUst.Enabled = !processing;
                 txbOpsDevsCount.Enabled = !processing;
                 txbOpsUsUst.Enabled = !processing;
@@ -89,7 +85,6 @@ namespace RelatorioFA.AppWinForm
                 txbObs.Enabled = !processing;
 
                 btnPreviousForm.Enabled = !processing;
-                btnAddSprint.Enabled = !processing;
                 btnSetOutputDocPath.Enabled = !processing;
                 btnGenerate.Enabled = !processing;
                 btnChangeConfigFolder.Enabled = !processing;
@@ -130,6 +125,7 @@ namespace RelatorioFA.AppWinForm
                 txbResult.AppendText($"   - Data inicial: {sprint.Range.IniDate:dd/MM/yyyy}\n");
                 txbResult.AppendText($"   - Data final: {sprint.Range.EndDate:dd/MM/yyyy}\n");
                 txbResult.AppendText($"   - Imagem: {sprint.ImagePath}\n");
+                txbResult.AppendText($"   - Pontos de suporte: {sprint.SupportUst}\n");
                 txbResult.AppendText($"   - Pontos de sobreaviso: {sprint.WarningUst}\n");
                 txbResult.AppendText($"   - Pontos de acionamento: {sprint.ActuationUst}\n");
                 txbResult.AppendText($"   - Pontos de histórias DevOps: {sprint.UsUst}\n");
@@ -146,39 +142,10 @@ namespace RelatorioFA.AppWinForm
             containerForm.AbrirForm(new SprintBaseForm(containerForm, UtilDTO.NAVIGATION.DEVOPS, sprintsDevOpsList));
         }
 
-        private void BtnAddSprint_Click(object sender, System.EventArgs e)
-        {
-            try
-            {
-                cbbPartners.Enabled = false;
-
-                var selectedSprint = sprintsDevOpsList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
-                selectedSprint.Obs = txbObs.Text;
-                selectedSprint.WarningUst = Convert.ToDouble(txbOpsWarningUst.Text);
-                selectedSprint.ActuationUst = Convert.ToDouble(txbOpsActuationUst.Text);
-                selectedSprint.UsUst = Convert.ToDouble(txbOpsUsUst.Text);
-                selectedSprint.TeamSize = Convert.ToDouble(txbOpsDevsCount.Text);
-
-                if(lsbSprints.SelectedIndex < lsbSprints.Items.Count - 1)
-                {
-                    lsbSprints.SelectedIndex += 1;
-                }
-
-                txbOpsWarningUst.Focus();
-
-                ShowLog("Dados da sprint atualizados.");
-            }
-            catch (Exception ex)
-            {
-                txbResult.Text = $"ERRO. {ex.Message}";
-            }
-        }
-
         private void BtnSetOutputDocPath_Click(object sender, System.EventArgs e)
         {
             outputDocPath = UtilWinForm.SetOutputDocPath();
-            ShowLog("Caminho de saído do arquivo definodo.");
-            btnGenerate.Enabled = true;
+            ShowLog("Caminho de saído do arquivo definido.");
         }
 
         private void BtnGenerate_Click(object sender, System.EventArgs e)
@@ -227,11 +194,14 @@ namespace RelatorioFA.AppWinForm
         {
             selectedSprint = sprintsDevOpsList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
 
+            txbOpsSupportUst.Text = selectedSprint.SupportUst.ToString();
             txbOpsWarningUst.Text = selectedSprint.WarningUst.ToString();
             txbOpsActuationUst.Text = selectedSprint.ActuationUst.ToString();
             txbOpsUsUst.Text = selectedSprint.UsUst.ToString();
             txbOpsDevsCount.Text = selectedSprint.TeamSize.ToString();
             txbObs.Text = selectedSprint.Obs;
+
+            txbOpsSupportUst.Focus();
         }
 
         private void TxbOpsWarningUst_KeyPress(object sender, KeyPressEventArgs e)
@@ -253,7 +223,11 @@ namespace RelatorioFA.AppWinForm
         {
             e.Handled = UtilDTO.AllowOnlyNumbers_OnKeyPress(sender, e);
         }
-        #endregion
+
+        private void TxbOpsSupportUst_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = UtilDTO.AllowOnlyNumbers_OnKeyPress(sender, e);
+        }
 
         private void TxbOpsWarningUst_Leave(object sender, EventArgs e)
         {
@@ -284,5 +258,12 @@ namespace RelatorioFA.AppWinForm
             selectedSprint.Obs = txbObs.Text;
             ShowLog();
         }
+
+        private void TxbOpsSupportUst_Leave(object sender, EventArgs e)
+        {
+            selectedSprint.SupportUst = Convert.ToDouble(txbOpsSupportUst.Text);
+            ShowLog();
+        }
+        #endregion
     }
 }

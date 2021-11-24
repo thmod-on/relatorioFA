@@ -8,6 +8,7 @@ namespace RelatorioFA.DTO
 {
     public class SprintDevOpsDTO : SprintBaseDTO
     {
+        public double SupportUst { get; set; }
         public double WarningUst { get; set; }
         public double ActuationUst { get; set; }
         public double UsUst { get; set; }
@@ -15,6 +16,7 @@ namespace RelatorioFA.DTO
         public override StringBuilder ToStringBuilder()
         {
             var aux = base.ToStringBuilder();
+            aux.Append($"- UST por suporte: {SupportUst}\n");
             aux.Append($"- UST por sobreaviso: {WarningUst}\n");
             aux.Append($"- UST por acionamento: {ActuationUst}\n");
             aux.Append($"- UST por US: {UsUst}\n");
