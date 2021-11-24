@@ -67,7 +67,7 @@
             // todasEmpresasToolStripMenuItem1
             // 
             this.todasEmpresasToolStripMenuItem1.Name = "todasEmpresasToolStripMenuItem1";
-            this.todasEmpresasToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.todasEmpresasToolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
             this.todasEmpresasToolStripMenuItem1.Text = "Todas empresas";
             this.todasEmpresasToolStripMenuItem1.Click += new System.EventHandler(this.TodasEmpresasToolStripMenuItem_Click);
             // 
@@ -78,27 +78,27 @@
             this.primeiraSprintToolStripMenuItem,
             this.sMCompartilhadoToolStripMenuItem});
             this.relatórioDaFábricaÁgilToolStripMenuItem.Name = "relatórioDaFábricaÁgilToolStripMenuItem";
-            this.relatórioDaFábricaÁgilToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.relatórioDaFábricaÁgilToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.relatórioDaFábricaÁgilToolStripMenuItem.Text = "Avulso";
             // 
             // devOpsToolStripMenuItem
             // 
             this.devOpsToolStripMenuItem.Name = "devOpsToolStripMenuItem";
-            this.devOpsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.devOpsToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.devOpsToolStripMenuItem.Text = "DevOps";
             this.devOpsToolStripMenuItem.Click += new System.EventHandler(this.DevOpsToolStripMenuItem_Click);
             // 
             // primeiraSprintToolStripMenuItem
             // 
             this.primeiraSprintToolStripMenuItem.Name = "primeiraSprintToolStripMenuItem";
-            this.primeiraSprintToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.primeiraSprintToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.primeiraSprintToolStripMenuItem.Text = "Dev";
             this.primeiraSprintToolStripMenuItem.Click += new System.EventHandler(this.DevSprintToolStripMenuItem_Click);
             // 
             // sMCompartilhadoToolStripMenuItem
             // 
             this.sMCompartilhadoToolStripMenuItem.Name = "sMCompartilhadoToolStripMenuItem";
-            this.sMCompartilhadoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sMCompartilhadoToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.sMCompartilhadoToolStripMenuItem.Text = "SM - Média";
             this.sMCompartilhadoToolStripMenuItem.Click += new System.EventHandler(this.SMCompartilhadoToolStripMenuItem_Click);
             // 
@@ -150,7 +150,7 @@
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "ContainerForm";
-            this.Text = "Relatório de fábrica ágil - v 4.12.2";
+            this.Text = "Relatório de fábrica ágil - v 4.12.3";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
