@@ -94,15 +94,14 @@ namespace RelatorioFA.Negocio
         #region CreateSummaryTableUst
         private static void CreateSummaryTableUst(Document document, List<SprintDevDTO> sprints, object missing, FornecedorDTO partner)
         {
-            CreateSummaryTableUstDev(document, sprints, ref missing, partner, UtilDTO.CATEGORY.DES);
+            CreateSummaryTableUstDev(document, sprints, ref missing, partner, UtilDTO.CATEGORY.DESPESA);
             AddPAragraph(" ", 3, 3, 0, 8, WdParagraphAlignment.wdAlignParagraphLeft, document, ref missing);
-            CreateSummaryTableUstDev(document, sprints, ref missing, partner, UtilDTO.CATEGORY.INV);
+            CreateSummaryTableUstDev(document, sprints, ref missing, partner, UtilDTO.CATEGORY.INVESTIMENTO);
         }
 
         #region CreateSummaryTableUstDev
         private static void CreateSummaryTableUstDev(Document document, List<SprintDevDTO> sprintsDevList, ref object missing, FornecedorDTO partner, UtilDTO.CATEGORY category)
         {
-            int line = 2;
             double totalPoints = 0;
             int columns = 10;
 
@@ -111,7 +110,7 @@ namespace RelatorioFA.Negocio
             summaryTable.Borders.Enable = 1;
             summaryTable.Range.Font.Size = 8;
 
-            SetTableHeaderUstDev(ref summaryTable, category);
+            int line = SetTableHeaderUstDev(ref summaryTable, category);
 
             foreach (var sprint in sprintsDevList)
             {
@@ -122,18 +121,18 @@ namespace RelatorioFA.Negocio
                         double extraHourUst = 0;
                         double employeeCount = 0;
                         double partialPoints = 0;
-                        int acceptedPoints = category == UtilDTO.CATEGORY.DES ? sprint.AcceptedPointsExpenses : sprint.AcceptedPointsInvestment;
-                        double pointsPerTeamMember = category == UtilDTO.CATEGORY.DES ? sprint.PointsPerTeamMemberExpenses : sprint.PointsPerTeamMemberInvestment;
+                        int acceptedPoints = category == UtilDTO.CATEGORY.DESPESA ? sprint.AcceptedPointsExpenses : sprint.AcceptedPointsInvestment;
+                        double pointsPerTeamMember = category == UtilDTO.CATEGORY.DESPESA ? sprint.PointsPerTeamMemberExpenses : sprint.PointsPerTeamMemberInvestment;
                         string cerimonialPoint = "0";
-                        if ((category == UtilDTO.CATEGORY.DES && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.DESPESA) ||
-                            (category == UtilDTO.CATEGORY.INV && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO))
+                        if ((category == UtilDTO.CATEGORY.DESPESA && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.DESPESA) ||
+                            (category == UtilDTO.CATEGORY.INVESTIMENTO && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO))
                         {
                             cerimonialPoint = "1";
                         }
                         foreach (var dev in contract.Collaborators)
                         {
                             employeeCount += dev.Presence;
-                            extraHourUst += Controle.CalcUstByExtraHour(category == UtilDTO.CATEGORY.DES ? dev.ExtraHoursExpenses : dev.ExtraHourInvestment);
+                            extraHourUst += Controle.CalcUstByExtraHour(category == UtilDTO.CATEGORY.DESPESA ? dev.ExtraHoursExpenses : dev.ExtraHourInvestment);
                         }
                         partialPoints = ((pointsPerTeamMember + Convert.ToDouble(cerimonialPoint)) * contract.Factor * employeeCount) + extraHourUst;
                         summaryTable.Rows.Add(missing);
@@ -158,12 +157,12 @@ namespace RelatorioFA.Negocio
             SetSummaryTableTotal(ref summaryTable, columns, line, totalPoints, partner.UstValue, ref missing);
         }
         #region SetTableHeaderUstDev
-        private static void SetTableHeaderUstDev(ref Table table, UtilDTO.CATEGORY category)
+        private static int SetTableHeaderUstDev(ref Table table, UtilDTO.CATEGORY category)
         {
             List<string> headers = new List<string>
             {
                 "Sprint",
-                "A. Pts entregues " + category,
+                "A. Pts entregues",
                 "B. Tamanho do time",
                 "C. Qtd funcionários empresa",
                 "D. Pts por membro do time\n(A / B)",
@@ -173,7 +172,7 @@ namespace RelatorioFA.Negocio
                 "H. Total de pontos\n(( D + F) * E * C) + G",
                 "A ser faturado\n(G * UST) "
             };
-            SetGenericTableHeader(ref table, headers);
+            return SetGenericTableHeader(ref table, headers, category);
         }
         #endregion
         #endregion
@@ -210,9 +209,9 @@ namespace RelatorioFA.Negocio
                 }
             }
 
-            CreateSummaryTableUstHourContent(document, sprintHourList, missing, ustValue, UtilDTO.CATEGORY.DES);
+            CreateSummaryTableUstHourContent(document, sprintHourList, missing, ustValue, UtilDTO.CATEGORY.DESPESA);
             AddPAragraph(" ", 3, 3, 0, 8, WdParagraphAlignment.wdAlignParagraphLeft, document, ref missing);
-            CreateSummaryTableUstHourContent(document, sprintHourList, missing, ustValue, UtilDTO.CATEGORY.INV);
+            CreateSummaryTableUstHourContent(document, sprintHourList, missing, ustValue, UtilDTO.CATEGORY.INVESTIMENTO);
         }
 
         private static void CreateSummaryTableUstHourContent(Document document, List<SprintDevDTO> sprints, object missing, double ustValue, UtilDTO.CATEGORY category)
@@ -236,20 +235,20 @@ namespace RelatorioFA.Negocio
                     double hours = 0;
                     double pointsPerPartner = 0;
                     string cerimonialPoint = "0";
-                    if ((category == UtilDTO.CATEGORY.DES && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.DESPESA) ||
-                        (category == UtilDTO.CATEGORY.INV && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO))
+                    if ((category == UtilDTO.CATEGORY.DESPESA && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.DESPESA) ||
+                        (category == UtilDTO.CATEGORY.INVESTIMENTO && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO))
                     {
                         cerimonialPoint = "1";
                     }
                     foreach (var dev in contract.Collaborators)
                     {
                         employeeCount += dev.Presence;
-                        extraHour += category == UtilDTO.CATEGORY.DES ? dev.ExtraHoursExpenses : dev.ExtraHourInvestment;
+                        extraHour += category == UtilDTO.CATEGORY.DESPESA ? dev.ExtraHoursExpenses : dev.ExtraHourInvestment;
                     }
-                    double pointsPerTeamMember = category == UtilDTO.CATEGORY.DES ? sprint.PointsPerTeamMemberExpenses : sprint.PointsPerTeamMemberInvestment;
+                    double pointsPerTeamMember = category == UtilDTO.CATEGORY.DESPESA ? sprint.PointsPerTeamMemberExpenses : sprint.PointsPerTeamMemberInvestment;
                     pointsPerPartner = employeeCount * (pointsPerTeamMember + Convert.ToDouble(cerimonialPoint));
                     hours = Math.Ceiling(pointsPerPartner * ustValue / contract.HourValue) + extraHour;
-                    int acceptedPoints = category == UtilDTO.CATEGORY.DES ? sprint.AcceptedPointsExpenses : sprint.AcceptedPointsInvestment;
+                    int acceptedPoints = category == UtilDTO.CATEGORY.DESPESA ? sprint.AcceptedPointsExpenses : sprint.AcceptedPointsInvestment;
                     
                     summaryTable.Rows.Add(missing);
                     summaryTable.Rows[line].Range.Font.Bold = 0;
@@ -282,12 +281,12 @@ namespace RelatorioFA.Negocio
             summaryTable.Range.ParagraphFormat.SpaceAfter = 0;
         }
 
-        private static void SetTableHeaderUstHour(ref Table table, UtilDTO.CATEGORY category)
+        private static int SetTableHeaderUstHour(ref Table table, UtilDTO.CATEGORY category)
         {
             List<string> headers = new List<string>()
             {
                 "Sprint"
-                ,$"A. Pts entregues {category}"
+                ,$"A. Pts entregues"
                 ,"B. Tamanho do time"
                 ,"C. Qtd funcionários empresa"
                 ,"D. Pts por membro do time\n(A / B)"
@@ -297,7 +296,7 @@ namespace RelatorioFA.Negocio
                 ,"H. Horas na sprint\n(F * UST / Valor hora) + G"
                 ,"A ser faturado\n(H * Valor hora)"
             };
-            SetGenericTableHeader(ref table, headers);
+            return SetGenericTableHeader(ref table, headers, category);
         }
         #endregion
     }

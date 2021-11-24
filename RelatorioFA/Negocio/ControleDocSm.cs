@@ -77,7 +77,6 @@ namespace RelatorioFA.Negocio
         #region CreateSummaryTableUstSmSettled
         private static void CreateSummaryTableUstSmSettled(Document document, List<SprintSmDTO> sprints, ref object missing, double ustValue)
         {
-            int line = 2;
             double totalPoints = 0;
             int columns = 7;
 
@@ -85,7 +84,7 @@ namespace RelatorioFA.Negocio
             smTable.Borders.Enable = 1;
             smTable.Range.Font.Size = 8;
 
-            SetTableHeaderUstSm(ref smTable);
+            int line = SetTableHeaderUstSm(ref smTable, UtilDTO.CATEGORY.DESPESA);
             
             foreach (var sprint in sprints)
             {
@@ -107,7 +106,7 @@ namespace RelatorioFA.Negocio
         }
 
         #region SetTableHeaderUstSm
-        private static void SetTableHeaderUstSm(ref Table smTable)
+        private static int SetTableHeaderUstSm(ref Table smTable, UtilDTO.CATEGORY category)
         {
             List<string> headers = new List<string>
             {
@@ -119,14 +118,13 @@ namespace RelatorioFA.Negocio
                 "E. Pontos fornecedor\n(C * D)",
                 "A ser faturado\n(UST * E)"
             };
-            SetGenericTableHeader(ref smTable, headers);
+            return SetGenericTableHeader(ref smTable, headers, category);
         }
         #endregion
         #endregion
 
         private static void CreateSummaryTableUstSmShared(Document document, List<SprintSmDTO> sprints, ref object missing, double ustValue)
         {
-            int startLine = 2;
             double totalPoints = 0;
             int columns = 9;
             int qtdBaseLines = (sprints.Count() * 2) + 2;//Multiplica por 2 devido a quantidade de times atendidos pelo SM e soma com 2 para compensar o cabecalho da tabela
@@ -134,11 +132,10 @@ namespace RelatorioFA.Negocio
             Table smTable = document.Tables.Add(EndOfDocument(document, ref missing), 1, columns, ref missing, ref missing);
             smTable.Borders.Enable = 1;
             smTable.Range.Font.Size = 8;
-
-            SetTableHeaderUstSmShared(ref smTable);
+            int startLine = SetTableHeaderUstSmShared(ref smTable);
 
             //Definir esqueleto
-            for (int i = startLine; i < qtdBaseLines; i++)
+            for (int i = startLine; i <= qtdBaseLines; i++)
             {
                 smTable.Rows.Add(missing);
                 smTable.Rows[i].Range.Font.Bold = 0;
@@ -150,7 +147,7 @@ namespace RelatorioFA.Negocio
             int[] columnsToSpan = { 5, 6, 7, 8, 9 };
             for (int i = startLine; i < qtdBaseLines; i++)
             {
-                if (i % 2 == 0)
+                if (i % 2 != 0)//depende da quantidade de linhas do cabeçalho. Na hora de adicionar os dados também
                 {
                     int rowSpanStart = i;
                     int rowSpanEnd = i + 1;
@@ -163,34 +160,33 @@ namespace RelatorioFA.Negocio
             }
 
             //Adicionar os dados
-            int line = 2;
             foreach (var sprint in sprints)
             {
                 for (int i = 0; i < 2; i++)
                 {
-                    smTable.Cell(line, 1).Range.Text = sprint.Range.Name;//Sprint
-                    smTable.Cell(line, 2).Range.Text = i == 0 ? sprint.AcceptedPointsTeam1.ToString() : sprint.AcceptedPointsTeam2.ToString();//A
-                    smTable.Cell(line, 3).Range.Text = i == 0 ? sprint.DevTeamSize1.ToString() : sprint.DevTeamSize2.ToString();//B
-                    smTable.Cell(line, 4).Range.Text = i == 0 ? sprint.AverageTeam1.ToString(decimalFormat) : sprint.AverageTeam2.ToString(decimalFormat);//C
-                    if (line % 2 == 0)
+                    smTable.Cell(startLine, 1).Range.Text = sprint.Range.Name;//Sprint
+                    smTable.Cell(startLine, 2).Range.Text = i != 0 ? sprint.AcceptedPointsTeam1.ToString() : sprint.AcceptedPointsTeam2.ToString();//A
+                    smTable.Cell(startLine, 3).Range.Text = i != 0 ? sprint.DevTeamSize1.ToString() : sprint.DevTeamSize2.ToString();//B
+                    smTable.Cell(startLine, 4).Range.Text = i != 0 ? sprint.AverageTeam1.ToString(decimalFormat) : sprint.AverageTeam2.ToString(decimalFormat);//C
+                    if (startLine % 2 != 0)
                     {
-                        smTable.Cell(line, 5).Range.Text = sprint.AverageSprint.ToString(decimalFormat);//D
-                        smTable.Cell(line, 6).Range.Text = sprint.Contracts[0].Factor.ToString(decimalFormat);//E
-                        smTable.Cell(line, 7).Range.Text = "1,000";//F
-                        smTable.Cell(line, 8).Range.Text = sprint.SmPoints.ToString(decimalFormat);//G
+                        smTable.Cell(startLine, 5).Range.Text = sprint.AverageSprint.ToString(decimalFormat);//D
+                        smTable.Cell(startLine, 6).Range.Text = sprint.Contracts[0].Factor.ToString(decimalFormat);//E
+                        smTable.Cell(startLine, 7).Range.Text = "1,000";//F
+                        smTable.Cell(startLine, 8).Range.Text = sprint.SmPoints.ToString(decimalFormat);//G
 
                         totalPoints += sprint.SmPoints;
                     }
 
-                    line++;
+                    startLine++;
                 }
             }
 
-            SetSummaryTableTotal(ref smTable, columns, line, totalPoints, ustValue, ref missing);
+            SetSummaryTableTotal(ref smTable, columns, startLine, totalPoints, ustValue, ref missing);
         }
 
         #region SetTableHeaderUstSmShared
-        private static void SetTableHeaderUstSmShared(ref Table smTable)
+        private static int SetTableHeaderUstSmShared(ref Table smTable)
         {
             List<string> headers = new List<string>
             {
@@ -204,7 +200,7 @@ namespace RelatorioFA.Negocio
                 "G. Pontos ajustados\n(D * E + F)",
                 "A ser faturado\n(G * UST)"
             };
-            SetGenericTableHeader(ref smTable, headers);
+            return SetGenericTableHeader(ref smTable, headers, UtilDTO.CATEGORY.DESPESA);
         } 
         #endregion
     }

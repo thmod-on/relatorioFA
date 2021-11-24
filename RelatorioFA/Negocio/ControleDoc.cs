@@ -157,7 +157,7 @@ namespace RelatorioFA.Negocio
 
         public static void SetLastPageSignature(Paragraph paragraph, ConfigXmlDTO config)
         {
-            AddPAragraph(paragraph, "Atenciosamente,", 150, 30, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
+            AddPAragraph(paragraph, "Atenciosamente,", 100, 30, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
             AddPAragraph(paragraph, "_______________________________________________________", 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphCenter);
             AddPAragraph(paragraph, config.AuthorName, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphCenter);
             AddPAragraph(paragraph, "Gerente de suporte - " + config.AreaName + " - " + config.TeamName, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphCenter);
@@ -203,19 +203,30 @@ namespace RelatorioFA.Negocio
 
         #region CreateSummaryTable
         #region SetGenericTableHeader
-        public static void SetGenericTableHeader(ref Table table, List<string> headers)
+        public static int SetGenericTableHeader(ref Table table, List<string> headers, UtilDTO.CATEGORY category)
         {
+            int line = 1;
             int column = 1;
 
+            //Adicionar tipo de investimento
+            table.Rows.Add();
+            table.Rows[line].Range.Font.Bold = 1;
+            table.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorLightGreen;
+            table.Cell(line, column).Merge(table.Cell(line, headers.Count));
+            table.Cell(line, column).Range.Text = $"Orçamento: {category}";
+            line++;
+
+            //Adicionadno demais partes do cabeçalho
+            table.Rows[line].Range.Font.Bold = 1;
+            table.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorGray25;
             foreach (var header in headers)
             {
-                table.Cell(1, column).Range.Text = header;
+                table.Cell(line, column).Range.Text = header;
                 column++;
             }
+            line++;
 
-            table.Rows[1].Range.Font.Bold = 1;
-            table.Rows[1].Shading.BackgroundPatternColor = WdColor.wdColorGray25;
-            table.Rows[1].Alignment = WdRowAlignment.wdAlignRowCenter;
+            return line;
         }
         #endregion
 

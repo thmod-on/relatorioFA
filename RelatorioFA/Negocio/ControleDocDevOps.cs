@@ -60,7 +60,6 @@ namespace RelatorioFA.Negocio
         #region CreateSummaryTableUstDevOps
         private static void CreateSummaryTableUstDevOps(Document document, List<SprintDevOpsDTO> sprintsDevOps, object missing, FornecedorDTO partner)
         {
-            int line = 2;
             double totalPoints = 0;
             int columns = 7;
 
@@ -77,7 +76,7 @@ namespace RelatorioFA.Negocio
                 "E. Pontos fornecedor\n(A * D) + B + C",
                 "A ser faturado\n(UST * E)"
             };
-            SetGenericTableHeader(ref summaryTable, headers);
+            int line = SetGenericTableHeader(ref summaryTable, headers, UtilDTO.CATEGORY.DESPESA);
             foreach (var sprint in sprintsDevOps)
             {
                 double sprintPoints = (sprint.WarningUst * sprint.TeamSize) + sprint.ActuationUst + sprint.UsUst;

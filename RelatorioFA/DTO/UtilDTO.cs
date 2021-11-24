@@ -8,8 +8,8 @@ namespace RelatorioFA.DTO
     {
         public enum CATEGORY
         {
-            DES,
-            INV
+            DESPESA,
+            INVESTIMENTO
         }
 
         public enum CONTRACTS
