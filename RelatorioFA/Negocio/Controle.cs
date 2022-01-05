@@ -75,7 +75,7 @@ namespace RelatorioFA.Negocio
         public static List<IntervaloDTO> GenerateRanges()
         {
             List<IntervaloDTO> sprintRanges = new List<IntervaloDTO>();
-            DateTime lastSprintEndDate = new DateTime(2021, 01, 06);
+            DateTime lastSprintEndDate = new DateTime(2022, 01, 05);
             int currentYear = Convert.ToInt32(DateTime.Now.ToString("yyyy"));
             int sprintCountPerRelease = 6;
             int maxReleases = 4;
