@@ -60,8 +60,6 @@
             this.btnAddPartner = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.txbContractHourValue = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label15 = new System.Windows.Forms.Label();
             this.cbbContractType = new System.Windows.Forms.ComboBox();
@@ -381,34 +379,14 @@
             this.label10.TabIndex = 10;
             this.label10.Text = "Parceiros";
             // 
-            // txbContractHourValue
-            // 
-            this.txbContractHourValue.Enabled = false;
-            this.txbContractHourValue.Location = new System.Drawing.Point(108, 77);
-            this.txbContractHourValue.Name = "txbContractHourValue";
-            this.txbContractHourValue.Size = new System.Drawing.Size(100, 20);
-            this.txbContractHourValue.TabIndex = 8;
-            this.txbContractHourValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbContractHourValue_KeyPress);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(7, 80);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(78, 13);
-            this.label7.TabIndex = 12;
-            this.label7.Text = "Valor hora (R$)";
-            // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.label15);
             this.groupBox3.Controls.Add(this.cbbContractType);
             this.groupBox3.Controls.Add(this.cbbContract);
-            this.groupBox3.Controls.Add(this.txbContractHourValue);
             this.groupBox3.Controls.Add(this.label11);
             this.groupBox3.Controls.Add(this.txbContractFactor);
             this.groupBox3.Controls.Add(this.btnAddContract);
-            this.groupBox3.Controls.Add(this.label7);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.label9);
             this.groupBox3.Location = new System.Drawing.Point(12, 279);
@@ -430,7 +408,7 @@
             // 
             this.cbbContractType.Enabled = false;
             this.cbbContractType.FormattingEnabled = true;
-            this.cbbContractType.Location = new System.Drawing.Point(108, 100);
+            this.cbbContractType.Location = new System.Drawing.Point(108, 76);
             this.cbbContractType.Name = "cbbContractType";
             this.cbbContractType.Size = new System.Drawing.Size(100, 21);
             this.cbbContractType.TabIndex = 9;
@@ -438,7 +416,7 @@
             // txbContractFactor
             // 
             this.txbContractFactor.Enabled = false;
-            this.txbContractFactor.Location = new System.Drawing.Point(108, 125);
+            this.txbContractFactor.Location = new System.Drawing.Point(108, 101);
             this.txbContractFactor.Name = "txbContractFactor";
             this.txbContractFactor.Size = new System.Drawing.Size(100, 20);
             this.txbContractFactor.TabIndex = 10;
@@ -447,7 +425,7 @@
             // btnAddContract
             // 
             this.btnAddContract.Enabled = false;
-            this.btnAddContract.Location = new System.Drawing.Point(108, 152);
+            this.btnAddContract.Location = new System.Drawing.Point(108, 128);
             this.btnAddContract.Name = "btnAddContract";
             this.btnAddContract.Size = new System.Drawing.Size(100, 23);
             this.btnAddContract.TabIndex = 11;
@@ -458,7 +436,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 125);
+            this.label8.Location = new System.Drawing.Point(6, 101);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(77, 13);
             this.label8.TabIndex = 12;
@@ -467,7 +445,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 103);
+            this.label9.Location = new System.Drawing.Point(6, 79);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(28, 13);
             this.label9.TabIndex = 11;
@@ -551,7 +529,6 @@
         private System.Windows.Forms.TextBox txbAuthor;
         private System.Windows.Forms.TextBox txbTeamName;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.ComboBox cbbPartner;
@@ -562,7 +539,6 @@
         private System.Windows.Forms.Button btnAddContract;
         private System.Windows.Forms.ComboBox cbbContract;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox txbContractHourValue;
         private System.Windows.Forms.TextBox txbPartnerUstValue;
         private System.Windows.Forms.TextBox txbPartnerName;
         private System.Windows.Forms.TextBox txbContractFactor;

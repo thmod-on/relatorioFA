@@ -30,34 +30,42 @@ namespace RelatorioFA.Negocio
             }
         }
 
-        public static double CalcTeamSize(SprintDevDTO sprintDev, FornecedorDTO selectedPartner)
+        public static double CalcTeamSize(FornecedorDTO selectedPartner, SprintDevDTO sprintDev, UtilDTO.NAVIGATION navigation)
         {
             double teamSize = 0;
-            foreach (var contract in sprintDev.Contracts)
+            if (navigation != UtilDTO.NAVIGATION.DEV_EXTERNO)
             {
-                if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
-                    contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString() )
+                foreach (var contract in sprintDev.Contracts)
                 {
-                    if (!sprintDev.AdaptaionSprint)
+                    if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
+                        contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
                     {
-                        foreach (var dev in contract.Collaborators)
-                        {
-                            teamSize += dev.Presence;
-                        }
-                    }
-                    else
-                    {
-                        if (selectedPartner.Contracts.Any(c => c.Name == contract.Name) &&
-                            contract.PartnerName == selectedPartner.Name)
+                        if (!sprintDev.AdaptaionSprint)
                         {
                             foreach (var dev in contract.Collaborators)
                             {
-                                teamSize += 1;
+                                teamSize += dev.Presence;
+                            }
+                        }
+                        else
+                        {
+                            if (selectedPartner.Contracts.Any(c => c.Name == contract.Name) &&
+                                contract.PartnerName == selectedPartner.Name)
+                            {
+                                foreach (var dev in contract.Collaborators)
+                                {
+                                    teamSize += 1;
+                                }
                             }
                         }
                     }
                 }
             }
+            else
+            {
+                teamSize = 1;
+            }
+
             return teamSize;
         }
 

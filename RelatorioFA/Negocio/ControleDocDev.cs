@@ -80,15 +80,55 @@ namespace RelatorioFA.Negocio
                 case (UtilDTO.BILLING_TYPE.UST):
                     CreateSummaryTableUst(document, sprints, missing, partner);
                     break;
-                case (UtilDTO.BILLING_TYPE.UST_HORA):
-                    CreateSummaryTableUstHour(document, sprints, missing, partner.UstValue);
+                case (UtilDTO.BILLING_TYPE.UST_EXTERNAL):
+                    CreateSummaryTableUstExternal(document, sprints, missing, partner, UtilDTO.CATEGORY.INVESTIMENTO);
                     break;
                 default:
                     break;
             }
 
             SetLastPageSignature(para1, config);
-        } 
+        }
+        #endregion
+
+        #region CreateSummaryTableUstExternal
+        private static void CreateSummaryTableUstExternal(Document document, List<SprintDevDTO> sprints, object missing, FornecedorDTO partner, UtilDTO.CATEGORY category)
+        {
+            double totalPoints = 0;
+            int columns = 3;
+
+            Table summaryTable = document.Tables.Add(EndOfDocument(document, ref missing), 1, columns, ref missing, ref missing);
+
+            summaryTable.Borders.Enable = 1;
+            summaryTable.Range.Font.Size = 8;
+
+            int line = SetTableHeaderUstDevExternal(ref summaryTable, category);
+
+            foreach (var sprint in sprints)
+            {
+                summaryTable.Rows.Add(missing);
+                summaryTable.Rows[line].Range.Font.Bold = 0;
+                summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
+                summaryTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name;
+                summaryTable.Rows[line].Cells[2].Range.Text = sprint.AcceptedPointsExpenses.ToString();//A
+                
+                totalPoints += sprint.AcceptedPointsExpenses;
+                line++;
+            }
+
+            SetSummaryTableTotal(ref summaryTable, columns, line, totalPoints, partner.UstValue, ref missing);
+        }
+
+        private static int SetTableHeaderUstDevExternal(ref Table summaryTable, UtilDTO.CATEGORY category)
+        {
+            List<string> headers = new List<string>
+            {
+                "Sprint",
+                "Pts entregues",
+                "A ser faturado"
+            };
+            return SetGenericTableHeader(ref summaryTable, headers, category);
+        }
         #endregion
 
         #region CreateSummaryTableUst
@@ -176,128 +216,6 @@ namespace RelatorioFA.Negocio
         }
         #endregion
         #endregion
-        #endregion
-
-        #region CreateSummaryTableUstHour
-        private static void CreateSummaryTableUstHour(Document document, List<SprintDevDTO> sprints, object missing, double ustValue)
-        {
-            //Utilizado apenas para uma empresa. Melhroar se necessario
-            //Selecionar da lista de sprints aquelas que sao de hora.
-            List<SprintDevDTO> sprintHourList = new List<SprintDevDTO>();
-            SprintDevDTO sprintHour;
-            foreach (var sprint in sprints)
-            {
-                foreach (var contract in sprint.Contracts)
-                {
-                    if (contract.HourValue > 0)
-                    {
-                        sprintHour = new SprintDevDTO()
-                        {
-                            Range = sprint.Range,
-                            AcceptedPointsExpenses = sprint.AcceptedPointsExpenses,
-                            AcceptedPointsInvestment = sprint.AcceptedPointsInvestment,
-                            CerimonialPoint = sprint.CerimonialPoint,
-                            ImagePath = sprint.ImagePath,
-                            Obs = sprint.Obs,
-                            TeamSize = sprint.TeamSize,
-                            PointsPerTeamMemberExpenses = sprint.PointsPerTeamMemberExpenses,
-                            PointsPerTeamMemberInvestment = sprint.PointsPerTeamMemberInvestment
-                        };
-                        sprintHour.Contracts.Add(contract);
-                        sprintHourList.Add(sprintHour);
-                    }
-                }
-            }
-
-            CreateSummaryTableUstHourContent(document, sprintHourList, missing, ustValue, UtilDTO.CATEGORY.DESPESA);
-            AddPAragraph(" ", 3, 3, 0, 8, WdParagraphAlignment.wdAlignParagraphLeft, document, ref missing);
-            CreateSummaryTableUstHourContent(document, sprintHourList, missing, ustValue, UtilDTO.CATEGORY.INVESTIMENTO);
-        }
-
-        private static void CreateSummaryTableUstHourContent(Document document, List<SprintDevDTO> sprints, object missing, double ustValue, UtilDTO.CATEGORY category)
-        {
-            int columns = 10;
-            Table summaryTable = document.Tables.Add(EndOfDocument(document, ref missing), 1, columns, ref missing, ref missing);
-            summaryTable.Borders.Enable = 1;
-            summaryTable.Range.Font.Size = 8;
-
-            SetTableHeaderUstHour(ref summaryTable, category);
-
-            int line = 2;
-            double totalHours = 0;
-
-            foreach (var sprint in sprints)
-            {
-                foreach (var contract in sprint.Contracts)
-                {
-                    double employeeCount = 0;
-                    double extraHour = 0;
-                    double hours = 0;
-                    double pointsPerPartner = 0;
-                    string cerimonialPoint = "0";
-                    if ((category == UtilDTO.CATEGORY.DESPESA && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.DESPESA) ||
-                        (category == UtilDTO.CATEGORY.INVESTIMENTO && sprint.CerimonialPoint == UtilDTO.CERIMONIAL_POINT.INVESTIMENTO))
-                    {
-                        cerimonialPoint = "1";
-                    }
-                    foreach (var dev in contract.Collaborators)
-                    {
-                        employeeCount += dev.Presence;
-                        extraHour += category == UtilDTO.CATEGORY.DESPESA ? dev.ExtraHoursExpenses : dev.ExtraHourInvestment;
-                    }
-                    double pointsPerTeamMember = category == UtilDTO.CATEGORY.DESPESA ? sprint.PointsPerTeamMemberExpenses : sprint.PointsPerTeamMemberInvestment;
-                    pointsPerPartner = employeeCount * (pointsPerTeamMember + Convert.ToDouble(cerimonialPoint));
-                    hours = Math.Ceiling(pointsPerPartner * ustValue / contract.HourValue) + extraHour;
-                    int acceptedPoints = category == UtilDTO.CATEGORY.DESPESA ? sprint.AcceptedPointsExpenses : sprint.AcceptedPointsInvestment;
-                    
-                    summaryTable.Rows.Add(missing);
-                    summaryTable.Rows[line].Range.Font.Bold = 0;
-                    summaryTable.Rows[line].Shading.BackgroundPatternColor = WdColor.wdColorWhite;
-                    summaryTable.Rows[line].Cells[1].Range.Text = sprint.Range.Name;
-                    summaryTable.Rows[line].Cells[2].Range.Text = acceptedPoints.ToString();//A
-                    summaryTable.Rows[line].Cells[3].Range.Text = sprint.TeamSize.ToString(decimalFormat);//B
-                    summaryTable.Rows[line].Cells[4].Range.Text = employeeCount.ToString(decimalFormat);//C
-                    summaryTable.Rows[line].Cells[5].Range.Text = pointsPerTeamMember.ToString(decimalFormat);//D
-                    summaryTable.Rows[line].Cells[6].Range.Text = cerimonialPoint;//E
-                    summaryTable.Rows[line].Cells[7].Range.Text = pointsPerPartner.ToString(decimalFormat);//F
-                    summaryTable.Rows[line].Cells[8].Range.Text = extraHour.ToString(decimalFormat);//G
-                    summaryTable.Rows[line].Cells[9].Range.Text = hours.ToString();//H
-
-                    totalHours += hours;
-                    line++;
-                } 
-            }
-
-            summaryTable.Rows.Add(missing);
-            summaryTable.Rows[line].Cells[1].Range.Text = "TOTAL:";
-            summaryTable.Rows[line].Cells[1].Merge(summaryTable.Rows[line].Cells[columns - 2]);
-            summaryTable.Rows[line].Cells[2].Range.Text = totalHours.ToString() + "h";
-            summaryTable.Rows[line].Cells[2].Range.Font.Bold = 1;
-            summaryTable.Rows[line].Cells[3].Range.Text = string.Format("{0:C}", totalHours * sprints[0].Contracts[0].HourValue);//(TODO) Atualmente apenas uma empresa usa esta categoria e representa a excecao. Melhorar depois!
-            summaryTable.Rows[line].Cells[3].Range.Font.Bold = 1;
-
-            //summaryTable.Range.Cells.AutoFit();
-            //summaryTable.Range.Cells.DistributeHeight();
-            summaryTable.Range.ParagraphFormat.SpaceAfter = 0;
-        }
-
-        private static int SetTableHeaderUstHour(ref Table table, UtilDTO.CATEGORY category)
-        {
-            List<string> headers = new List<string>()
-            {
-                "Sprint"
-                ,$"A. Pts entregues"
-                ,"B. Tamanho do time"
-                ,"C. Qtd funcionários empresa"
-                ,"D. Pts por membro do time\n(A / B)"
-                ,"E. Pontuação de cerimônia"
-                ,"F. Pontos fornecedor\n(C *(D + E))"
-                ,"G. Horas extras"
-                ,"H. Horas na sprint\n(F * UST / Valor hora) + G"
-                ,"A ser faturado\n(H * Valor hora)"
-            };
-            return SetGenericTableHeader(ref table, headers, category);
-        }
         #endregion
     }
 }

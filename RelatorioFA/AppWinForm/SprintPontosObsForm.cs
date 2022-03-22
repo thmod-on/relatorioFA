@@ -40,6 +40,11 @@ namespace RelatorioFA.AppWinForm
                 case UtilDTO.NAVIGATION.DEV:
                     containerForm.AbrirForm(new SprintAbsenceHourForm(containerForm, configXml, fluxo, sprintsDevList));
                     break;
+                case UtilDTO.NAVIGATION.SM:
+                    throw new NotImplementedException();
+                case UtilDTO.NAVIGATION.DEV_EXTERNO:
+                    containerForm.AbrirForm(new SprintAbsenceHourForm(containerForm, configXml, fluxo, sprintsDevList));
+                    break;
                 default:
                     break;
             }
@@ -281,6 +286,16 @@ namespace RelatorioFA.AppWinForm
                     ckbAdaptationSprint.Visible = true;
                     txbSmPoints.Visible = false;
                     lblSmPoints.Visible = false;
+                    break;
+                case UtilDTO.NAVIGATION.DEV_EXTERNO:
+                    lblScreen.Text = "Tela 2/3";
+                    lblSmPoints.Visible = false;
+                    txbSmPoints.Visible = false;
+                    lblPlusOne.Visible = false;
+                    cbbCerimonialPoint.Visible = false;
+                    lblAcceptedPointsInv.Visible = false;
+                    txbAcceptedPointsInvestment.Visible = false;
+                    lblAcceptedPointsExp.Text = "Pts. aceitos";
                     break;
                 default:
                     break;

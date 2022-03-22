@@ -42,10 +42,10 @@ namespace RelatorioFA.AppWinForm
             this.lblSmPoints = new System.Windows.Forms.Label();
             this.txbAcceptedPointsInvestment = new System.Windows.Forms.TextBox();
             this.cbbCerimonialPoint = new System.Windows.Forms.ComboBox();
-            this.label22 = new System.Windows.Forms.Label();
+            this.lblAcceptedPointsInv = new System.Windows.Forms.Label();
             this.txbAcceptedPointsExpense = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
+            this.lblAcceptedPointsExp = new System.Windows.Forms.Label();
+            this.lblPlusOne = new System.Windows.Forms.Label();
             this.lsbSprints = new System.Windows.Forms.ListBox();
             this.txbResult = new System.Windows.Forms.RichTextBox();
             this.btnPreviousForm = new System.Windows.Forms.Button();
@@ -162,10 +162,10 @@ namespace RelatorioFA.AppWinForm
             this.groupBox4.Controls.Add(this.lblSmPoints);
             this.groupBox4.Controls.Add(this.txbAcceptedPointsInvestment);
             this.groupBox4.Controls.Add(this.cbbCerimonialPoint);
-            this.groupBox4.Controls.Add(this.label22);
+            this.groupBox4.Controls.Add(this.lblAcceptedPointsInv);
             this.groupBox4.Controls.Add(this.txbAcceptedPointsExpense);
-            this.groupBox4.Controls.Add(this.label8);
-            this.groupBox4.Controls.Add(this.label17);
+            this.groupBox4.Controls.Add(this.lblAcceptedPointsExp);
+            this.groupBox4.Controls.Add(this.lblPlusOne);
             this.groupBox4.Location = new System.Drawing.Point(6, 6);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(280, 137);
@@ -210,14 +210,14 @@ namespace RelatorioFA.AppWinForm
             this.cbbCerimonialPoint.TabIndex = 4;
             this.cbbCerimonialPoint.SelectedIndexChanged += new System.EventHandler(this.CbbCerimonialPoint_SelectedIndexChanged);
             // 
-            // label22
+            // lblAcceptedPointsInv
             // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(3, 25);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(83, 13);
-            this.label22.TabIndex = 20;
-            this.label22.Text = "Pts. aceitos INV";
+            this.lblAcceptedPointsInv.AutoSize = true;
+            this.lblAcceptedPointsInv.Location = new System.Drawing.Point(3, 25);
+            this.lblAcceptedPointsInv.Name = "lblAcceptedPointsInv";
+            this.lblAcceptedPointsInv.Size = new System.Drawing.Size(83, 13);
+            this.lblAcceptedPointsInv.TabIndex = 20;
+            this.lblAcceptedPointsInv.Text = "Pts. aceitos INV";
             // 
             // txbAcceptedPointsExpense
             // 
@@ -228,23 +228,23 @@ namespace RelatorioFA.AppWinForm
             this.txbAcceptedPointsExpense.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbAcceptedPointsExpense_KeyPress);
             this.txbAcceptedPointsExpense.Leave += new System.EventHandler(this.TxbAcceptedPointsExpense_Leave);
             // 
-            // label8
+            // lblAcceptedPointsExp
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(3, 56);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(87, 13);
-            this.label8.TabIndex = 17;
-            this.label8.Text = "Pts. aceitos DES";
+            this.lblAcceptedPointsExp.AutoSize = true;
+            this.lblAcceptedPointsExp.Location = new System.Drawing.Point(3, 56);
+            this.lblAcceptedPointsExp.Name = "lblAcceptedPointsExp";
+            this.lblAcceptedPointsExp.Size = new System.Drawing.Size(87, 13);
+            this.lblAcceptedPointsExp.TabIndex = 17;
+            this.lblAcceptedPointsExp.Text = "Pts. aceitos DES";
             // 
-            // label17
+            // lblPlusOne
             // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(7, 111);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(73, 13);
-            this.label17.TabIndex = 38;
-            this.label17.Text = "+1 Cerimônias";
+            this.lblPlusOne.AutoSize = true;
+            this.lblPlusOne.Location = new System.Drawing.Point(7, 111);
+            this.lblPlusOne.Name = "lblPlusOne";
+            this.lblPlusOne.Size = new System.Drawing.Size(73, 13);
+            this.lblPlusOne.TabIndex = 38;
+            this.lblPlusOne.Text = "+1 Cerimônias";
             // 
             // lsbSprints
             // 
@@ -316,10 +316,10 @@ namespace RelatorioFA.AppWinForm
         private System.Windows.Forms.Label lblSmPoints;
         private System.Windows.Forms.TextBox txbAcceptedPointsInvestment;
         private System.Windows.Forms.ComboBox cbbCerimonialPoint;
-        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label lblAcceptedPointsInv;
         private System.Windows.Forms.TextBox txbAcceptedPointsExpense;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label lblAcceptedPointsExp;
+        private System.Windows.Forms.Label lblPlusOne;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.RichTextBox txbObs;
         private System.Windows.Forms.CheckBox ckbAdaptationSprint;

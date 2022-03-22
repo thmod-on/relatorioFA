@@ -78,7 +78,6 @@ namespace RelatorioFA.AppWinForm
                 Name = UtilDTO.CONTRACTS.HOUSE.ToString()
             };
             config.Partners.Find(x => x.Name == UtilDTO.CONTRACTS.HOUSE.ToString()).Contracts.Add(fakeContract);
-            txbContractHourValue.Text = "0";
         }
 
         #region eventos de click
@@ -244,11 +243,6 @@ namespace RelatorioFA.AppWinForm
                     Name = cbbContractType.SelectedItem.ToString(),
                     Factor = Convert.ToDouble(txbContractFactor.Text)
                 };
-
-                if (txbContractHourValue.Text.Trim() != string.Empty)
-                {
-                    newContract.HourValue = Convert.ToDouble(txbContractHourValue.Text);
-                }
 
                 if (cbbContract.SelectedValue.ToString() != NOVO &&
                     cbbContract.SelectedValue.ToString() != UtilDTO.CONTRACTS.HOUSE.ToString())
@@ -593,7 +587,6 @@ namespace RelatorioFA.AppWinForm
                     cbbContract.Enabled = false;
                     cbbContractType.Enabled = false;
                     txbContractFactor.Enabled = false;
-                    txbContractHourValue.Enabled = false;
                     cbbDevs.Enabled = false;
                     txbDevName.Enabled = false;
                 }
@@ -703,7 +696,6 @@ namespace RelatorioFA.AppWinForm
             txbPartnerName.Enabled = !processing;
             txbPartnerUstValue.Enabled = !processing;
             txbContractFactor.Enabled = !processing;
-            txbContractHourValue.Enabled = !processing;
             cbbContractType.Enabled = !processing;
             txbDevName.Enabled = !processing;
 
@@ -752,7 +744,6 @@ namespace RelatorioFA.AppWinForm
                             {
                                 txbResult.AppendText($"\n   > Contrato - {contract.Name}");
                                 txbResult.AppendText($"\n      - Fator: {contract.Factor}");
-                                txbResult.AppendText($"\n      - Valor da hora: R${contract.HourValue}");
                                 if (contract.Collaborators.Count > 0)
                                 {
                                     txbResult.AppendText($"\n      - Devs:");

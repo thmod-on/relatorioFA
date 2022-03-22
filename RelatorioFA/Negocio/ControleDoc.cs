@@ -134,20 +134,12 @@ namespace RelatorioFA.Negocio
 
             AddPAragraph(para1, "DETALHES DO FATURAMENTO", 10, 0, 1, 14, WdParagraphAlignment.wdAlignParagraphJustify);
             if (billingType == UtilDTO.BILLING_TYPE.UST ||
-                billingType == UtilDTO.BILLING_TYPE.UST_HORA ||
                 billingType == UtilDTO.BILLING_TYPE.UST_DEVOPS)
             {
                 strAux = "Valor da UST: R$" + partner.UstValue;
                 AddPAragraph(para1, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
             }
-            //POG para Inlfuir. Melhorar se necessário
-            if (billingType == UtilDTO.BILLING_TYPE.UST_HORA || billingType == UtilDTO.BILLING_TYPE.HORA)
-            {
-                strAux = "Valor da hora: R$" + partner.Contracts[0].HourValue;
-                AddPAragraph(para1, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
-                strAux = "Contrato: " + partner.Contracts[0].Name;
-                AddPAragraph(para1, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
-            }
+            
             foreach (var contract in partner.Contracts)
             {
                 strAux = $"Contrato / SAP: {contract.Name} / {contract.NumeroSAP}";

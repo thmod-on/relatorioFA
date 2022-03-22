@@ -40,6 +40,7 @@
             this.ajudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.comoUtilizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.versõesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.devExternoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -67,7 +68,7 @@
             // todasEmpresasToolStripMenuItem1
             // 
             this.todasEmpresasToolStripMenuItem1.Name = "todasEmpresasToolStripMenuItem1";
-            this.todasEmpresasToolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
+            this.todasEmpresasToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.todasEmpresasToolStripMenuItem1.Text = "Todas empresas";
             this.todasEmpresasToolStripMenuItem1.Click += new System.EventHandler(this.TodasEmpresasToolStripMenuItem_Click);
             // 
@@ -76,29 +77,30 @@
             this.relatórioDaFábricaÁgilToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.devOpsToolStripMenuItem,
             this.primeiraSprintToolStripMenuItem,
+            this.devExternoToolStripMenuItem,
             this.sMCompartilhadoToolStripMenuItem});
             this.relatórioDaFábricaÁgilToolStripMenuItem.Name = "relatórioDaFábricaÁgilToolStripMenuItem";
-            this.relatórioDaFábricaÁgilToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.relatórioDaFábricaÁgilToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.relatórioDaFábricaÁgilToolStripMenuItem.Text = "Avulso";
             // 
             // devOpsToolStripMenuItem
             // 
             this.devOpsToolStripMenuItem.Name = "devOpsToolStripMenuItem";
-            this.devOpsToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.devOpsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.devOpsToolStripMenuItem.Text = "DevOps";
             this.devOpsToolStripMenuItem.Click += new System.EventHandler(this.DevOpsToolStripMenuItem_Click);
             // 
             // primeiraSprintToolStripMenuItem
             // 
             this.primeiraSprintToolStripMenuItem.Name = "primeiraSprintToolStripMenuItem";
-            this.primeiraSprintToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.primeiraSprintToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.primeiraSprintToolStripMenuItem.Text = "Dev";
             this.primeiraSprintToolStripMenuItem.Click += new System.EventHandler(this.DevSprintToolStripMenuItem_Click);
             // 
             // sMCompartilhadoToolStripMenuItem
             // 
             this.sMCompartilhadoToolStripMenuItem.Name = "sMCompartilhadoToolStripMenuItem";
-            this.sMCompartilhadoToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.sMCompartilhadoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.sMCompartilhadoToolStripMenuItem.Text = "SM - Média";
             this.sMCompartilhadoToolStripMenuItem.Click += new System.EventHandler(this.SMCompartilhadoToolStripMenuItem_Click);
             // 
@@ -140,6 +142,13 @@
             this.versõesToolStripMenuItem.Text = "Versões";
             this.versõesToolStripMenuItem.Click += new System.EventHandler(this.VersõesToolStripMenuItem_Click);
             // 
+            // devExternoToolStripMenuItem
+            // 
+            this.devExternoToolStripMenuItem.Name = "devExternoToolStripMenuItem";
+            this.devExternoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.devExternoToolStripMenuItem.Text = "Dev - Externo";
+            this.devExternoToolStripMenuItem.Click += new System.EventHandler(this.DevExternoToolStripMenuItem_Click);
+            // 
             // ContainerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -150,7 +159,7 @@
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "ContainerForm";
-            this.Text = "Relatório de fábrica ágil - v 4.12.4";
+            this.Text = "Relatório de fábrica ágil - v 4.12.5";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -172,5 +181,6 @@
         private System.Windows.Forms.ToolStripMenuItem configuraçãoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gerarEditarXMLToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem todasEmpresasToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem devExternoToolStripMenuItem;
     }
 }

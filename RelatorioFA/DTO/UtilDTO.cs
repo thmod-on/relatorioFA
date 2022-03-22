@@ -16,18 +16,25 @@ namespace RelatorioFA.DTO
         {
             HOUSE,
             PADRAO,
+            JUNIOR,
             PLENO,
+            PLENO_I,
+            PLENO_II,
+            PLENO_III,
             SENIOR,
+            SENIOR_I,
+            SENIOR_II,
+            SENIOR_III,
             SM_FIXO,
-            SM_MEDIA
+            SM_MEDIA,
+            EXTERNO
         }
 
         public enum BILLING_TYPE
         {
             UST,
-            UST_HORA,
-            HORA,
-            UST_DEVOPS
+            UST_DEVOPS,
+            UST_EXTERNAL
         }
 
         public enum CERIMONIAL_POINT
@@ -42,7 +49,8 @@ namespace RelatorioFA.DTO
             DEVOPS,
             VARIOS_RELATORIOS,
             DEV,
-            SM
+            SM,
+            DEV_EXTERNO
         }
 
         public enum REPORT_TYPE

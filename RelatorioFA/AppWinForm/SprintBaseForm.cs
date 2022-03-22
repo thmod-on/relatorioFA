@@ -227,6 +227,18 @@ namespace RelatorioFA.AppWinForm
                         sprintsSmList.Add(newSmSprintToAdd);
                         sprintsSmList.Sort((x, y) => x.Range.Name.CompareTo(y.Range.Name));
                         break;
+                    case UtilDTO.NAVIGATION.DEV_EXTERNO:
+                        SprintDevDTO newSprintExternal = new SprintDevDTO() 
+                        {
+                            Range = range,
+                            ImagePath = sprintImagePath
+                        };
+
+                        //Remove e adiciona para caso ele esteja atualizando os dados
+                        sprintsDevList.Remove(sprintsDevList.Find(s => s.Range.Name == newSprintExternal.Range.Name));
+                        sprintsDevList.Add(newSprintExternal);
+                        sprintsDevList.Sort((x, y) => x.Range.Name.CompareTo(y.Range.Name));
+                        break;
                     default:
                         throw new NotImplementedException();
                 }
@@ -269,6 +281,9 @@ namespace RelatorioFA.AppWinForm
                     break;
                 case UtilDTO.NAVIGATION.SM:
                     containerForm.AbrirForm(new SprintSmCompartilhadoPontos(containerForm, configXml, fluxo, sprintsSmList));
+                    break;
+                case UtilDTO.NAVIGATION.DEV_EXTERNO:
+                    containerForm.AbrirForm(new SprintPontosObsForm(containerForm, configXml, fluxo, sprintsDevList));
                     break;
                 default:
                     throw new NotImplementedException();
@@ -416,6 +431,9 @@ namespace RelatorioFA.AppWinForm
                 case UtilDTO.NAVIGATION.SM:
                     lblScreen.Text = "Tela 1/2";
                     break;
+                case UtilDTO.NAVIGATION.DEV_EXTERNO:
+                    lblScreen.Text = "Tela 1/3";
+                    break;
                 default:
                     break;
             }
@@ -468,8 +486,14 @@ namespace RelatorioFA.AppWinForm
                         txbResult.AppendText(sprint.ToStringBuilder().ToString());
                     }
                     break;
+                case UtilDTO.NAVIGATION.DEV_EXTERNO:
+                    foreach (var sprint in sprintsDevList)
+                    {
+                        txbResult.AppendText(sprint.ToStringBuilder().ToString());
+                    }
+                    break;
                 default:
-                    throw new NotImplementedException("Não implementado log para este fluxo");
+                    throw new NotImplementedException("ShowLog não implementado log para este fluxo");
             }
         }
         #endregion

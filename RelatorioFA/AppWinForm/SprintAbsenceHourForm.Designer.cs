@@ -41,11 +41,11 @@ namespace RelatorioFA.AppWinForm
             this.lblMessage = new System.Windows.Forms.Label();
             this.txbExtraHourExpenses = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.lblText2 = new System.Windows.Forms.Label();
             this.lsbDevTeam = new System.Windows.Forms.ListBox();
-            this.label19 = new System.Windows.Forms.Label();
+            this.lblText1 = new System.Windows.Forms.Label();
             this.txbAbsence = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblAbsence = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.lblScreen = new System.Windows.Forms.Label();
@@ -142,11 +142,11 @@ namespace RelatorioFA.AppWinForm
             this.groupBox5.Controls.Add(this.lblMessage);
             this.groupBox5.Controls.Add(this.txbExtraHourExpenses);
             this.groupBox5.Controls.Add(this.label7);
-            this.groupBox5.Controls.Add(this.label5);
+            this.groupBox5.Controls.Add(this.lblText2);
             this.groupBox5.Controls.Add(this.lsbDevTeam);
-            this.groupBox5.Controls.Add(this.label19);
+            this.groupBox5.Controls.Add(this.lblText1);
             this.groupBox5.Controls.Add(this.txbAbsence);
-            this.groupBox5.Controls.Add(this.label1);
+            this.groupBox5.Controls.Add(this.lblAbsence);
             this.groupBox5.Location = new System.Drawing.Point(3, 81);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(280, 368);
@@ -201,13 +201,13 @@ namespace RelatorioFA.AppWinForm
             this.label7.TabIndex = 56;
             this.label7.Text = "Horas extras (DES)";
             // 
-            // label5
+            // lblText2
             // 
-            this.label5.Location = new System.Drawing.Point(6, 185);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(268, 21);
-            this.label5.TabIndex = 54;
-            this.label5.Text = "Este colaborador teve alguma falta?";
+            this.lblText2.Location = new System.Drawing.Point(6, 185);
+            this.lblText2.Name = "lblText2";
+            this.lblText2.Size = new System.Drawing.Size(268, 21);
+            this.lblText2.TabIndex = 54;
+            this.lblText2.Text = "Este colaborador teve alguma falta?";
             // 
             // lsbDevTeam
             // 
@@ -218,13 +218,13 @@ namespace RelatorioFA.AppWinForm
             this.lsbDevTeam.TabIndex = 3;
             this.lsbDevTeam.SelectedIndexChanged += new System.EventHandler(this.LsbDevTeam_SelectedIndexChanged);
             // 
-            // label19
+            // lblText1
             // 
-            this.label19.Location = new System.Drawing.Point(6, 29);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(268, 39);
-            this.label19.TabIndex = 43;
-            this.label19.Text = "Selecione um colaborado e preencha sua participação na sprint";
+            this.lblText1.Location = new System.Drawing.Point(6, 29);
+            this.lblText1.Name = "lblText1";
+            this.lblText1.Size = new System.Drawing.Size(268, 39);
+            this.lblText1.TabIndex = 43;
+            this.lblText1.Text = "Selecione um colaborado e preencha sua participação na sprint";
             // 
             // txbAbsence
             // 
@@ -236,14 +236,14 @@ namespace RelatorioFA.AppWinForm
             this.txbAbsence.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbAbsence_KeyPress);
             this.txbAbsence.Leave += new System.EventHandler(this.TxbAbsence_Leave);
             // 
-            // label1
+            // lblAbsence
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 211);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(84, 13);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "Ausências (dias)";
+            this.lblAbsence.AutoSize = true;
+            this.lblAbsence.Location = new System.Drawing.Point(6, 211);
+            this.lblAbsence.Name = "lblAbsence";
+            this.lblAbsence.Size = new System.Drawing.Size(84, 13);
+            this.lblAbsence.TabIndex = 10;
+            this.lblAbsence.Text = "Ausências (dias)";
             // 
             // label4
             // 
@@ -345,15 +345,15 @@ namespace RelatorioFA.AppWinForm
         private System.Windows.Forms.Label lblScreen;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.ListBox lsbDevTeam;
-        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label lblText1;
         private System.Windows.Forms.TextBox txbAbsence;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblAbsence;
         private System.Windows.Forms.ComboBox cbbPartners;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblMessage;
         private System.Windows.Forms.TextBox txbExtraHourExpenses;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblText2;
         private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.Button btnSetOutputDocPath;
         private System.Windows.Forms.Button btnOpenDestinationFolder;

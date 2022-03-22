@@ -9,7 +9,7 @@ namespace RelatorioFA.AppWinForm
 {
     public partial class SprintAbsenceHourForm : Form
     {
-        public SprintAbsenceHourForm(ContainerForm containerForm, ConfigXmlDTO configXml, UtilDTO.NAVIGATION fluxo, List<SprintDevDTO> sprintsDevList, List<SprintSmDTO> sprintsSmList = null)
+        public SprintAbsenceHourForm(ContainerForm containerForm, ConfigXmlDTO configXml, UtilDTO.NAVIGATION fluxo, List<SprintDevDTO> sprintsDevList = null, List<SprintSmDTO> sprintsSmList = null)
         {
             InitializeComponent();
             this.sprintsDevList = sprintsDevList;
@@ -19,8 +19,12 @@ namespace RelatorioFA.AppWinForm
             this.containerForm = containerForm;
             lblMessage.Text = "Este colaborador fez hora extra?\nConsiderado hora extra serviços entre as 22h e 6h de um dia útil, finais de semana ou feriado. Será contabilizado 0,5pts por turno adicional, ajustando para seu proporcional quando necessário.";
             lblScreen.Text = "Tela 3/3";
+            SetScreenLayout(fluxo);
             SetSprintListBox();
-            SetDevSprintWithContractsAndDevs();
+            //if (fluxo != UtilDTO.NAVIGATION.DEV_EXTERNO)
+            //{
+                SetDevSprintWithContractsAndDevs(); 
+            //}
             SetSmSprintWithContracts();
             SetCbbPartners();
             ShowLog();
@@ -41,26 +45,39 @@ namespace RelatorioFA.AppWinForm
         #region Eventos automaticos
         private void SetCbbPartners()
         {
-            if (fluxo == UtilDTO.NAVIGATION.VARIOS_RELATORIOS)
+            if (fluxo != UtilDTO.NAVIGATION.DEV_EXTERNO)
             {
-                cbbPartners.Items.Add(all);
+                if (fluxo == UtilDTO.NAVIGATION.VARIOS_RELATORIOS)
+                {
+                    cbbPartners.Items.Add(all);
+                }
+                else
+                {
+                    cbbPartners.Items.Add(house);
+                }
+
+                foreach (var partner in configXml.Partners)
+                {
+                    if (partner.Contracts.Any(c => c.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString()) &&
+                        partner.Contracts.Any(c => c.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
+                        )
+                    {
+                        cbbPartners.Items.Add(partner.Name);
+                    }
+                }
+                lsbDevTeam.SelectedIndex = 0;
             }
             else
             {
-                cbbPartners.Items.Add(house);
-            }
-
-            foreach (var partner in configXml.Partners)
-            {
-                if (partner.Contracts.Any(c => c.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString()) &&
-                    partner.Contracts.Any(c => c.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
-                    )
+                foreach (var partner in configXml.Partners)
                 {
-                    cbbPartners.Items.Add(partner.Name);
+                    if (partner.Contracts.Any(c => c.Name == UtilDTO.CONTRACTS.EXTERNO.ToString()))
+                    {
+                        cbbPartners.Items.Add(partner.Name);
+                    }
                 }
             }
             cbbPartners.SelectedIndex = 0;
-            lsbDevTeam.SelectedIndex = 0;
         }
 
 
@@ -191,7 +208,8 @@ namespace RelatorioFA.AppWinForm
             foreach (var contract in partner.Contracts)
             {
                 if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
-                    contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
+                    contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString() &&
+                    contract.Name != UtilDTO.CONTRACTS.EXTERNO.ToString())
                 {
                     foreach (var dev in contract.Collaborators)
                     {
@@ -199,8 +217,26 @@ namespace RelatorioFA.AppWinForm
                     }
                 }
             }
-        } 
+        }
         #endregion
+
+        private void SetScreenLayout(UtilDTO.NAVIGATION flux)
+        {
+            switch (flux)
+            {
+                case UtilDTO.NAVIGATION.DEV_EXTERNO:
+                    lblText1.Visible = false;
+                    lblText2.Visible = false;
+                    lblAbsence.Visible = false;
+
+                    lsbDevTeam.Visible = false;
+                    txbAbsence.Visible = false;
+                    break;
+                default:
+                    break;
+            }
+
+        }
 
         private void SetSmSprintWithContracts()
         {
@@ -220,7 +256,6 @@ namespace RelatorioFA.AppWinForm
                                     ContratoDTO smContract = new ContratoDTO()
                                     {
                                         Factor = contract.Factor,
-                                        HourValue = contract.HourValue,
                                         Name = contract.Name,
                                         NumeroSAP = contract.NumeroSAP
                                     };
@@ -277,7 +312,6 @@ namespace RelatorioFA.AppWinForm
                                 {
                                     Name = contract.Name,
                                     Factor = contract.Factor,
-                                    HourValue = contract.HourValue,
                                     NumeroSAP = contract.NumeroSAP,
                                     PartnerName = partner.Name
                                 };
@@ -403,6 +437,7 @@ namespace RelatorioFA.AppWinForm
             try
             {
                 bool hasSharedSM = false;
+                bool hasExternalDev = false;
                 if (cbbPartners.SelectedItem.ToString() == house)
                 {
                     throw new Exception("Por favor ecolha um fornecedor para que o relatório seja gerado.");
@@ -417,13 +452,14 @@ namespace RelatorioFA.AppWinForm
                     int sprintDays = (sprint.Range.EndDate - sprint.Range.IniDate).Days;
                     PrincipalTO.SetDevPresence(sprint.Contracts, sprintDays, sprint.AdaptaionSprint);
                     FornecedorDTO selectedPartner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
-                    double teamSize = PrincipalTO.CalcTeamSize(sprint, selectedPartner);
+                    double teamSize = PrincipalTO.CalcTeamSize(selectedPartner, sprint, fluxo);
                     sprint.TeamSize = teamSize;
                     if (sprint.AdaptaionSprint)
                     {
                         sprint.AcceptedPointsExpenses *= (int)teamSize;
                     }
                     PrincipalTO.CalcPointsPerTeamMember(sprint);
+                    
                     //SM
                     if (sprintsSmList != null)
                     {
@@ -438,12 +474,6 @@ namespace RelatorioFA.AppWinForm
                 {
                     foreach (var partner in configXml.Partners)
                     {
-                        //(TODO) Melhorar um dia
-                        if (partner.Name == "Influir")
-                        {
-                            partner.BillingType = UtilDTO.BILLING_TYPE.UST_HORA;
-                        }
-
                         //SM_MEDIA nao será gerado nesse fluxo
                         if (partner.Contracts.Any(contract =>
                             contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
@@ -455,6 +485,11 @@ namespace RelatorioFA.AppWinForm
                         if(partner.Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString()))
                         {
                             hasSharedSM = true;
+                        }
+
+                        if (partner.Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.EXTERNO.ToString()))
+                        {
+                            hasExternalDev = true;
                         }
                         
                         if (partner.Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString()))
@@ -473,6 +508,10 @@ namespace RelatorioFA.AppWinForm
                 if (hasSharedSM)
                 {
                     txbResult.AppendText("\n\nRelatório para SM compartilhado deve ser gerado avulso pelo menu correspondente.");
+                }
+                if (hasExternalDev)
+                {
+                    txbResult.AppendText("\n\nRelatório para colaborador externo deve ser gerado avulso pelo menu correspondente.");
                 }
                 btnOpenDestinationFolder.Enabled = true;
             }

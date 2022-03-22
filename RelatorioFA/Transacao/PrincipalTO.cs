@@ -19,9 +19,9 @@ namespace RelatorioFA.Transacao
         }
 
         #region Calc
-        public static double CalcTeamSize(SprintDevDTO sprintDev, FornecedorDTO selectedPartner)
+        public static double CalcTeamSize(FornecedorDTO selectedPartner, SprintDevDTO sprintDev, UtilDTO.NAVIGATION navigation)
         {
-            return Controle.CalcTeamSize(sprintDev, selectedPartner);
+            return Controle.CalcTeamSize(selectedPartner, sprintDev, navigation);
         }
 
         public static void CalcPointsPerTeamMember(SprintDevDTO devSprint)
