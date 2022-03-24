@@ -21,10 +21,7 @@ namespace RelatorioFA.AppWinForm
             lblScreen.Text = "Tela 3/3";
             SetScreenLayout(fluxo);
             SetSprintListBox();
-            //if (fluxo != UtilDTO.NAVIGATION.DEV_EXTERNO)
-            //{
-                SetDevSprintWithContractsAndDevs(); 
-            //}
+            SetDevSprintWithContractsAndDevs();
             SetSmSprintWithContracts();
             SetCbbPartners();
             ShowLog();
@@ -59,13 +56,14 @@ namespace RelatorioFA.AppWinForm
                 foreach (var partner in configXml.Partners)
                 {
                     if (partner.Contracts.Any(c => c.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString()) &&
-                        partner.Contracts.Any(c => c.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
+                        partner.Contracts.Any(c => c.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString()) &&
+                        partner.Contracts.Any(c => c.Name != UtilDTO.CONTRACTS.EXTERNO.ToString())
                         )
                     {
                         cbbPartners.Items.Add(partner.Name);
                     }
                 }
-                lsbDevTeam.SelectedIndex = 0;
+                //lsbDevTeam.SelectedIndex = 0;
             }
             else
             {
@@ -114,7 +112,10 @@ namespace RelatorioFA.AppWinForm
                     selectedPartner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
                     SetPartnersDevInLsbDevTeam(selectedPartner);
                 }
-                lsbDevTeam.SelectedIndex = 0;
+                if (lsbDevTeam.Items.Count > 0)
+                {
+                    lsbDevTeam.SelectedIndex = 0; 
+                }
             }
         }
         #endregion
@@ -286,7 +287,7 @@ namespace RelatorioFA.AppWinForm
                         {
                             Name = UtilDTO.CONTRACTS.HOUSE.ToString(),
                             PartnerName = UtilDTO.CONTRACTS.HOUSE.ToString()
-                    };
+                        };
                         foreach (var dev in configXml.BaneseDes)
                         {
                             ColaboradorDTO houseDev = new ColaboradorDTO()
@@ -303,30 +304,52 @@ namespace RelatorioFA.AppWinForm
 
                     foreach (var partner in configXml.Partners)
                     {
-                        foreach (var contract in partner.Contracts)
+                        if (fluxo != UtilDTO.NAVIGATION.DEV_EXTERNO)
                         {
-                            if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
-                                contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
+                            foreach (var contract in partner.Contracts)
                             {
-                                ContratoDTO newContract = new ContratoDTO()
+                                if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
+                                    contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString() &&
+                                    contract.Name != UtilDTO.CONTRACTS.EXTERNO.ToString()
+                                    )
                                 {
-                                    Name = contract.Name,
-                                    Factor = contract.Factor,
-                                    NumeroSAP = contract.NumeroSAP,
-                                    PartnerName = partner.Name
-                                };
-                                foreach (var dev in contract.Collaborators)
-                                {
-                                    ColaboradorDTO newDev = new ColaboradorDTO()
+                                    ContratoDTO newContract = new ContratoDTO()
                                     {
-                                        Name = dev.Name,
-                                        AbsenceDays = 0,
-                                        ExtraHoursExpenses = 0,
-                                        WorksHalfDay = dev.WorksHalfDay
+                                        Name = contract.Name,
+                                        Factor = contract.Factor,
+                                        NumeroSAP = contract.NumeroSAP,
+                                        PartnerName = partner.Name
                                     };
-                                    newContract.Collaborators.Add(newDev);
+                                    foreach (var dev in contract.Collaborators)
+                                    {
+                                        ColaboradorDTO newDev = new ColaboradorDTO()
+                                        {
+                                            Name = dev.Name,
+                                            AbsenceDays = 0,
+                                            ExtraHoursExpenses = 0,
+                                            WorksHalfDay = dev.WorksHalfDay
+                                        };
+                                        newContract.Collaborators.Add(newDev);
+                                    }
+                                    selectedDevSprint.Contracts.Add(newContract);
                                 }
-                                selectedDevSprint.Contracts.Add(newContract);
+                            }
+                        }
+                        else
+                        {
+                            foreach (var contract in partner.Contracts)
+                            {
+                                if (contract.Name == UtilDTO.CONTRACTS.EXTERNO.ToString())
+                                {
+                                    ContratoDTO newContract = new ContratoDTO()
+                                    {
+                                        Name = contract.Name,
+                                        Factor = contract.Factor,
+                                        NumeroSAP = contract.NumeroSAP,
+                                        PartnerName = partner.Name
+                                    };
+                                    selectedDevSprint.Contracts.Add(newContract);
+                                }
                             }
                         }
                     }  
@@ -477,7 +500,9 @@ namespace RelatorioFA.AppWinForm
                         //SM_MEDIA nao será gerado nesse fluxo
                         if (partner.Contracts.Any(contract =>
                             contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
-                            contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString()))
+                            contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString() &&
+                            contract.Name != UtilDTO.CONTRACTS.EXTERNO.ToString())
+                            )
                         {
                             PrincipalTO.CreateDevDoc(configXml, partner, outputDocPath, sprintsDevList);
                         }
@@ -501,6 +526,10 @@ namespace RelatorioFA.AppWinForm
                 else
                 {
                     var selectedPartner = configXml.Partners.Find(partner => partner.Name == cbbPartners.SelectedItem.ToString());
+                    if (fluxo == UtilDTO.NAVIGATION.DEV_EXTERNO)
+                    {
+                        selectedPartner.BillingType = UtilDTO.BILLING_TYPE.UST_EXTERNAL;
+                    }
                     PrincipalTO.CreateDevDoc(configXml, selectedPartner, outputDocPath, sprintsDevList);
                 }
                 

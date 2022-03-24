@@ -296,6 +296,7 @@ namespace RelatorioFA.AppWinForm
                     lblAcceptedPointsInv.Visible = false;
                     txbAcceptedPointsInvestment.Visible = false;
                     lblAcceptedPointsExp.Text = "Pts. aceitos";
+                    txbAcceptedPointsExpense.Focus();
                     break;
                 default:
                     break;

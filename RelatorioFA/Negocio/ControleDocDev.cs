@@ -57,7 +57,14 @@ namespace RelatorioFA.Negocio
                 Paragraph para1 = document.Content.Paragraphs.Add(ref missing);
 
                 CreateFirstPage(para1, ranges, config);
-                CreateFollowPages(document, partner, baseSprints, para1, devTeam);
+                if (partner.BillingType == UtilDTO.BILLING_TYPE.UST_EXTERNAL)
+                {
+                    CreateFollowPages(document, partner, baseSprints, para1);
+                }
+                else
+                {
+                    CreateFollowPages(document, partner, baseSprints, para1, devTeam);
+                }
                 CreateLastPage(document, para1, sprints, missing, config, partner);
                 SetDocumentHeader(document, partner, config);
                 SetDocumentFooter(document);

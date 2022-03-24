@@ -96,11 +96,10 @@ namespace RelatorioFA.Negocio
                         paragraph.Range.InsertParagraphAfter(); 
                     }
 
+                    //Time de desenvolvimento
+                    AddPAragraph(paragraph, "TIME DE DESENVOLVIMENTO:", 30, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
                     if (devTeam != null)
                     {
-                        //Time de desenvolvimento
-                        AddPAragraph(paragraph, "TIME DE DESENVOLVIMENTO:", 30, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
-
                         foreach (var dev in devTeam)
                         {
                             strAux = dev.Name;
@@ -114,8 +113,13 @@ namespace RelatorioFA.Negocio
                             {
                                 AddPAragraph(paragraph, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
                             }
-                        } 
+                        }
                     }
+                    else
+                    {
+                        AddPAragraph(paragraph, "Equipe remota", 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
+                    }
+
                     //OBS da sprint
                     strAux = $"* {strObs}";
                     AddPAragraph(paragraph, strAux, 30, 30, 0, 10, WdParagraphAlignment.wdAlignParagraphJustify);
@@ -134,7 +138,8 @@ namespace RelatorioFA.Negocio
 
             AddPAragraph(para1, "DETALHES DO FATURAMENTO", 10, 0, 1, 14, WdParagraphAlignment.wdAlignParagraphJustify);
             if (billingType == UtilDTO.BILLING_TYPE.UST ||
-                billingType == UtilDTO.BILLING_TYPE.UST_DEVOPS)
+                billingType == UtilDTO.BILLING_TYPE.UST_DEVOPS ||
+                billingType == UtilDTO.BILLING_TYPE.UST_EXTERNAL)
             {
                 strAux = "Valor da UST: R$" + partner.UstValue;
                 AddPAragraph(para1, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
@@ -226,9 +231,13 @@ namespace RelatorioFA.Negocio
         public static void SetSummaryTableTotal(ref Table summaryTable, int columns, int line, double totalPoints, double ustValue, ref object missing)
         {
             Cell cell;
+            int adjust = 2;
             summaryTable.Rows.Add(missing);
             cell = summaryTable.Cell(line, 1);
-            cell.Merge(summaryTable.Cell(line, columns - 2));
+            if (columns - adjust > 1)
+            {
+                cell.Merge(summaryTable.Cell(line, columns - adjust)); 
+            }
             summaryTable.Cell(line, 1).Range.Text = "TOTAL A SER FATUADO:";
             summaryTable.Cell(line, 2).Range.Text = totalPoints.ToString(decimalFormat);
             summaryTable.Cell(line, 2).Range.Font.Bold = 1;
