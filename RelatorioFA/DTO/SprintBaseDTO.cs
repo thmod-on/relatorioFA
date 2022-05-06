@@ -23,7 +23,7 @@ namespace RelatorioFA.DTO
             var aux = new StringBuilder();
             aux.Append("____________________________________\n");
             aux.Append($"Sprint {Range.Name} ({Range.IniDate:d} ~ {Range.EndDate:d})\n");
-            aux.Append($"- Dias da sprint: {(Range.EndDate - Range.IniDate).TotalDays}\n");
+            aux.Append($"- Dias da sprint: {(Range.EndDate - Range.IniDate).TotalDays + 1}\n");
             aux.Append($"- Imagem: {ImagePath}\n");
             aux.Append($"- Obs.: {Obs}\n");
             aux.Append($"- Ponto de cerimônia: {CerimonialPoint}\n");

@@ -472,7 +472,7 @@ namespace RelatorioFA.AppWinForm
                 foreach (var sprint in sprintsDevList)
                 {
                     //DEV
-                    int sprintDays = (sprint.Range.EndDate - sprint.Range.IniDate).Days;
+                    int sprintDays = (sprint.Range.EndDate - sprint.Range.IniDate).Days + 1;
                     PrincipalTO.SetDevPresence(sprint.Contracts, sprintDays, sprint.AdaptaionSprint);
                     FornecedorDTO selectedPartner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
                     double teamSize = PrincipalTO.CalcTeamSize(selectedPartner, sprint, fluxo);
