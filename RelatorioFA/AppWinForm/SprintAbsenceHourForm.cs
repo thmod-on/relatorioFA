@@ -63,7 +63,6 @@ namespace RelatorioFA.AppWinForm
                         cbbPartners.Items.Add(partner.Name);
                     }
                 }
-                //lsbDevTeam.SelectedIndex = 0;
             }
             else
             {
@@ -82,40 +81,43 @@ namespace RelatorioFA.AppWinForm
         #region CbbPartners_SelectedIndexChanged
         private void CbbPartners_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FornecedorDTO selectedPartner = null;
-            if (!string.IsNullOrEmpty(cbbPartners.SelectedItem.ToString()))
+            if (fluxo != UtilDTO.NAVIGATION.DEV_EXTERNO)
             {
-                lsbDevTeam.Items.Clear();
-                if (cbbPartners.SelectedItem.ToString() == all)
+                FornecedorDTO selectedPartner = null;
+                if (!string.IsNullOrEmpty(cbbPartners.SelectedItem.ToString()))
                 {
-                    if (configXml.BaneseDes.Count > 0)
+                    lsbDevTeam.Items.Clear();
+                    if (cbbPartners.SelectedItem.ToString() == all)
+                    {
+                        if (configXml.BaneseDes.Count > 0)
+                        {
+                            foreach (var dev in configXml.BaneseDes)
+                            {
+                                lsbDevTeam.Items.Add(mark + dev.Name);
+                            }
+                        }
+                        foreach (var partner in configXml.Partners)
+                        {
+                            SetPartnersDevInLsbDevTeam(partner);
+                        }
+                    }
+                    else if (cbbPartners.SelectedItem.ToString() == house)
                     {
                         foreach (var dev in configXml.BaneseDes)
                         {
                             lsbDevTeam.Items.Add(mark + dev.Name);
                         }
                     }
-                    foreach (var partner in configXml.Partners)
+                    else
                     {
-                        SetPartnersDevInLsbDevTeam(partner);
+                        selectedPartner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
+                        SetPartnersDevInLsbDevTeam(selectedPartner);
                     }
-                }
-                else if (cbbPartners.SelectedItem.ToString() == house)
-                {
-                    foreach (var dev in configXml.BaneseDes)
+                    if (lsbDevTeam.Items.Count > 0)
                     {
-                        lsbDevTeam.Items.Add(mark + dev.Name);
+                        lsbDevTeam.SelectedIndex = 0;
                     }
-                }
-                else
-                {
-                    selectedPartner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
-                    SetPartnersDevInLsbDevTeam(selectedPartner);
-                }
-                if (lsbDevTeam.Items.Count > 0)
-                {
-                    lsbDevTeam.SelectedIndex = 0; 
-                }
+                } 
             }
         }
         #endregion
