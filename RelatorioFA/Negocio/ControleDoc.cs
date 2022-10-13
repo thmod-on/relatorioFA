@@ -24,7 +24,7 @@ namespace RelatorioFA.Negocio
         #endregion
 
         #region CreateFirstPage
-        public static void CreateFirstPage(Paragraph paragraph, List<IntervaloDTO> ranges, ConfigXmlDTO config)
+        public static void CreateFirstPage(Paragraph paragraph, List<IntervaloDTO> ranges, ConfigXmlDTO config, string numeroSap)
         {
             string strAux;
             List<string> paragraphTexts = new List<string>();
@@ -32,6 +32,7 @@ namespace RelatorioFA.Negocio
             AddPAragraph(paragraph, "RELATÓRIO DE ATIVIDADES", 20, 150, 1, 20, WdParagraphAlignment.wdAlignParagraphCenter);
 
             #region Identificação das sprints
+            //Preparando texto
             strAux = "ATIVIDADES DESENVOLVIDAS NAS SPRINTS: ";
             int sprintsCount = 1;
             foreach (var range in ranges)
@@ -45,12 +46,18 @@ namespace RelatorioFA.Negocio
             }
             paragraphTexts.Add(strAux);
 
+            paragraphTexts.Add("Área: SUTEC");
+
             strAux = "TIME: " + config.AreaName + " - " + config.TeamName;
             paragraphTexts.Add(strAux);
 
             strAux = $"PERÍODO: {ranges[0].IniDate:dd/MM/yyyy} a {ranges[ranges.Count - 1].EndDate:dd/MM/yyyy}";
             paragraphTexts.Add(strAux);
 
+            strAux = $"Contrato SAP: {numeroSap}";
+            paragraphTexts.Add(strAux);
+
+            //Desenhando o parágrafo
             foreach (var paragraphText in paragraphTexts)
             {
                 AddPAragraph(paragraph, paragraphText, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphRight);
@@ -142,12 +149,6 @@ namespace RelatorioFA.Negocio
                 billingType == UtilDTO.BILLING_TYPE.UST_EXTERNAL)
             {
                 strAux = "Valor da UST: R$" + partner.UstValue;
-                AddPAragraph(para1, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
-            }
-            
-            foreach (var contract in partner.Contracts)
-            {
-                strAux = $"Contrato / SAP: {contract.Name} / {contract.NumeroSAP}";
                 AddPAragraph(para1, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
             }
         }

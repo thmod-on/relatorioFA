@@ -34,7 +34,22 @@ namespace RelatorioFA.Negocio
                 Document document = winword.Documents.Add(ref missing, ref missing, ref missing, ref missing);
                 Paragraph paragraph = document.Content.Paragraphs.Add(ref missing);
 
-                CreateFirstPage(paragraph, ranges, config);
+                //Obtendo o contrato para a capa
+                string contratoSap = "ERRO";
+                foreach (var contract in partner.Contracts)
+                {
+                    if (contract.Name != UtilDTO.CONTRACTS.EXTERNO.ToString()
+                        && contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString()
+                        && contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString()
+                        && contract.Name != UtilDTO.CONTRACTS.HOUSE.ToString()
+                        )
+                    {
+                        contratoSap = contract.NumeroSAP;
+                        break;
+                    }
+                }
+
+                CreateFirstPage(paragraph, ranges, config, contratoSap);
                 CreateFollowPages(document, partner, baseSprints, paragraph);
                 CreateLastPage(document, paragraph, sprintDevOpsList, missing, config, partner);
                 SetDocumentHeader(document, partner, config);

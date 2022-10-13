@@ -56,7 +56,21 @@ namespace RelatorioFA.Negocio
                 Document document = winword.Documents.Add(ref missing, ref missing, ref missing, ref missing);
                 Paragraph para1 = document.Content.Paragraphs.Add(ref missing);
 
-                CreateFirstPage(para1, ranges, config);
+                //Obtendo o contrato para a capa
+                string contratoSap = "ERRO";
+                foreach (var contract in partner.Contracts)
+                {
+                    if (contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString()
+                        && contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString()
+                        && contract.Name != UtilDTO.CONTRACTS.HOUSE.ToString()
+                        )
+                    {
+                        contratoSap = contract.NumeroSAP;
+                        break;
+                    }
+                }
+
+                CreateFirstPage(para1, ranges, config, contratoSap);
                 if (partner.BillingType == UtilDTO.BILLING_TYPE.UST_EXTERNAL)
                 {
                     CreateFollowPages(document, partner, baseSprints, para1);

@@ -20,7 +20,8 @@ namespace RelatorioFA.AppWinForm
 
         private void LoadUpdatesDescription()
         {
-            txbUpdates.AppendText("+ ---------------------+\n  Versão 4.13.2 \n + ---------------------+\n - Correção no fluxo para quando uma empresa tem dev externo e também trabalhando internamente");
+            txbUpdates.AppendText("+ ---------------------+\n  Versão 4.13.3 \n + ---------------------+\n - Alteração na capa\n   . Adicionado o número do contrato SAP;\n   . Adicionado o nome da Área (fixo)\n - Removido o número do contrato SAP da folha de faturamento");
+            txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.13.2 \n + ---------------------+\n - Correção no fluxo para quando uma empresa tem dev externo e também trabalhando internamente");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.13.1 \n + ---------------------+\n - Pequena mas importante correção na quantidade de dias da sprint. Agora contando com um dia a mais.\nOo");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.13.0 \n + ---------------------+\n - Temos férias? Temos sim, e também temos versão nova para os 'abiguinhos'. Esta versão traz a opção de gerar um relatório para empresa que trabalha de forma isolada. Você passa a demanda e basicamente acompanha entrega, em um time isolado, com sua própria rotina.");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.12.5 \n + ---------------------+\n - Removendo POGs feitas para utilização de hora com UST");
