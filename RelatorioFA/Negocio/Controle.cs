@@ -94,9 +94,9 @@ namespace RelatorioFA.Negocio
                 {
                     IntervaloDTO range = new IntervaloDTO
                     {
-                        Name = $"{currentYear} R{release}S{sprint}",
+                        Name = $"{currentYear} - R{release} - S{sprint}",
                         IniDate = lastSprintEndDate.AddDays(1),
-                        EndDate = lastSprintEndDate.AddDays(14)
+                        EndDate = sprint != sprintCountPerRelease ? lastSprintEndDate.AddDays(14) : lastSprintEndDate.AddDays(21)
                     };
 
                     sprintRanges.Add(range);
