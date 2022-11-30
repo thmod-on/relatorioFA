@@ -20,7 +20,8 @@ namespace RelatorioFA.AppWinForm
 
         private void LoadUpdatesDescription()
         {
-            txbUpdates.AppendText("+ ---------------------+\n  Versão 4.13.4 \n + ---------------------+\n - Alterada a quantidade de dias da última sprint de cada release para ter uma semana a mais;\n- Alterada nomeclatura das sprints para facilitar leitura;");
+            txbUpdates.AppendText("+ ---------------------+\n  Versão 4.14.0 \n + ---------------------+\n - ");
+            txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.13.4 \n + ---------------------+\n - Alterada a quantidade de dias da última sprint de cada release para ter uma semana a mais;\n- Alterada nomeclatura das sprints para facilitar leitura;");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.13.3 \n + ---------------------+\n - Alteração na capa\n   . Adicionado o número do contrato SAP;\n   . Adicionado o nome da Área (fixo)\n- Removido o número do contrato SAP da folha de faturamento");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.13.2 \n + ---------------------+\n - Correção no fluxo para quando uma empresa tem dev externo e também trabalhando internamente");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.13.1 \n + ---------------------+\n - Pequena mas importante correção na quantidade de dias da sprint. Agora contando com um dia a mais.\nOo");

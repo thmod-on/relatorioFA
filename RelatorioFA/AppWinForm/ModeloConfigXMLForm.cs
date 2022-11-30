@@ -25,7 +25,8 @@ namespace RelatorioFA.AppWinForm
             InitializeComponent();
             ResizeParent(parentForm);
             LoadConfigData();
-            LoadContractType();
+            LoadPresetBatches();
+            LoadPresetRoles();
             cbbPartner.Items.Add(NOVO);
             cbbPartner.SelectedIndex = 0;
         }
@@ -34,7 +35,8 @@ namespace RelatorioFA.AppWinForm
         {
             InitializeComponent();
             LoadConfigData();
-            LoadContractType();
+            LoadPresetBatches();
+            LoadPresetRoles();
             cbbPartner.Items.Add(NOVO);
             cbbPartner.SelectedIndex = 0;
         }
@@ -49,18 +51,26 @@ namespace RelatorioFA.AppWinForm
             containerForm.MinimumSize = new Size(this.Width, this.Height + 30);
         }
 
-        #region LoadContractType
-        private void LoadContractType()
+        private void LoadPresetBatches()
         {
-            foreach (var contractType in Enum.GetValues(typeof(UtilDTO.CONTRACTS)))
+            foreach (var batch in Enum.GetValues(typeof(UtilDTO.BATCHS)))
             {
+                cbbAvaliableBatchs.Items.Add(batch);
+            }
+            cbbAvaliableBatchs.SelectedIndex = 0;
+        }
 
-                if (contractType.ToString() != UtilDTO.CONTRACTS.HOUSE.ToString())
+        #region LoadContractType
+        private void LoadPresetRoles()
+        {
+            foreach (var role in Enum.GetValues(typeof(UtilDTO.ROLES)))
+            {
+                if (role.ToString() != UtilDTO.ROLES.HOUSE.ToString())
                 {
-                    cbbContractType.Items.Add(contractType);
+                    cbbAvaliableRoles.Items.Add(role);
                 }
             }
-            cbbContractType.SelectedIndex = 0;
+            cbbAvaliableRoles.SelectedIndex = 0;
         } 
         #endregion
 
@@ -69,15 +79,15 @@ namespace RelatorioFA.AppWinForm
             lblOutputPath.Text = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
             FornecedorDTO fakePartner = new FornecedorDTO()
             {
-                Name = UtilDTO.CONTRACTS.HOUSE.ToString()
+                Name = UtilDTO.ROLES.HOUSE.ToString()
             };
             config.Partners.Add(fakePartner);
 
             ContratoDTO fakeContract = new ContratoDTO()
             {
-                Name = UtilDTO.CONTRACTS.HOUSE.ToString()
+                SapNumber = UtilDTO.ROLES.HOUSE.ToString()
             };
-            config.Partners.Find(x => x.Name == UtilDTO.CONTRACTS.HOUSE.ToString()).Contracts.Add(fakeContract);
+            config.Partners.Find(x => x.Name == UtilDTO.ROLES.HOUSE.ToString()).Contracts.Add(fakeContract);
         }
 
         #region eventos de click
@@ -140,8 +150,8 @@ namespace RelatorioFA.AppWinForm
         } 
         #endregion
 
-        #region BtnGenerateFilled_Click
-        private void BtnGenerateFilled_Click(object sender, EventArgs e)
+        #region BtnSave_Click
+        private void BtnSave_Click(object sender, EventArgs e)
         {
             try
             {
@@ -168,7 +178,6 @@ namespace RelatorioFA.AppWinForm
                 FornecedorDTO partner = new FornecedorDTO()
                 {
                     Name = txbPartnerName.Text,
-                    UstValue = Convert.ToDouble(txbPartnerUstValue.Text)
                 };
                 partner.CaminhoLogomarca = SalvarImagemParceiro(partner.Name);
 
@@ -181,7 +190,6 @@ namespace RelatorioFA.AppWinForm
                 picBoxLogomarca.Image = null;
                 arquivoImagemLogomarca = null;
                 txbPartnerName.Clear();
-                txbPartnerUstValue.Clear();
                 UpdatePartnersCombo();
                 PrintUserLog($"Parceiro '{partner.Name}' adicionado.");
             }
@@ -240,16 +248,16 @@ namespace RelatorioFA.AppWinForm
 
                 ContratoDTO newContract = new ContratoDTO()
                 {
-                    Name = cbbContractType.SelectedItem.ToString(),
-                    Factor = Convert.ToDouble(txbContractFactor.Text)
+                    SapNumber = txbSapNumber.Text,
+                    UstValue = Convert.ToDouble(txbUstValue.Text)
                 };
 
                 if (cbbContract.SelectedValue.ToString() != NOVO &&
-                    cbbContract.SelectedValue.ToString() != UtilDTO.CONTRACTS.HOUSE.ToString())
+                    cbbContract.SelectedValue.ToString() != UtilDTO.ROLES.HOUSE.ToString())
                 {
                     var oldContract = config
                         .Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString())
-                        .Contracts.Find(c => c.Name == cbbContract.SelectedValue.ToString());
+                        .Contracts.Find(c => c.SapNumber == cbbContract.SelectedValue.ToString());
 
                     config
                         .Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString())
@@ -262,9 +270,7 @@ namespace RelatorioFA.AppWinForm
                     .Add(newContract);
 
                 UpdateContractsCombo();
-                //txbContractHourValue.Clear();
-                //txbContractFactor.Clear();
-                PrintUserLog($"Contrato '{newContract.Name}' adicionado ao parceiro '{cbbPartner.SelectedItem}'");
+                PrintUserLog($"Contrato '{newContract.SapNumber}' adicionado ao parceiro '{cbbPartner.SelectedItem}'");
             }
             catch (Exception ex)
             {
@@ -273,7 +279,7 @@ namespace RelatorioFA.AppWinForm
         }
         #endregion
 
-        #region BtnAddDev_Click
+        #region DevControl
         private void BtnAddDev_Click(object sender, EventArgs e)
         {
             try
@@ -287,47 +293,53 @@ namespace RelatorioFA.AppWinForm
 
                 if (cbbDevs.SelectedItem.ToString() == NOVO)
                 {
-                    if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.HOUSE.ToString())
+                    if (cbbContract.SelectedValue.ToString() == UtilDTO.ROLES.HOUSE.ToString())
                     {
                         config.BaneseDes.Add(newDev);
                     }
                     else
                     {
-                        config.Partners
-                                     .Find(x => x.Name == cbbPartner.SelectedItem.ToString())
-                                     .Contracts
-                                         .Find(x => x.Name == cbbContract.SelectedValue.ToString())
-                                         .Collaborators
-                                            .Add(newDev);
+                        config
+                            .Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString())
+                            .Contracts.Find(x => x.SapNumber == cbbContract.SelectedValue.ToString())
+                            .Batches.Find(b => b.Name == cbbAvaliableBatchs.SelectedItem.ToString())
+                            .Roles.Find(r => r.Name == cbbAvaliableRoles.SelectedItem.ToString())
+                            .Collaborators.Add(newDev);
                     }
                 }
                 else
                 {
-                    var oldDevData = config.Partners
-                               .Find(x => x.Name == cbbPartner.SelectedItem.ToString())
-                               .Contracts
-                                   .Find(x => x.Name == cbbContract.SelectedValue.ToString())
-                                   .Collaborators
-                                   .Find(dev => dev.Name == cbbDevs.SelectedItem.ToString());
+                    var oldDevData = config
+                            .Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString())
+                            .Contracts.Find(x => x.SapNumber == cbbContract.SelectedValue.ToString())
+                            .Batches.Find(b => b.Name == cbbAvaliableBatchs.SelectedItem.ToString())
+                            .Roles.Find(r => r.Name == cbbAvaliableRoles.SelectedItem.ToString())
+                            .Collaborators.Find(dev => dev.Name == cbbDevs.SelectedItem.ToString());
 
-                    var contract = config.Partners
-                                     .Find(x => x.Name == cbbPartner.SelectedItem.ToString())
-                                     .Contracts
-                                         .Find(x => x.Name == cbbContract.SelectedValue.ToString());
+                    var role = config
+                            .Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString())
+                            .Contracts.Find(x => x.SapNumber == cbbContract.SelectedValue.ToString())
+                            .Batches.Find(b => b.Name == cbbAvaliableBatchs.SelectedItem.ToString())
+                            .Roles.Find(r => r.Name == cbbAvaliableRoles.SelectedItem.ToString());
 
-                    contract.Collaborators.Remove(oldDevData);
-                    contract.Collaborators.Add(newDev);
+                    role.Collaborators.Remove(oldDevData);
+                    role.Collaborators.Add(newDev);
                 }
 
                 txbDevName.Clear();
                 UpdateDevsCombo();
-                btnGenerateFilled.Enabled = true;
+                btnSave.Enabled = true;
                 PrintUserLog($"Desenvolvedor '{newDev.Name}' adicionado ao contrato '{cbbContract.SelectedValue}' do fornecedor '{cbbPartner.SelectedItem}'");
             }
             catch (Exception ex)
             {
                 txbResult.Text = $"Erro não tratado. Mensagem:\n{ex.Message}\n\nPilha:\n{ex.StackTrace}";
             }
+        }
+
+        private void BtnRemoveDev_Click(object sender, EventArgs e)
+        {
+
         }
         #endregion
 
@@ -383,7 +395,7 @@ namespace RelatorioFA.AppWinForm
             cbbPartner.Items.Add(NOVO);
             foreach (var partner in config.Partners)
             {
-                if (partner.Name != UtilDTO.CONTRACTS.HOUSE.ToString())
+                if (partner.Name != UtilDTO.ROLES.HOUSE.ToString())
                 {
                     cbbPartner.Items.Add(partner.Name);
                 }
@@ -399,13 +411,13 @@ namespace RelatorioFA.AppWinForm
             Dictionary<string, string> comboItens = new Dictionary<string, string>
             {
                 { NOVO, NOVO + " - " +  cbbPartner.SelectedItem.ToString()},
-                { UtilDTO.CONTRACTS.HOUSE.ToString(), UtilDTO.CONTRACTS.HOUSE.ToString() }
+                { UtilDTO.ROLES.HOUSE.ToString(), UtilDTO.ROLES.HOUSE.ToString() }
             };
             if (config.Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString()).Contracts.Count > 0)
             {
                 foreach (var contract in config.Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString()).Contracts)
                 {
-                    comboItens.Add(contract.Name, cbbPartner.SelectedItem.ToString() + " - " + contract.Name);
+                    comboItens.Add(contract.SapNumber, cbbPartner.SelectedItem.ToString() + " - " + contract.SapNumber);
                 }
             }
             else
@@ -424,12 +436,15 @@ namespace RelatorioFA.AppWinForm
             }
         }
 
+        /// <summary>
+        /// Update the dev cbb with all devs already added to that partner > contract > batch > role
+        /// </summary>
         private void UpdateDevsCombo()
         {
             cbbDevs.Items.Clear();
             cbbDevs.Items.Add(NOVO);
             List<ColaboradorDTO> colaboradores = new List<ColaboradorDTO>();
-            if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.HOUSE.ToString())
+            if (cbbContract.SelectedValue.ToString() == UtilDTO.ROLES.HOUSE.ToString())
             {
                 colaboradores = config.BaneseDes;
             }
@@ -437,7 +452,9 @@ namespace RelatorioFA.AppWinForm
             {
                 colaboradores = config
                     .Partners.Find(p => p.Name == cbbPartner.SelectedItem.ToString())
-                    .Contracts.Find(c => c.Name == (cbbContract.SelectedValue.ToString()))
+                    .Contracts.Find(c => c.SapNumber == (cbbContract.SelectedValue.ToString()))
+                    .Batches.Find(b => b.Name == cbbAvaliableBatchs.SelectedItem.ToString())
+                    .Roles.Find(p => p.Name == cbbAvaliableRoles.SelectedItem.ToString())
                     .Collaborators; 
             }
             if (colaboradores.Count > 0)
@@ -460,10 +477,10 @@ namespace RelatorioFA.AppWinForm
         private void EnableContractFields()
         {
             cbbContract.Enabled = true;
-            //txbContractHourValue.Enabled = true;
-            cbbContractType.Enabled = true;
-            txbContractFactor.Enabled = true;
+            txbSapNumber.Enabled = true;
+            txbUstValue.Enabled = true;
             btnAddContract.Enabled = true;
+            btnRemoveContract.Enabled = true;
         }
 
         #region KeyPress
@@ -486,9 +503,9 @@ namespace RelatorioFA.AppWinForm
         #region Validações
         private void ValidatePartnerData()
         {
-            if (txbPartnerName.Text.Trim() == string.Empty || txbPartnerUstValue.Text.Trim() == string.Empty)
+            if (txbPartnerName.Text.Trim() == string.Empty)
             {
-                throw new Exception("Todos os campos do parceiro (região 1) são de preenchimento obrigatório");
+                throw new Exception("Ao menos um parceiro deve ser cadastrado.");
             }
         }
 
@@ -520,40 +537,30 @@ namespace RelatorioFA.AppWinForm
                 throw new Exception("O nome do autor e do time são campos obrigatórios.");
             }
 
-            foreach (var partner in config.Partners)
+            foreach (var _ in from partner in config.Partners
+                              from contract in partner.Contracts
+                              where contract.SapNumber != UtilDTO.ROLES.HOUSE.ToString()
+                              from batch in contract.Batches
+                              from role in batch.Roles
+                              where role.Collaborators.Count < 1
+                              select new { })
             {
-                foreach (var contract in partner.Contracts)
-                {
-                    if (contract.Name != UtilDTO.CONTRACTS.HOUSE.ToString() && contract.Collaborators.Count < 1)
-                    {
-                        throw new Exception("Ao menos um colaborador deve ser aadicionado a cada contrato.");
-                    }
-                }
+                throw new Exception("Ao menos um colaborador deve ser aadicionado a cada contrato.");
             }
         }
 
         private void ValidateContractData()
         {
-            if (txbContractFactor.Text == string.Empty)
+            if (txbUstValue.Text == string.Empty)
             {
-                txbContractFactor.Focus();
+                txbUstValue.Focus();
                 throw new Exception("Fator de ajuste precisa ser preenchido.");
             }
 
-            if (Convert.ToDouble(txbContractFactor.Text) == 0)
+            if (Convert.ToDouble(txbUstValue.Text) == 0)
             {
-                txbContractFactor.Focus();
+                txbUstValue.Focus();
                 throw new Exception("Fator de ajuste não pode ser zero.");
-            }
-
-            if (config.Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString()).Contracts.Any(x => x.Name == cbbContractType.SelectedItem.ToString()))
-            {
-                throw new Exception("Tipo de contrato já associado ao parceiro");
-            }
-
-            if ((UtilDTO.CONTRACTS)cbbContractType.SelectedItem == UtilDTO.CONTRACTS.SM_MEDIA)
-            {
-                throw new Exception("Relatório de SM ainda não implementado");
             }
         }
         #endregion
@@ -569,7 +576,6 @@ namespace RelatorioFA.AppWinForm
                     FornecedorDTO partner = config
                             .Partners.Find(p => p.Name == cbbPartner.SelectedItem.ToString());
                     txbPartnerName.Text = partner.Name;
-                    txbPartnerUstValue.Text = partner.UstValue.ToString();
                     if (partner.CaminhoLogomarca != string.Empty &&
                         partner.CaminhoLogomarca != null)
                     {
@@ -581,12 +587,10 @@ namespace RelatorioFA.AppWinForm
                 {
                     btnAddPartner.Text = "Adicionar";
                     txbPartnerName.Clear();
-                    txbPartnerUstValue.Clear();
                     picBoxLogomarca.Image = null;
 
                     cbbContract.Enabled = false;
-                    cbbContractType.Enabled = false;
-                    txbContractFactor.Enabled = false;
+                    txbUstValue.Enabled = false;
                     cbbDevs.Enabled = false;
                     txbDevName.Enabled = false;
                 }
@@ -606,30 +610,27 @@ namespace RelatorioFA.AppWinForm
                 if (cbbContract.SelectedValue == null || cbbContract.SelectedValue.ToString() == NOVO )
                 {
                     btnAddContract.Enabled = true;
-                    txbContractFactor.Enabled = true;
-                    cbbContractType.Enabled = true;
+                    txbUstValue.Enabled = true;
                     btnAddContract.Text = "Adicionar";
-                    txbContractFactor.Clear();
+                    txbUstValue.Clear();
                 }
                 else
                 {
-                    if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.HOUSE.ToString())
+                    if (cbbContract.SelectedValue.ToString() == UtilDTO.ROLES.HOUSE.ToString())
                     {
                         btnAddContract.Enabled = false;
-                        txbContractFactor.Enabled = false;
-                        cbbContractType.Enabled = false;
+                        txbUstValue.Enabled = false;
                         UpdateDevsCombo();
                     }
                     else
                     {
                         btnAddContract.Enabled = true;
-                        txbContractFactor.Enabled = true;
-                        cbbContractType.Enabled = true;
+                        txbUstValue.Enabled = true;
                         btnAddContract.Text = "Atualizar";
                         ContratoDTO contract = config
                                             .Partners.Find(p => p.Name == cbbPartner.SelectedItem.ToString())
-                                            .Contracts.Find(c => c.Name == cbbContract.SelectedValue.ToString());
-                        txbContractFactor.Text = contract.Factor.ToString();
+                                            .Contracts.Find(c => c.SapNumber == cbbContract.SelectedValue.ToString());
+                        txbUstValue.Text = contract.UstValue.ToString();
                         UpdateDevsCombo();
                     }
                 }
@@ -647,19 +648,19 @@ namespace RelatorioFA.AppWinForm
                 btnAddDev.Text = "Atualizar";
                 ColaboradorDTO dev = new ColaboradorDTO();
 
-                if (cbbContract.SelectedValue.ToString() == UtilDTO.CONTRACTS.HOUSE.ToString())
+                if (cbbContract.SelectedValue.ToString() == UtilDTO.ROLES.HOUSE.ToString())
                 {
                     dev = config
-                        .BaneseDes
-                            .Find(x => x.Name == cbbDevs.SelectedItem.ToString());
+                        .BaneseDes.Find(x => x.Name == cbbDevs.SelectedItem.ToString());
                 }
                 else
                 {
                     dev = config
                             .Partners.Find(p => p.Name == cbbPartner.SelectedItem.ToString())
-                            .Contracts.Find(c => c.Name == cbbContract.SelectedValue.ToString())
-                            .Collaborators
-                                .Find(x => x.Name == cbbDevs.SelectedItem.ToString());
+                            .Contracts.Find(c => c.SapNumber == cbbContract.SelectedValue.ToString())
+                            .Batches.Find(b => b.Name == cbbAvaliableBatchs.SelectedItem.ToString())
+                            .Roles.Find(r => r.Name == cbbAvaliableRoles.SelectedItem.ToString())
+                            .Collaborators.Find(x => x.Name == cbbDevs.SelectedItem.ToString());
                 }
 
                 txbDevName.Text = dev.Name;
@@ -694,9 +695,7 @@ namespace RelatorioFA.AppWinForm
             txbAuthor.Enabled = !processing;
             txbTeamName.Enabled = !processing;
             txbPartnerName.Enabled = !processing;
-            txbPartnerUstValue.Enabled = !processing;
-            txbContractFactor.Enabled = !processing;
-            cbbContractType.Enabled = !processing;
+            txbUstValue.Enabled = !processing;
             txbDevName.Enabled = !processing;
 
             cbbPartner.Enabled = !processing;
@@ -707,7 +706,7 @@ namespace RelatorioFA.AppWinForm
             btnAddContract.Enabled = !processing;
             btnAddDev.Enabled = !processing;
             btnLoad.Enabled = !processing;
-            btnGenerateFilled.Enabled = !processing;
+            btnSave.Enabled = !processing;
             btnOutputPath.Enabled = !processing;
             btnLogomarcaParceiro.Enabled = !processing;
 
@@ -733,24 +732,32 @@ namespace RelatorioFA.AppWinForm
             {
                 foreach (var partner in config.Partners)
                 {
-                    if (partner.Name != UtilDTO.CONTRACTS.HOUSE.ToString())
+                    if (partner.Name != UtilDTO.ROLES.HOUSE.ToString())
                     {
                         txbResult.AppendText($"\n\nParceiro  - {partner.Name}");
-                        txbResult.AppendText($"\n   > UST: R${partner.UstValue}");
-                        txbResult.AppendText($"\n   > Logomarca: {partner.CaminhoLogomarca}");
+                        txbResult.AppendText($"\n > Logomarca: {partner.CaminhoLogomarca}");
                         if (partner.Contracts.Count > 0)
                         {
                             foreach (var contract in partner.Contracts)
                             {
-                                txbResult.AppendText($"\n   > Contrato - {contract.Name}");
-                                txbResult.AppendText($"\n      - Fator: {contract.Factor}");
-                                if (contract.Collaborators.Count > 0)
+                                txbResult.AppendText($"\n > Contrato - {contract.SapNumber}");
+                                txbResult.AppendText($"\n  - UST: R${contract.UstValue}");
+                                foreach (var batch in contract.Batches)
                                 {
-                                    txbResult.AppendText($"\n      - Devs:");
-                                    foreach (var dev in contract.Collaborators)
+                                    txbResult.AppendText($"\n  > Lote: {batch.Name}");
+                                    foreach (var role in batch.Roles)
                                     {
-                                        txbResult.AppendText($"\n         . Nome: {dev.Name}");
-                                        txbResult.AppendText($"\n         . Turno único: {dev.WorksHalfDay}");
+                                        txbResult.AppendText($"\n   > Cargo: {role.Name}");
+                                        txbResult.AppendText($"\n    - Fator: {role.Factor}");
+                                        if (role.Collaborators.Count > 0)
+                                        {
+                                            txbResult.AppendText($"\n    > Devs:");
+                                            foreach (var dev in role.Collaborators)
+                                            {
+                                                txbResult.AppendText($"\n     - Nome: {dev.Name}");
+                                                txbResult.AppendText($"\n     - Turno único: {dev.WorksHalfDay}");
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -758,7 +765,110 @@ namespace RelatorioFA.AppWinForm
                     }
                 }
             }
+        }
+        #endregion
+
+        #region BatchControl
+        private void BtnAddBatch_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                LoteDTO newBatch = new LoteDTO()
+                {
+                    Name = cbbAvaliableBatchs.Text
+                };
+
+                config
+                    .Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString())
+                    .Contracts.Find(c => c.SapNumber == cbbContract.SelectedItem.ToString())
+                    .Batches.Add(newBatch);
+
+                cbbAvaliableBatchs.SelectedIndex = 0;
+
+                PrintUserLog($"Contrato '{newBatch.Name}' adicionado ao contrato '{cbbContract.SelectedItem}' do parceiro '{cbbPartner.SelectedItem}'");
+            }
+            catch (Exception ex)
+            {
+                txbResult.Text = $"Erro ao associar o lote ao contrato. Mensagem:\n{ex.Message}";
+            }
+        }
+
+        private void BtnRemoveBatch_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                LoteDTO oldBatch = (from partner in config.Partners
+                                    where partner.Name == cbbPartner.SelectedItem.ToString()
+                                    from contract in partner.Contracts
+                                    where contract.SapNumber == cbbContract.SelectedItem.ToString()
+                                    from batch in contract.Batches
+                                    where batch.Name == cbbAvaliableBatchs.SelectedItem.ToString()
+                                    select batch).First();
+
+                config
+                    .Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString())
+                    .Contracts.Find(c => c.SapNumber == cbbContract.SelectedItem.ToString())
+                    .Batches.Remove(oldBatch);
+            }
+            catch (Exception ex)
+            {
+                txbResult.Text = $"Erro ao remover o lote.\n{ex.Message}";
+            }
+        }
+        #endregion
+
+        #region RoleControl
+        private void BtnAddRole_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                CargoDTO newRole = new CargoDTO()
+                {
+                    Name = cbbAvaliableRoles.SelectedItem.ToString(),
+                    Factor = Convert.ToDouble(txbFactor.Text)
+                };
+
+                config
+                    .Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString())
+                    .Contracts.Find(c => c.SapNumber == cbbContract.SelectedItem.ToString())
+                    .Batches.Find(b => b.Name == cbbAvaliableBatchs.SelectedItem.ToString())
+                    .Roles.Add(newRole);
+
+                cbbAvaliableRoles.SelectedIndex = 0;
+                txbFactor.Clear();
+            }
+            catch (Exception ex)
+            {
+                txbResult.Text = $"Erro ao associar cargo.\n{ex.Message}";
+            }
+        }
+
+        private void BtnRemoveRole_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                CargoDTO oldRole = (from partner in config.Partners
+                                    where partner.Name == cbbPartner.SelectedItem.ToString()
+                                    from contract in partner.Contracts
+                                    where contract.SapNumber == cbbContract.SelectedItem.ToString()
+                                    from batch in contract.Batches
+                                    where batch.Name == cbbAvaliableBatchs.SelectedItem.ToString()
+                                    from role in batch.Roles
+                                    where role.Name == cbbAvaliableRoles.SelectedItem.ToString()
+                                    select  role).First();
+                config
+                   .Partners.Find(x => x.Name == cbbPartner.SelectedItem.ToString())
+                   .Contracts.Find(c => c.SapNumber == cbbContract.SelectedItem.ToString())
+                   .Batches.Find(b => b.Name == cbbAvaliableBatchs.SelectedItem.ToString())
+                   .Roles.Remove(oldRole);
+            }
+            catch (Exception ex)
+            {
+                txbResult.Text = $"Erro ao remover cargo.\n{ex.Message}";
+            }
         } 
         #endregion
+
+
     }
 }

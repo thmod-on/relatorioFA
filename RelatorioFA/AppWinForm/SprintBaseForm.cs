@@ -128,7 +128,7 @@ namespace RelatorioFA.AppWinForm
                     bool hasSharedSm = false;
                     foreach (var partner in configXml.Partners)
                     {
-                        if (partner.Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString()))
+                        if (partner.Contracts.Any(contract => contract.Name == UtilDTO.ROLES.SM_MEDIA.ToString()))
                         {
                             hasSharedSm = true;
                         }

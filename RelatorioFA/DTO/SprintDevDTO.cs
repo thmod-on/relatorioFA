@@ -1,5 +1,6 @@
 ﻿
 using System.Text;
+using System.Linq;
 
 namespace RelatorioFA.DTO
 {
@@ -17,20 +18,25 @@ namespace RelatorioFA.DTO
 
             aux.Append($"- Pts. aceitos INV: {AcceptedPointsInvestment}\n");
             aux.Append($"- Pts. aceitos DES: {AcceptedPointsExpenses}\n");
-            if (Contracts.Count > 0)
+
+            foreach (var contract in Contracts)
             {
-                foreach (var contract in Contracts)
+                aux.Append("===\n");
+                aux.Append($"- {contract.PartnerName}.{contract.SapNumber}\n");
+                foreach (var batch in from batch in contract.Batches
+                                      where batch.Name == UtilDTO.BATCHS.DEV.ToString()
+                                      select batch)
                 {
-                    aux.Append("===\n");
-                    aux.Append($"- {contract.PartnerName}.{contract.Name} ({contract.NumeroSAP})\n");
-                    aux.Append($"- Fator ajuste: {contract.Factor}\n");
-                    foreach (var dev in contract.Collaborators)
+                    aux.Append("- Desenvolvedores:\n");
+                    foreach (var dev in from role in batch.Roles
+                                        from dev in role.Collaborators
+                                        select dev)
                     {
-                        aux.Append($"  > {dev.Name} \n");
-                        aux.Append($"    . Trabalha turno único: {dev.WorksHalfDay} \n");
-                        aux.Append($"    . Ausências (dias): {dev.AbsenceDays} \n");
-                        aux.Append($"    . H.E. (INV): {dev.ExtraHourInvestment} \n");
-                        aux.Append($"    . H.E. (DES): {dev.ExtraHoursExpenses} \n");
+                        aux.Append($"   > {dev.Name} \n");
+                        aux.Append($"     . Trabalha turno único: {dev.WorksHalfDay} \n");
+                        aux.Append($"     . Ausências (dias): {dev.AbsenceDays} \n");
+                        aux.Append($"     . H.E. (INV): {dev.ExtraHourInvestment} \n");
+                        aux.Append($"     . H.E. (DES): {dev.ExtraHoursExpenses} \n");
                     }
                 }
             }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace RelatorioFA.DTO
@@ -14,10 +10,8 @@ namespace RelatorioFA.DTO
             Contracts = new List<ContratoDTO>();
         }
 
-        [XmlElement("Nome")]
+        [XmlElement("NomeFornecedor")]
         public string Name { get; set; }
-        [XmlElement("ValorUst")]
-        public double UstValue { get; set; }
         [XmlElement("Contrato")]
         public List<ContratoDTO> Contracts { get; set; }
         [XmlElement("CaminhoLogomarca")]

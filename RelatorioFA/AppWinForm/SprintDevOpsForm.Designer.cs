@@ -275,6 +275,7 @@ namespace RelatorioFA.AppWinForm
             this.cbbPartners.Size = new System.Drawing.Size(121, 21);
             this.cbbPartners.Sorted = true;
             this.cbbPartners.TabIndex = 0;
+            this.cbbPartners.SelectedIndexChanged += new System.EventHandler(this.CbbPartners_SelectedIndexChanged);
             // 
             // txbResult
             // 

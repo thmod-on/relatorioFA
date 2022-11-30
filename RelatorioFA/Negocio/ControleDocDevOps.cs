@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using RelatorioFA.DTO;
+using System.Linq;
 
 namespace RelatorioFA.Negocio
 {
     public class ControleDocDevOps : ControleDoc
     {
         #region GenerateDoc
-        public static void CreateOpsDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintDevOpsDTO> sprintDevOpsList)
+        public static void CreateOpsDoc(ConfigXmlDTO config, FornecedorDTO partner, ContratoDTO contract, string outputDocPath, List<SprintDevOpsDTO> sprintDevOpsList)
         {
             try
             {
@@ -36,22 +37,21 @@ namespace RelatorioFA.Negocio
 
                 //Obtendo o contrato para a capa
                 string contratoSap = "ERRO";
-                foreach (var contract in partner.Contracts)
+                foreach (var cont in from cont in partner.Contracts
+                                         from category in contract.Categories
+                                         where category.Name != UtilDTO.ROLES.EXTERNO.ToString()
+                                            && category.Name != UtilDTO.ROLES.SM_MEDIA.ToString()
+                                            && category.Name != UtilDTO.ROLES.SM_FIXO.ToString()
+                                            && category.Name != UtilDTO.ROLES.HOUSE.ToString()
+                                         select cont)
                 {
-                    if (contract.Name != UtilDTO.CONTRACTS.EXTERNO.ToString()
-                        && contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString()
-                        && contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString()
-                        && contract.Name != UtilDTO.CONTRACTS.HOUSE.ToString()
-                        )
-                    {
-                        contratoSap = contract.NumeroSAP;
-                        break;
-                    }
+                    contratoSap = contract.SapNumber;
+                    break;
                 }
 
                 CreateFirstPage(paragraph, ranges, config, contratoSap);
                 CreateFollowPages(document, partner, baseSprints, paragraph);
-                CreateLastPage(document, paragraph, sprintDevOpsList, missing, config, partner);
+                CreateLastPage(document, paragraph, sprintDevOpsList, missing, config, partner, contract);
                 SetDocumentHeader(document, partner, config);
                 SetDocumentFooter(document);
                 SaveAndClose(ref document, ref winword, outputDocName, outputDocPath, missing);
@@ -64,16 +64,16 @@ namespace RelatorioFA.Negocio
         #endregion
 
         #region LastPage
-        private static void CreateLastPage(Document document, Paragraph paragraph, List<SprintDevOpsDTO> sprintsDevOps, object missing, ConfigXmlDTO config, FornecedorDTO partner)
+        private static void CreateLastPage(Document document, Paragraph paragraph, List<SprintDevOpsDTO> sprintsDevOps, object missing, ConfigXmlDTO config, FornecedorDTO partner, ContratoDTO contract)
         {
-            SetLastPageText(document, paragraph, partner);
-            CreateSummaryTableUstDevOps(document, sprintsDevOps, missing, partner);
+            SetLastPageText(document, paragraph, partner, contract.UstValue);
+            CreateSummaryTableUstDevOps(document, sprintsDevOps, missing, contract.UstValue);
             SetLastPageSignature(paragraph, config);
         }
         #endregion
 
         #region CreateSummaryTableUstDevOps
-        private static void CreateSummaryTableUstDevOps(Document document, List<SprintDevOpsDTO> sprintsDevOps, object missing, FornecedorDTO partner)
+        private static void CreateSummaryTableUstDevOps(Document document, List<SprintDevOpsDTO> sprintsDevOps, object missing, double ustValue)
         {
             double totalPoints = 0;
             List<string> headers = new List<string>
@@ -111,7 +111,7 @@ namespace RelatorioFA.Negocio
                 totalPoints += sprintPoints;
                 line++;
             }
-            SetSummaryTableTotal(ref summaryTable, columns, line, totalPoints, partner.UstValue, ref missing);
+            SetSummaryTableTotal(ref summaryTable, columns, line, totalPoints, ustValue, ref missing);
         }
         #endregion
     }

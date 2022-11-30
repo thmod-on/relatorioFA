@@ -19,9 +19,9 @@ namespace RelatorioFA.Transacao
         }
 
         #region Calc
-        public static double CalcTeamSize(FornecedorDTO selectedPartner, SprintDevDTO sprintDev, UtilDTO.NAVIGATION navigation)
+        public static double CalcTeamSize(SprintDevDTO sprintDev, UtilDTO.NAVIGATION navigation)
         {
-            return Controle.CalcTeamSize(selectedPartner, sprintDev, navigation);
+            return Controle.CalcTeamSize(sprintDev, navigation);
         }
 
         public static void CalcPointsPerTeamMember(SprintDevDTO devSprint)
@@ -36,19 +36,19 @@ namespace RelatorioFA.Transacao
         } 
 
         #region CreateDoc
-        public static void CreateDevDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintDevDTO> sprints)
+        public static void CreateDevDoc(ConfigXmlDTO config, FornecedorDTO partner, ContratoDTO contract, string outputDocPath, List<SprintDevDTO> sprints)
         {
-            ControleDocDev.GenerateDoc(config, partner, outputDocPath, sprints);
+            ControleDocDev.GenerateDoc(config, partner, contract, outputDocPath, sprints);
         }
 
-        public static void CreateSmDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintSmDTO> sprints)
+        public static void CreateSmDoc(ConfigXmlDTO config, FornecedorDTO partner, ContratoDTO contract, string outputDocPath, List<SprintSmDTO> sprints)
         {
-            ControleDocSm.CreateSmDoc(config, partner, outputDocPath, sprints);
+            ControleDocSm.CreateSmDoc(config, partner, contract, outputDocPath, sprints);
         }
 
-        public static void CreateOpsDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintDevOpsDTO> sprints)
+        public static void CreateOpsDoc(ConfigXmlDTO config, FornecedorDTO partner, ContratoDTO contract, string outputDocPath, List<SprintDevOpsDTO> sprints)
         {
-            ControleDocDevOps.CreateOpsDoc(config, partner, outputDocPath, sprints);
+            ControleDocDevOps.CreateOpsDoc(config, partner, contract, outputDocPath, sprints);
         } 
         #endregion
 
@@ -57,9 +57,9 @@ namespace RelatorioFA.Transacao
             Controle.SetDevPresence(contractList, sprintDays, adaptarionSprint);
         }
 
-        public static void CalcSmSprintData(List<SprintSmDTO> sprintsSmList)
+        public static void CalcSmSprintData(List<SprintSmDTO> sprintsSmList, double factor)
         {
-            Controle.CalcSmSprintData(sprintsSmList);
+            Controle.CalcSmSprintData(sprintsSmList, factor);
         }
     }
 }

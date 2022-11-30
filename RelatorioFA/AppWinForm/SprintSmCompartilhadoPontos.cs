@@ -30,6 +30,7 @@ namespace RelatorioFA.AppWinForm
         private readonly ConfigXmlDTO configXml;
         private string outputDocPath = UtilDTO.GetProjectRootFolder();
         private FornecedorDTO selectedPartner;
+        private ContratoDTO selectedContract;
         private SprintSmDTO selectedSprint = new SprintSmDTO();
         
         #region Aux
@@ -42,22 +43,32 @@ namespace RelatorioFA.AppWinForm
         private void SelectPartnerAndContract()
         {
             selectedPartner = new FornecedorDTO();
+            selectedContract = new ContratoDTO();
+
             //assumindo que tera apenas um contrato deste tipo
-            foreach (var partner in configXml.Partners)
-            {
-                if (partner.Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString()))
-                {
-                    selectedPartner = partner;
-                    break;
-                }
-            }
+            selectedPartner =
+                (from partner in configXml.Partners
+                 from cont in partner.Contracts
+                 from batch in cont.Batches
+                 where batch.Name == UtilDTO.BATCHS.SM.ToString()
+                 from role in batch.Roles
+                 where role.Name == UtilDTO.ROLES.SM_MEDIA.ToString()
+                 select  partner).First();
+
+            selectedContract =
+                (from cont in selectedPartner.Contracts
+                 from batch in cont.Batches
+                 where batch.Name == UtilDTO.BATCHS.SM.ToString()
+                 from role in batch.Roles
+                 where role.Name == UtilDTO.ROLES.SM_MEDIA.ToString()
+                 select cont).First();
 
             foreach (var sprintSm in sprintsSmList)
             {
                 if (sprintSm.Contracts.Count < 1)
                 {
                     ContratoDTO newContract = new ContratoDTO();
-                    newContract = selectedPartner.Contracts.Find(c => c.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString());
+                    newContract = selectedContract;
                     sprintSm.Contracts.Add(newContract);
                 }
             }
@@ -172,8 +183,17 @@ namespace RelatorioFA.AppWinForm
             BlockScreen(true);
             try
             {
-                PrincipalTO.CalcSmSprintData(sprintsSmList);
-                PrincipalTO.CreateSmDoc(configXml, selectedPartner, outputDocPath, sprintsSmList);
+                //Assumindo que teremos apenas um SM_MEDIA no contrato
+                double factor = (
+                    from batch in selectedContract.Batches
+                    where batch.Name == UtilDTO.BATCHS.SM.ToString()
+                    from role in batch.Roles
+                    where role.Name == UtilDTO.ROLES.SM_MEDIA.ToString()
+                    select role.Factor).First();
+
+
+                PrincipalTO.CalcSmSprintData(sprintsSmList, factor);
+                PrincipalTO.CreateSmDoc(configXml, selectedPartner, selectedContract, outputDocPath, sprintsSmList);
                 txbResult.Text = $"Relatório gerado na pasta {outputDocPath}";
             }
             catch (Exception ex)

@@ -84,7 +84,6 @@ namespace RelatorioFA.AppWinForm
                 config.Partners.Remove(selectedPartner);
                 lsbPartners.Items.Remove(selectedPartner.Name);
                 txbPartnerName.Clear();
-                txbPartnerUstValue.Clear();
                 picBoxLogomarca.Image = null;
                 lsbPartners.SelectedItem = null;
 
@@ -100,13 +99,11 @@ namespace RelatorioFA.AppWinForm
             config.AreaName = txbAreaName.Text;
             config.TeamName = txbTeamName.Text;
 
-            if (!string.IsNullOrEmpty(txbPartnerName.Text) &&
-                !string.IsNullOrEmpty(txbPartnerUstValue.Text))
+            if (!string.IsNullOrEmpty(txbPartnerName.Text))
             {
                 FornecedorDTO newPartner = new FornecedorDTO()
                 {
-                    Name = txbPartnerName.Text,
-                    UstValue = Convert.ToDouble(txbPartnerUstValue.Text),
+                    Name = txbPartnerName.Text.Replace('-', '.'),
                     CaminhoLogomarca = partnerLogoPath
                 };
 
@@ -118,7 +115,6 @@ namespace RelatorioFA.AppWinForm
                 lsbPartners.Items.Add(newPartner.Name);
 
                 txbPartnerName.Clear();
-                txbPartnerUstValue.Clear();
                 picBoxLogomarca.Image = null;
                 partnerLogoPath = string.Empty;
                 txbPartnerName.Focus();
@@ -184,7 +180,6 @@ namespace RelatorioFA.AppWinForm
                     var selectedPartner = config.Partners.Find(p => p.Name == lsbPartners.SelectedItem.ToString());
 
                     txbPartnerName.Text = selectedPartner.Name;
-                    txbPartnerUstValue.Text = selectedPartner.UstValue.ToString();
                     if (!string.IsNullOrEmpty(selectedPartner.CaminhoLogomarca))
                     {
                         picBoxLogomarca.Load(selectedPartner.CaminhoLogomarca);
@@ -221,7 +216,6 @@ namespace RelatorioFA.AppWinForm
             foreach (var partner in config.Partners)
             {
                 txbResult.AppendText($"\n\nParceiro: {partner.Name}\n");
-                txbResult.AppendText($"   - Valor da UST: {partner.UstValue:C}\n");
                 txbResult.AppendText($"   - Logomarca: {partner.CaminhoLogomarca}");
             }
 

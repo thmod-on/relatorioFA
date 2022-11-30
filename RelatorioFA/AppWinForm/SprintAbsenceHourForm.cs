@@ -55,10 +55,10 @@ namespace RelatorioFA.AppWinForm
 
                 foreach (var partner in configXml.Partners)
                 {
-                    if (partner.Contracts.Any(c => c.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString()) &&
-                        partner.Contracts.Any(c => c.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString()) &&
-                        partner.Contracts.Any(c => c.Name != UtilDTO.CONTRACTS.EXTERNO.ToString())
-                        )
+                    if (partner.Contracts.Any(c => c.Categories.Any(category =>
+                        category.Name != UtilDTO.ROLES.SM_FIXO.ToString() &&
+                        category.Name != UtilDTO.ROLES.SM_MEDIA.ToString() &&
+                        category.Name != UtilDTO.ROLES.EXTERNO.ToString())))
                     {
                         cbbPartners.Items.Add(partner.Name);
                     }
@@ -68,7 +68,7 @@ namespace RelatorioFA.AppWinForm
             {
                 foreach (var partner in configXml.Partners)
                 {
-                    if (partner.Contracts.Any(c => c.Name == UtilDTO.CONTRACTS.EXTERNO.ToString()))
+                    if (partner.Contracts.Any(c => c.Categories.Any(category => category.Name == UtilDTO.ROLES.EXTERNO.ToString())))
                     {
                         cbbPartners.Items.Add(partner.Name);
                     }
@@ -117,7 +117,7 @@ namespace RelatorioFA.AppWinForm
                     {
                         lsbDevTeam.SelectedIndex = 0;
                     }
-                } 
+                }
             }
         }
         #endregion
@@ -145,11 +145,11 @@ namespace RelatorioFA.AppWinForm
             {
                 selectedRange.Name = lsbSprints.SelectedItem.ToString();
             }
-            
+
             if (lsbDevTeam.Items.Count > 0)
             {
                 lsbDevTeam.SelectedIndex = lsbDevTeam.Items.Count - 1;
-                lsbDevTeam.SelectedIndex = 0; 
+                lsbDevTeam.SelectedIndex = 0;
             }
         }
         #endregion
@@ -199,9 +199,17 @@ namespace RelatorioFA.AppWinForm
         #region GetSelectedDev
         private ColaboradorDTO GetSelectedDev()
         {
-            return sprintsDevList.Find(sprint => sprint.Range.Name == selectedRange.Name)
-                .Contracts.Find(contract => contract.Collaborators.Any(dev => dev.Name == selectedDevName))
-                .Collaborators.Find(wantedDev => wantedDev.Name == selectedDevName);
+            foreach (var dev in from sprint in sprintsDevList
+                                from contract in sprint.Contracts
+                                from category in contract.Categories
+                                from dev in category.Collaborators
+                                where dev.Name == selectedDevName
+                                select dev)
+            {
+                return dev;
+            }
+
+            return null;
         }
         #endregion
 
@@ -210,13 +218,16 @@ namespace RelatorioFA.AppWinForm
         {
             foreach (var contract in partner.Contracts)
             {
-                if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
-                    contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString() &&
-                    contract.Name != UtilDTO.CONTRACTS.EXTERNO.ToString())
+                foreach (var category in contract.Categories)
                 {
-                    foreach (var dev in contract.Collaborators)
+                    if (category.Name != UtilDTO.ROLES.SM_FIXO.ToString() &&
+                        category.Name != UtilDTO.ROLES.SM_MEDIA.ToString() &&
+                        category.Name != UtilDTO.ROLES.EXTERNO.ToString())
                     {
-                        lsbDevTeam.Items.Add(dev.Name);
+                        foreach (var dev in category.Collaborators)
+                        {
+                            lsbDevTeam.Items.Add(dev.Name);
+                        }
                     }
                 }
             }
@@ -253,24 +264,31 @@ namespace RelatorioFA.AppWinForm
                         {
                             foreach (var contract in partner.Contracts)
                             {
-                                if (contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString() ||
-                                    contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString())
+                                foreach (var category in contract.Categories)
                                 {
-                                    ContratoDTO smContract = new ContratoDTO()
+                                    if (category.Name == UtilDTO.ROLES.SM_FIXO.ToString() ||
+                                        category.Name == UtilDTO.ROLES.SM_MEDIA.ToString())
                                     {
-                                        Factor = contract.Factor,
-                                        Name = contract.Name,
-                                        NumeroSAP = contract.NumeroSAP
-                                    };
-                                    foreach (var sm in contract.Collaborators)
-                                    {
-                                        smContract.Collaborators.Add(sm);
+                                        ContratoDTO smContract = new ContratoDTO()
+                                        {
+                                            SapNumber = contract.SapNumber
+                                        };
+                                        CargoDTO categoriaContrato = new CargoDTO()
+                                        {
+                                            Factor = category.Factor,
+                                            Name = category.Name
+                                        };
+                                        foreach (var sm in category.Collaborators)
+                                        {
+                                            categoriaContrato.Collaborators.Add(sm);
+                                        }
+                                        smContract.Categories.Add(categoriaContrato);
+                                        sprintsSmList.Find(sprint => sprint.Range.Name == selectedRange.Name).Contracts.Add(smContract);
                                     }
-                                    sprintsSmList.Find(sprint => sprint.Range.Name == selectedRange.Name).Contracts.Add(smContract);
                                 }
                             }
                         }
-                    } 
+                    }
                 }
             }
         }
@@ -287,8 +305,11 @@ namespace RelatorioFA.AppWinForm
                     {
                         ContratoDTO houseDevContract = new ContratoDTO()
                         {
-                            Name = UtilDTO.CONTRACTS.HOUSE.ToString(),
-                            PartnerName = UtilDTO.CONTRACTS.HOUSE.ToString()
+                            PartnerName = UtilDTO.ROLES.HOUSE.ToString()
+                        };
+                        CargoDTO houseDevCategory = new CargoDTO()
+                        {
+                            Name = UtilDTO.ROLES.HOUSE.ToString()
                         };
                         foreach (var dev in configXml.BaneseDes)
                         {
@@ -299,8 +320,9 @@ namespace RelatorioFA.AppWinForm
                                 AbsenceDays = 0,
                                 ExtraHoursExpenses = 0
                             };
-                            houseDevContract.Collaborators.Add(houseDev);
+                            houseDevCategory.Collaborators.Add(houseDev);
                         }
+                        houseDevContract.Categories.Add(houseDevCategory);
                         selectedDevSprint.Contracts.Add(houseDevContract);
                     }
 
@@ -310,30 +332,37 @@ namespace RelatorioFA.AppWinForm
                         {
                             foreach (var contract in partner.Contracts)
                             {
-                                if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
-                                    contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString() &&
-                                    contract.Name != UtilDTO.CONTRACTS.EXTERNO.ToString()
-                                    )
+                                foreach (var category in contract.Categories)
                                 {
-                                    ContratoDTO newContract = new ContratoDTO()
+                                    if (category.Name != UtilDTO.ROLES.SM_FIXO.ToString() &&
+                                        category.Name != UtilDTO.ROLES.SM_MEDIA.ToString() &&
+                                        category.Name != UtilDTO.ROLES.EXTERNO.ToString()
+                                                                )
                                     {
-                                        Name = contract.Name,
-                                        Factor = contract.Factor,
-                                        NumeroSAP = contract.NumeroSAP,
-                                        PartnerName = partner.Name
-                                    };
-                                    foreach (var dev in contract.Collaborators)
-                                    {
-                                        ColaboradorDTO newDev = new ColaboradorDTO()
+                                        ContratoDTO newContract = new ContratoDTO()
                                         {
-                                            Name = dev.Name,
-                                            AbsenceDays = 0,
-                                            ExtraHoursExpenses = 0,
-                                            WorksHalfDay = dev.WorksHalfDay
+                                            SapNumber = contract.SapNumber,
+                                            PartnerName = partner.Name
                                         };
-                                        newContract.Collaborators.Add(newDev);
+                                        CargoDTO newCategory = new CargoDTO()
+                                        {
+                                            Name = category.Name,
+                                            Factor = category.Factor,
+                                        };
+                                        foreach (var dev in category.Collaborators)
+                                        {
+                                            ColaboradorDTO newDev = new ColaboradorDTO()
+                                            {
+                                                Name = dev.Name,
+                                                AbsenceDays = 0,
+                                                ExtraHoursExpenses = 0,
+                                                WorksHalfDay = dev.WorksHalfDay
+                                            };
+                                            newCategory.Collaborators.Add(newDev);
+                                        }
+                                        newContract.Categories.Add(newCategory);
+                                        selectedDevSprint.Contracts.Add(newContract);
                                     }
-                                    selectedDevSprint.Contracts.Add(newContract);
                                 }
                             }
                         }
@@ -341,20 +370,27 @@ namespace RelatorioFA.AppWinForm
                         {
                             foreach (var contract in partner.Contracts)
                             {
-                                if (contract.Name == UtilDTO.CONTRACTS.EXTERNO.ToString())
+                                foreach (var category in contract.Categories)
                                 {
-                                    ContratoDTO newContract = new ContratoDTO()
+                                    if (category.Name == UtilDTO.ROLES.EXTERNO.ToString())
                                     {
-                                        Name = contract.Name,
-                                        Factor = contract.Factor,
-                                        NumeroSAP = contract.NumeroSAP,
-                                        PartnerName = partner.Name
-                                    };
-                                    selectedDevSprint.Contracts.Add(newContract);
+                                        ContratoDTO newContract = new ContratoDTO()
+                                        {
+                                            SapNumber = contract.SapNumber,
+                                            PartnerName = partner.Name
+                                        };
+                                        CargoDTO newCategory = new CargoDTO()
+                                        {
+                                            Name = category.Name,
+                                            Factor = category.Factor,
+                                        };
+                                        newContract.Categories.Add(newCategory);
+                                        selectedDevSprint.Contracts.Add(newContract);
+                                    }
                                 }
                             }
                         }
-                    }  
+                    }
                 }
             }
         }
@@ -384,7 +420,7 @@ namespace RelatorioFA.AppWinForm
             btnPreviousForm.Enabled = !block;
             btnSetOutputDocPath.Enabled = !block;
             btnGenerate.Enabled = !block;
-        } 
+        }
         #endregion
 
         #region ShowLog
@@ -446,7 +482,7 @@ namespace RelatorioFA.AppWinForm
                 default:
                     break;
             }
-        } 
+        }
         #endregion
 
         #region BtnOpenDestinationFolder_Click
@@ -476,21 +512,20 @@ namespace RelatorioFA.AppWinForm
                     //DEV
                     int sprintDays = (sprint.Range.EndDate - sprint.Range.IniDate).Days + 1;
                     PrincipalTO.SetDevPresence(sprint.Contracts, sprintDays, sprint.AdaptaionSprint);
-                    FornecedorDTO selectedPartner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
-                    double teamSize = PrincipalTO.CalcTeamSize(selectedPartner, sprint, fluxo);
+                    double teamSize = PrincipalTO.CalcTeamSize(sprint, fluxo);
                     sprint.TeamSize = teamSize;
                     if (sprint.AdaptaionSprint)
                     {
                         sprint.AcceptedPointsExpenses *= (int)teamSize;
                     }
                     PrincipalTO.CalcPointsPerTeamMember(sprint);
-                    
+
                     //SM
                     if (sprintsSmList != null)
                     {
                         var smSprint = sprintsSmList.Find(s => s.Range.Name == sprint.Range.Name);
                         smSprint.TeamSize = teamSize;
-                        smSprint.EmployeesCount = 1; 
+                        smSprint.EmployeesCount = 1;
                     }
                 }
 
@@ -499,29 +534,34 @@ namespace RelatorioFA.AppWinForm
                 {
                     foreach (var partner in configXml.Partners)
                     {
-                        //SM_MEDIA nao será gerado nesse fluxo
-                        if (partner.Contracts.Any(contract =>
-                            contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
-                            contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString() &&
-                            contract.Name != UtilDTO.CONTRACTS.EXTERNO.ToString())
-                            )
+                        foreach (var contract in partner.Contracts)
                         {
-                            PrincipalTO.CreateDevDoc(configXml, partner, outputDocPath, sprintsDevList);
-                        }
-                        
-                        if(partner.Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString()))
-                        {
-                            hasSharedSM = true;
-                        }
+                            //SM_MEDIA nao será gerado nesse fluxo
+                            if (contract.Categories.Any(category =>
+                                category.Name != UtilDTO.ROLES.SM_FIXO.ToString() &&
+                                category.Name != UtilDTO.ROLES.SM_MEDIA.ToString() &&
+                                category.Name != UtilDTO.ROLES.EXTERNO.ToString()))
+                            {
+                                PrincipalTO.CreateDevDoc(configXml, partner, contract, outputDocPath, sprintsDevList);
+                            }
 
-                        if (partner.Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.EXTERNO.ToString()))
-                        {
-                            hasExternalDev = true;
-                        }
-                        
-                        if (partner.Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString()))
-                        {
-                            PrincipalTO.CreateSmDoc(configXml, partner, outputDocPath, sprintsSmList);
+                            if (contract.Categories.Any(
+                                    category => category.Name == UtilDTO.ROLES.SM_MEDIA.ToString()))
+                            {
+                                hasSharedSM = true;
+                            }
+
+                            if (contract.Categories.Any(
+                                    category => category.Name == UtilDTO.ROLES.EXTERNO.ToString()))
+                            {
+                                hasExternalDev = true;
+                            }
+
+                            if (contract.Categories.Any(
+                                    category => category.Name == UtilDTO.ROLES.SM_FIXO.ToString()))
+                            {
+                                PrincipalTO.CreateSmDoc(configXml, partner, contract, outputDocPath, sprintsSmList);
+                            } 
                         }
                     }
                 }
@@ -534,7 +574,7 @@ namespace RelatorioFA.AppWinForm
                     }
                     PrincipalTO.CreateDevDoc(configXml, selectedPartner, outputDocPath, sprintsDevList);
                 }
-                
+
                 txbResult.Text = $"Arquivos gerados na pasta {outputDocPath}";
                 if (hasSharedSM)
                 {
@@ -558,7 +598,7 @@ namespace RelatorioFA.AppWinForm
         private void BtnSetOutputDocPath_Click(object sender, System.EventArgs e)
         {
             outputDocPath = UtilWinForm.SetOutputDocPath();
-            
+
             ShowLog("Caminho de saído do arquivo definodo.");
         }
         #endregion

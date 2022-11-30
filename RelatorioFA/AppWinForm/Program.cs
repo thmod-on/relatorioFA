@@ -13,8 +13,8 @@ namespace RelatorioFA.AppWinForm
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new ConfigBaseForm());
-            Application.Run(new ContainerForm());
+            Application.Run(new ModeloConfigXMLForm());
+            //Application.Run(new ContainerForm());
         }
     }
 }

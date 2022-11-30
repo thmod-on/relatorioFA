@@ -7,58 +7,50 @@ namespace RelatorioFA.Negocio
 {
     public class Controle
     {
+        /// <summary>
+        /// From the active contract list, will get all dev collaborators from all partners and calc each presence in the current sprint
+        /// </summary>
+        /// <param name="contractList"></param>
+        /// <param name="sprintDays"></param>
+        /// <param name="adaptaionSprint"></param>
         public static void SetDevPresence(List<ContratoDTO> contractList, int sprintDays, bool adaptaionSprint)
         {
-            foreach (var contract in contractList)
+            var devList = (from contract in contractList
+                           from batch in contract.Batches
+                           where batch.Name == UtilDTO.BATCHS.DEV.ToString()
+                           from role in batch.Roles
+                           from dev in role.Collaborators
+                           select dev).ToList();
+
+            foreach (var dev in devList)
             {
-                if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
-                    contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString() )
+                if (!adaptaionSprint)
                 {
-                    foreach (var dev in contract.Collaborators)
-                    {
-                        if (!adaptaionSprint)
-                        {
-                            double factor = dev.WorksHalfDay ? 0.5 : 1;
-                            dev.Presence = Math.Round((sprintDays - dev.AbsenceDays) * factor / sprintDays, 3);
-                        }
-                        else
-                        {
-                            dev.Presence = 1;
-                        }
-                    }
+                    double factor = dev.WorksHalfDay ? 0.5 : 1;
+                    dev.Presence = Math.Round((sprintDays - dev.AbsenceDays) * factor / sprintDays, 3);
+                }
+                else
+                {
+                    dev.Presence = 1;
                 }
             }
         }
 
-        public static double CalcTeamSize(FornecedorDTO selectedPartner, SprintDevDTO sprintDev, UtilDTO.NAVIGATION navigation)
+        public static double CalcTeamSize(SprintDevDTO sprintDev, UtilDTO.NAVIGATION navigation)
         {
             double teamSize = 0;
             if (navigation != UtilDTO.NAVIGATION.DEV_EXTERNO)
             {
-                foreach (var contract in sprintDev.Contracts)
+                var devList = (from contract in sprintDev.Contracts
+                               from batch in contract.Batches
+                               where batch.Name == UtilDTO.BATCHS.DEV.ToString()
+                               from role in batch.Roles
+                               from dev in role.Collaborators
+                               select dev);
+
+                foreach (var dev in devList)
                 {
-                    if (contract.Name != UtilDTO.CONTRACTS.SM_FIXO.ToString() &&
-                        contract.Name != UtilDTO.CONTRACTS.SM_MEDIA.ToString())
-                    {
-                        if (!sprintDev.AdaptaionSprint)
-                        {
-                            foreach (var dev in contract.Collaborators)
-                            {
-                                teamSize += dev.Presence;
-                            }
-                        }
-                        else
-                        {
-                            if (selectedPartner.Contracts.Any(c => c.Name == contract.Name) &&
-                                contract.PartnerName == selectedPartner.Name)
-                            {
-                                foreach (var dev in contract.Collaborators)
-                                {
-                                    teamSize += 1;
-                                }
-                            }
-                        }
-                    }
+                    teamSize += dev.Presence;
                 }
             }
             else
@@ -69,14 +61,14 @@ namespace RelatorioFA.Negocio
             return teamSize;
         }
 
-        public static void CalcSmSprintData(List<SprintSmDTO> sprintsSmList)
+        public static void CalcSmSprintData(List<SprintSmDTO> sprintsSmList, double factor)
         {
             foreach (var sprint in sprintsSmList)
             {
                 sprint.AverageTeam1 = Math.Round(sprint.AcceptedPointsTeam1 / sprint.DevTeamSize1, 3);
                 sprint.AverageTeam2 = Math.Round(sprint.AcceptedPointsTeam2 / sprint.DevTeamSize2, 3);
                 sprint.AverageSprint = Math.Round((sprint.AverageTeam1 + sprint.AverageTeam2) / 2, 3);
-                sprint.SmPoints = Math.Round(sprint.AverageSprint * sprint.Contracts[0].Factor + 1, 3);
+                sprint.SmPoints = Math.Round(sprint.AverageSprint * factor + 1, 3);
             }
         }
 

@@ -42,7 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CargoDTO.cs" />
     <Compile Include="ColaboradorDTO.cs" />
+    <Compile Include="LoteDTO.cs" />
     <Compile Include="SprintDevDTO.cs" />
     <Compile Include="ConfigXmlDTO.cs" />
     <Compile Include="ContratoDTO.cs" />

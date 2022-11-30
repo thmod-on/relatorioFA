@@ -32,29 +32,39 @@ namespace RelatorioFA.Negocio
                 }
                 foreach (var partner in config.Partners)
                 {
-                    if (partner.Name != UtilDTO.CONTRACTS.HOUSE.ToString())
+                    if (partner.Name != UtilDTO.ROLES.HOUSE.ToString())
                     {
                         writer.WriteStartElement("Fornecedor");
-                        writer.WriteElementString("Nome", partner.Name);
+                        writer.WriteElementString("NomeFornecedor", partner.Name);
                         writer.WriteElementString("CaminhoLogomarca", partner.CaminhoLogomarca);
-                        writer.WriteElementString("ValorUst", UtilDTO.ConvertDoubleToStringWithDotAtDecimal(partner.UstValue));
                         foreach (var contract in partner.Contracts)
                         {
                             writer.WriteStartElement("Contrato");
-                            writer.WriteElementString("Tipo", contract.Name);
-                            writer.WriteElementString("NumeroSAP", contract.NumeroSAP);
-                            writer.WriteElementString("FatorAjuste", UtilDTO.ConvertDoubleToStringWithDotAtDecimal(contract.Factor));
-                            foreach (var dev in contract.Collaborators)
+                            writer.WriteElementString("NumeroSAP", contract.SapNumber);
+                            writer.WriteElementString("ValorUst", UtilDTO.ConvertDoubleToStringWithDotAtDecimal(contract.UstValue));
+                            foreach (var batch in contract.Batches)
                             {
-                                writer.WriteStartElement("Colaborador");
-                                writer.WriteElementString("Nome", dev.Name);
-                                writer.WriteElementString("UmTurno", dev.WorksHalfDay ? "true" : "false");
-                                writer.WriteEndElement();//Colaborador
+                                writer.WriteElementString("NomeLote", batch.Name);
+                                foreach (var role in batch.Roles)
+                                {
+                                    writer.WriteStartElement("Cargo");
+                                    writer.WriteElementString("NomeCargo", role.Name);
+                                    writer.WriteElementString("FatorAjuste", UtilDTO.ConvertDoubleToStringWithDotAtDecimal(role.Factor));
+                                    foreach (var dev in role.Collaborators)
+                                    {
+                                        writer.WriteStartElement("Colaborador");
+                                        writer.WriteElementString("Nome", dev.Name);
+                                        writer.WriteElementString("UmTurno", dev.WorksHalfDay ? "true" : "false");
+                                        writer.WriteEndElement();//Colaborador
+                                    }
+                                }
+                                writer.WriteEndElement();//Cargo
                             }
-                            writer.WriteEndElement();//Contrato
+                            writer.WriteEndElement();//Lote
                         }
-                        writer.WriteEndElement();//Fornecedor 
+                        writer.WriteEndElement();//Contrato
                     }
+                    writer.WriteEndElement();//Fornecedor
                 }
                 writer.WriteEndElement();//Config
                 writer.Flush();

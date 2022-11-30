@@ -12,7 +12,15 @@ namespace RelatorioFA.DTO
             INVESTIMENTO
         }
 
-        public enum CONTRACTS
+        public enum BATCHS
+        {
+            SM,
+            DEV,
+            EXTERNO,
+            DEVOPS
+        }
+
+        public enum ROLES
         {
             HOUSE,
             PADRAO,

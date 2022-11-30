@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using RelatorioFA.DTO;
 using RelatorioFA.Transacao;
@@ -22,6 +23,9 @@ namespace RelatorioFA.AppWinForm
         private string outputDocPath = UtilDTO.GetProjectRootFolder();
         private readonly ContainerForm containerForm;
         private SprintDevOpsDTO selectedSprint = new SprintDevOpsDTO();
+        private FornecedorDTO selectedPartner = new FornecedorDTO();
+        private ContratoDTO selectedContract = new ContratoDTO();
+
 
         #region LoadConfig
         private void LoadConfig()
@@ -32,10 +36,11 @@ namespace RelatorioFA.AppWinForm
                 configXml = PrincipalTO.LoadConfig(outputDocPath);
 
                 //set partners
-                foreach (var partner in configXml.Partners)
-                {
-                    cbbPartners.Items.Add(partner.Name);
-                }
+                cbbPartners.Items.Add(from partner in configXml.Partners
+                                      from contract in partner.Contracts
+                                      from batch in contract.Batches
+                                      where batch.Name == UtilDTO.BATCHS.DEVOPS.ToString()
+                                      select partner.Name);
                 cbbPartners.SelectedIndex = 0;
 
                 lsbSprints.SelectedIndex = 0;
@@ -91,11 +96,6 @@ namespace RelatorioFA.AppWinForm
 
                 lsbSprints.Enabled = !processing;
             }
-            else
-            {
-                txbResult.Text = $"Documento gerado em: {outputDocPath}";
-                btnOpenDestinationFolder.Enabled = !processing;
-            }
         }
 
         private void ShowLog(string message = null)
@@ -115,8 +115,9 @@ namespace RelatorioFA.AppWinForm
             txbResult.AppendText("\n===========\n\n");
             txbResult.AppendText($"O arquivo será gerado em: {outputDocPath}");
             txbResult.AppendText("\n===========\n\n");
-            txbResult.AppendText($"Fornecedor: {cbbPartners.SelectedItem}\n");
-            txbResult.AppendText($"UST: R${configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString()).UstValue}\n\n");
+            txbResult.AppendText($"Fornecedor: {selectedPartner.Name}\n");
+            txbResult.AppendText($"Contrato: {selectedContract.SapNumber}\n");
+            txbResult.AppendText($"UST: R${selectedContract.UstValue}\n\n");
 
             foreach (var sprint in sprintsDevOpsList)
             {
@@ -154,15 +155,14 @@ namespace RelatorioFA.AppWinForm
             {
                 ValidateData();
                 Processing(true);
-                FornecedorDTO partner = new FornecedorDTO();
-                partner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
-                partner.BillingType = UtilDTO.BILLING_TYPE.UST_DEVOPS;
-                PrincipalTO.CreateOpsDoc(configXml, partner, outputDocPath, sprintsDevOpsList);
+                selectedPartner.BillingType = UtilDTO.BILLING_TYPE.UST_DEVOPS;
+                PrincipalTO.CreateOpsDoc(configXml, selectedPartner, selectedContract, outputDocPath, sprintsDevOpsList);
                 btnOpenDestinationFolder.Enabled = true;
                 txbResult.Text = $"Arquivo gerado em: {outputDocPath}";
             }
             catch (Exception ex)
             {
+                Processing(false);
                 txbResult.Text = $"ERRO. {ex.Message}";
             }
         }
@@ -263,6 +263,15 @@ namespace RelatorioFA.AppWinForm
         {
             selectedSprint.SupportUst = Convert.ToDouble(txbOpsSupportUst.Text);
             ShowLog();
+        }
+
+        private void CbbPartners_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            selectedPartner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
+            selectedContract = (from contract in selectedPartner.Contracts
+                                from batch in contract.Batches
+                                where batch.Name == UtilDTO.BATCHS.DEVOPS.ToString()
+                                select contract).First();
         }
         #endregion
     }

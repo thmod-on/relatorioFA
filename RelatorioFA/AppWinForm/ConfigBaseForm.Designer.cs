@@ -44,9 +44,7 @@ namespace RelatorioFA.AppWinForm
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnLogomarcaParceiro = new System.Windows.Forms.Button();
             this.picBoxLogomarca = new System.Windows.Forms.PictureBox();
-            this.txbPartnerUstValue = new System.Windows.Forms.TextBox();
             this.txbPartnerName = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.txbResult = new System.Windows.Forms.RichTextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -200,9 +198,7 @@ namespace RelatorioFA.AppWinForm
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.btnLogomarcaParceiro);
             this.groupBox2.Controls.Add(this.picBoxLogomarca);
-            this.groupBox2.Controls.Add(this.txbPartnerUstValue);
             this.groupBox2.Controls.Add(this.txbPartnerName);
-            this.groupBox2.Controls.Add(this.label8);
             this.groupBox2.Controls.Add(this.label9);
             this.groupBox2.Location = new System.Drawing.Point(3, 177);
             this.groupBox2.Name = "groupBox2";
@@ -233,29 +229,12 @@ namespace RelatorioFA.AppWinForm
             this.picBoxLogomarca.TabIndex = 21;
             this.picBoxLogomarca.TabStop = false;
             // 
-            // txbPartnerUstValue
-            // 
-            this.txbPartnerUstValue.Location = new System.Drawing.Point(100, 74);
-            this.txbPartnerUstValue.Name = "txbPartnerUstValue";
-            this.txbPartnerUstValue.Size = new System.Drawing.Size(175, 20);
-            this.txbPartnerUstValue.TabIndex = 5;
-            this.txbPartnerUstValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbPartnerUstValue_KeyPress);
-            // 
             // txbPartnerName
             // 
             this.txbPartnerName.Location = new System.Drawing.Point(100, 48);
             this.txbPartnerName.Name = "txbPartnerName";
             this.txbPartnerName.Size = new System.Drawing.Size(175, 20);
             this.txbPartnerName.TabIndex = 4;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 78);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(79, 13);
-            this.label8.TabIndex = 20;
-            this.label8.Text = "Valor UST (R$)";
             // 
             // label9
             // 
@@ -380,9 +359,7 @@ namespace RelatorioFA.AppWinForm
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btnLogomarcaParceiro;
         private System.Windows.Forms.PictureBox picBoxLogomarca;
-        private System.Windows.Forms.TextBox txbPartnerUstValue;
         private System.Windows.Forms.TextBox txbPartnerName;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button btnRemovePrtner;
     }

@@ -8,7 +8,7 @@ namespace RelatorioFA.Negocio
 {
     public class ControleDocSm : ControleDoc
     {
-        public static void CreateSmDoc(ConfigXmlDTO config, FornecedorDTO partner, string outputDocPath, List<SprintSmDTO> sprints)
+        public static void CreateSmDoc(ConfigXmlDTO config, FornecedorDTO partner, ContratoDTO contract, string outputDocPath, List<SprintSmDTO> sprints)
         {
             try
             {
@@ -22,17 +22,12 @@ namespace RelatorioFA.Negocio
                     baseSprints.Add(sprint.GetBaseSprint());
                 }
 
-                foreach (var contract in partner.Contracts)
-                {
-                    if (contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString() ||
-                        contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString())
-                    {
-                        foreach (var dev in contract.Collaborators)
-                        {
-                            devTeam.Add(dev);
-                        }
-                    }
-                }
+                devTeam.AddRange(from cont in partner.Contracts
+                                 from category in cont.Categories
+                                 where category.Name == UtilDTO.ROLES.SM_FIXO.ToString() ||
+                                       category.Name == UtilDTO.ROLES.SM_MEDIA.ToString()
+                                 from dev in category.Collaborators
+                                 select dev);
 
                 string outputDocName = SetDocumentName(baseSprints, config, partner.Name, UtilDTO.REPORT_TYPE.SM);
 
@@ -44,22 +39,9 @@ namespace RelatorioFA.Negocio
                 Document document = winword.Documents.Add(ref missing, ref missing, ref missing, ref missing);
                 Paragraph paragraph = document.Content.Paragraphs.Add(ref missing);
 
-                //Obtendo o contrato para a capa
-                string contratoSap = "ERRO";
-                foreach (var contract in partner.Contracts)
-                {
-                    if (contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString()
-                        || contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString()
-                        )
-                    {
-                        contratoSap = contract.NumeroSAP;
-                        break;
-                    }
-                }
-
-                CreateFirstPage(paragraph, ranges, config, contratoSap);
+                CreateFirstPage(paragraph, ranges, config, contract.SapNumber);
                 CreateFollowPages(document, partner, baseSprints, paragraph, devTeam);
-                CreateLastPage(document, paragraph, sprints, missing, config, partner);
+                CreateLastPage(document, paragraph, sprints, missing, config, partner, contract);
                 SetDocumentHeader(document, partner, config);
                 SetDocumentFooter(document);
                 SaveAndClose(ref document, ref winword, outputDocName, outputDocPath, missing);
@@ -70,20 +52,23 @@ namespace RelatorioFA.Negocio
             }
         }
 
-        private static void CreateLastPage(Document document, Paragraph paragraph, List<SprintSmDTO> sprints, object missing, ConfigXmlDTO config, FornecedorDTO partner)
+        private static void CreateLastPage(Document document, Paragraph paragraph, List<SprintSmDTO> sprints, object missing, ConfigXmlDTO config, FornecedorDTO partner, ContratoDTO contract)
         {
-            SetLastPageText(document, paragraph, partner);
-            if (sprints[0].Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.SM_FIXO.ToString())) //(TODO) Cada time tem 1 SM, Melhorar  o DTO para representar
+            SetLastPageText(document, paragraph, partner, contract.UstValue);
+
+            //(TODO) Cada time tem 1 SM, Melhorar  o DTO para representar
+            if (contract.Categories.Any(category => category.Name == UtilDTO.ROLES.SM_FIXO.ToString()))
             {
-                CreateSummaryTableUstSmSettled(document, sprints, ref missing, partner.UstValue);
+                CreateSummaryTableUstSmSettled(document, sprints, ref missing, contract.UstValue);
             }
             else
             {
-                if (sprints[0].Contracts.Any(contract => contract.Name == UtilDTO.CONTRACTS.SM_MEDIA.ToString()))
+                if (contract.Categories.Any(category => category.Name == UtilDTO.ROLES.SM_MEDIA.ToString()))
                 {
-                    CreateSummaryTableUstSmShared(document, sprints, ref missing, partner.UstValue);
+                    CreateSummaryTableUstSmShared(document, sprints, ref missing, contract.UstValue);
                 }
             }
+           
             SetLastPageSignature(paragraph, config);
         }
 
@@ -184,7 +169,7 @@ namespace RelatorioFA.Negocio
                     if (startLine % 2 != 0)
                     {
                         smTable.Cell(startLine, 5).Range.Text = sprint.AverageSprint.ToString(decimalFormat);//D
-                        smTable.Cell(startLine, 6).Range.Text = sprint.Contracts[0].Factor.ToString(decimalFormat);//E
+                        smTable.Cell(startLine, 6).Range.Text = sprint.Contracts[0].Categories[0].Factor.ToString(decimalFormat);//E
                         smTable.Cell(startLine, 7).Range.Text = "1,000";//F
                         smTable.Cell(startLine, 8).Range.Text = sprint.SmPoints.ToString(decimalFormat);//G
 

@@ -112,7 +112,8 @@ namespace RelatorioFA.Negocio
                             strAux = dev.Name;
                             if (partner
                                 .Contracts.Any(contract => contract
-                                .Collaborators.Any(colaborator => colaborator.Name == dev.Name)))
+                                .Categories.Any(category => category
+                                .Collaborators.Any(colaborator => colaborator.Name == dev.Name))))
                             {
                                 AddPAragraph(paragraph, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify, WdColorIndex.wdYellow);
                             }
@@ -137,7 +138,7 @@ namespace RelatorioFA.Negocio
         #endregion
 
         #region CreateLastPageContent
-        public static void SetLastPageText(Document document, Paragraph para1, FornecedorDTO partner)
+        public static void SetLastPageText(Document document, Paragraph para1, FornecedorDTO partner, double ustValue)
         {
             UtilDTO.BILLING_TYPE billingType = partner.BillingType;
             string strAux;
@@ -148,7 +149,7 @@ namespace RelatorioFA.Negocio
                 billingType == UtilDTO.BILLING_TYPE.UST_DEVOPS ||
                 billingType == UtilDTO.BILLING_TYPE.UST_EXTERNAL)
             {
-                strAux = "Valor da UST: R$" + partner.UstValue;
+                strAux = "Valor da UST: R$" + ustValue;
                 AddPAragraph(para1, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify);
             }
         }

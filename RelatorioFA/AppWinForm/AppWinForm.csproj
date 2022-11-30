@@ -58,6 +58,12 @@
     <Compile Include="ConfigContratoForm.Designer.cs">
       <DependentUpon>ConfigContratoForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConfigDevForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigDevForm.Designer.cs">
+      <DependentUpon>ConfigDevForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ContainerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -120,6 +126,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConfigContratoForm.resx">
       <DependentUpon>ConfigContratoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigDevForm.resx">
+      <DependentUpon>ConfigDevForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ContainerForm.resx">
       <DependentUpon>ContainerForm.cs</DependentUpon>

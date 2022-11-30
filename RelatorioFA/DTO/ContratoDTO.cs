@@ -5,19 +5,16 @@ namespace RelatorioFA.DTO
 {
     public class ContratoDTO
     {
-        public ContratoDTO()
-        {
-            Collaborators = new List<ColaboradorDTO>();
+        public ContratoDTO(){
+            Batches = new List<LoteDTO> ();
         }
 
-        [XmlElement("Tipo")]
-        public string Name { get; set; }
         [XmlElement("NumeroSAP")]
-        public string NumeroSAP { get; set; }
+        public string SapNumber { get; set; }
+        [XmlElement("ValorUst")]
+        public double UstValue { get; set; }
         public string PartnerName { get; set; }
-        [XmlElement("FatorAjuste")]
-        public double Factor { get; set; }
-        [XmlElement("Colaborador")]
-        public List<ColaboradorDTO> Collaborators { get; set; }
+        [XmlElement("Lote")]
+        public List<LoteDTO> Batches { get; set; }
     }
 }
