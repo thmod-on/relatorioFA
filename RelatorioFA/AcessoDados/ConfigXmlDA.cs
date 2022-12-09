@@ -16,7 +16,7 @@ namespace RelatorioFA.AcessoDados
             ConfigXmlDTO config;
             if (filePath.Substring(filePath.Length - 4).ToUpper() != ".XML")
             {
-                filePath = Path.Combine(filePath, UtilDTO.configName); 
+                filePath = Path.Combine(filePath, UtilDTO.configFileName); 
             }
             try
             {
@@ -29,7 +29,7 @@ namespace RelatorioFA.AcessoDados
             }
             catch (FileNotFoundException ex)
             {
-                throw new FileNotFoundException($"ERRO:\n\nArquivo {UtilDTO.configName} não encontrado em {filePath}.\n\nFavor selecione o local do arquivo utilizando o botão correspondente.", ex);
+                throw new FileNotFoundException($"ERRO:\n\nArquivo {UtilDTO.configFileName} não encontrado em {filePath}.\n\nFavor selecione o local do arquivo utilizando o botão correspondente.", ex);
             }
             catch (Exception ex)
             {

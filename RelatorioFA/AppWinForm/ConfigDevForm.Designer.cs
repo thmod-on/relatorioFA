@@ -34,6 +34,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.lsbPartnerContractBatch = new System.Windows.Forms.ListBox();
             this.gpbRoles = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txbRoleFactor = new System.Windows.Forms.TextBox();
             this.cbbAvaliableRoles = new System.Windows.Forms.ComboBox();
             this.btnRemoveRole = new System.Windows.Forms.Button();
             this.btnAddRole = new System.Windows.Forms.Button();
@@ -109,12 +111,10 @@
             this.lblRole.Size = new System.Drawing.Size(35, 13);
             this.lblRole.TabIndex = 92;
             this.lblRole.Text = "Cargo";
-            this.lblRole.Visible = false;
             // 
             // lsbRoles
             // 
-            this.lsbRoles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.lsbRoles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lsbRoles.FormattingEnabled = true;
             this.lsbRoles.Location = new System.Drawing.Point(301, 131);
@@ -122,7 +122,6 @@
             this.lsbRoles.Size = new System.Drawing.Size(135, 95);
             this.lsbRoles.Sorted = true;
             this.lsbRoles.TabIndex = 91;
-            this.lsbRoles.Visible = false;
             this.lsbRoles.SelectedIndexChanged += new System.EventHandler(this.LsbRoles_SelectedIndexChanged);
             // 
             // label4
@@ -133,12 +132,10 @@
             this.label4.Size = new System.Drawing.Size(140, 13);
             this.label4.TabIndex = 90;
             this.label4.Text = "Fornecedor - Contrato - Lote";
-            this.label4.Visible = false;
             // 
             // lsbPartnerContractBatch
             // 
-            this.lsbPartnerContractBatch.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.lsbPartnerContractBatch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lsbPartnerContractBatch.FormattingEnabled = true;
             this.lsbPartnerContractBatch.ImeMode = System.Windows.Forms.ImeMode.Disable;
@@ -147,11 +144,12 @@
             this.lsbPartnerContractBatch.Size = new System.Drawing.Size(135, 95);
             this.lsbPartnerContractBatch.Sorted = true;
             this.lsbPartnerContractBatch.TabIndex = 89;
-            this.lsbPartnerContractBatch.Visible = false;
             this.lsbPartnerContractBatch.SelectedIndexChanged += new System.EventHandler(this.LsbPartnerContractBatch_SelectedIndexChanged);
             // 
             // gpbRoles
             // 
+            this.gpbRoles.Controls.Add(this.label6);
+            this.gpbRoles.Controls.Add(this.txbRoleFactor);
             this.gpbRoles.Controls.Add(this.cbbAvaliableRoles);
             this.gpbRoles.Controls.Add(this.btnRemoveRole);
             this.gpbRoles.Controls.Add(this.btnAddRole);
@@ -162,14 +160,31 @@
             this.gpbRoles.TabIndex = 82;
             this.gpbRoles.TabStop = false;
             this.gpbRoles.Text = "Defina abaixo os cargos existentes em cada contrato";
-            this.gpbRoles.Visible = false;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(7, 61);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(77, 13);
+            this.label6.TabIndex = 83;
+            this.label6.Text = "Fator de ajuste";
+            // 
+            // txbRoleFactor
+            // 
+            this.txbRoleFactor.Location = new System.Drawing.Point(104, 58);
+            this.txbRoleFactor.Name = "txbRoleFactor";
+            this.txbRoleFactor.Size = new System.Drawing.Size(121, 20);
+            this.txbRoleFactor.TabIndex = 82;
+            this.txbRoleFactor.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxbRoleFactor_KeyPress);
             // 
             // cbbAvaliableRoles
             // 
             this.cbbAvaliableRoles.FormattingEnabled = true;
-            this.cbbAvaliableRoles.Location = new System.Drawing.Point(104, 38);
+            this.cbbAvaliableRoles.Location = new System.Drawing.Point(104, 30);
             this.cbbAvaliableRoles.Name = "cbbAvaliableRoles";
             this.cbbAvaliableRoles.Size = new System.Drawing.Size(121, 21);
+            this.cbbAvaliableRoles.Sorted = true;
             this.cbbAvaliableRoles.TabIndex = 82;
             // 
             // btnRemoveRole
@@ -197,7 +212,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 38);
+            this.label1.Location = new System.Drawing.Point(7, 30);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 5;
@@ -211,7 +226,6 @@
             this.lblDevHouse.Size = new System.Drawing.Size(73, 13);
             this.lblDevHouse.TabIndex = 88;
             this.lblDevHouse.Text = "Devs da casa";
-            this.lblDevHouse.Visible = false;
             // 
             // gpbDevHouse
             // 
@@ -226,7 +240,6 @@
             this.gpbDevHouse.TabIndex = 83;
             this.gpbDevHouse.TabStop = false;
             this.gpbDevHouse.Text = "Por fim, quem são os devs da casa?";
-            this.gpbDevHouse.Visible = false;
             // 
             // btnRemoveHouseDev
             // 
@@ -278,8 +291,7 @@
             // 
             // lsbHouseDevs
             // 
-            this.lsbHouseDevs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.lsbHouseDevs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lsbHouseDevs.FormattingEnabled = true;
             this.lsbHouseDevs.Location = new System.Drawing.Point(301, 353);
@@ -287,7 +299,6 @@
             this.lsbHouseDevs.Size = new System.Drawing.Size(135, 95);
             this.lsbHouseDevs.Sorted = true;
             this.lsbHouseDevs.TabIndex = 87;
-            this.lsbHouseDevs.Visible = false;
             this.lsbHouseDevs.SelectedIndexChanged += new System.EventHandler(this.LsbHouseDevs_SelectedIndexChanged);
             // 
             // gpbDev
@@ -303,7 +314,6 @@
             this.gpbDev.TabIndex = 80;
             this.gpbDev.TabStop = false;
             this.gpbDev.Text = "Bacana, agora para cada contrato me fala sobre seus colaboradores";
-            this.gpbDev.Visible = false;
             // 
             // btnRemoveDev
             // 
@@ -361,12 +371,10 @@
             this.lblDevs.Size = new System.Drawing.Size(92, 13);
             this.lblDevs.TabIndex = 86;
             this.lblDevs.Text = "Devs adicionados";
-            this.lblDevs.Visible = false;
             // 
             // lsbDevs
             // 
-            this.lsbDevs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.lsbDevs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lsbDevs.FormattingEnabled = true;
             this.lsbDevs.Location = new System.Drawing.Point(301, 242);
@@ -374,12 +382,12 @@
             this.lsbDevs.Size = new System.Drawing.Size(135, 95);
             this.lsbDevs.Sorted = true;
             this.lsbDevs.TabIndex = 85;
-            this.lsbDevs.Visible = false;
             this.lsbDevs.SelectedIndexChanged += new System.EventHandler(this.LsbDevs_SelectedIndexChanged);
             // 
             // txbResult
             // 
-            this.txbResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.txbResult.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txbResult.Location = new System.Drawing.Point(13, 36);
             this.txbResult.Name = "txbResult";
@@ -417,7 +425,6 @@
             this.btnSetOutputDocPath.TabIndex = 76;
             this.btnSetOutputDocPath.Text = "Exportar para";
             this.btnSetOutputDocPath.UseVisualStyleBackColor = true;
-            this.btnSetOutputDocPath.Visible = false;
             this.btnSetOutputDocPath.Click += new System.EventHandler(this.BtnSetOutputDocPath_Click);
             // 
             // btnGenerate
@@ -429,7 +436,6 @@
             this.btnGenerate.TabIndex = 77;
             this.btnGenerate.Text = "Gerar";
             this.btnGenerate.UseVisualStyleBackColor = true;
-            this.btnGenerate.Visible = false;
             this.btnGenerate.Click += new System.EventHandler(this.BtnGenerate_Click);
             // 
             // btnOpenDestinationFolder
@@ -442,7 +448,6 @@
             this.btnOpenDestinationFolder.TabIndex = 78;
             this.btnOpenDestinationFolder.Text = "Abrir destino";
             this.btnOpenDestinationFolder.UseVisualStyleBackColor = true;
-            this.btnOpenDestinationFolder.Visible = false;
             this.btnOpenDestinationFolder.Click += new System.EventHandler(this.BtnOpenDestinationFolder_Click);
             // 
             // lblScreen
@@ -520,5 +525,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblRole;
         private System.Windows.Forms.ListBox lsbRoles;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox txbRoleFactor;
     }
 }

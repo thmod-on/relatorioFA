@@ -10,13 +10,20 @@ namespace RelatorioFA.AppWinForm
 {
     public partial class ConfigBaseForm : Form
     {
-        public ConfigBaseForm(ContainerForm containerForm)
+        public ConfigBaseForm(ContainerForm containerForm, Boolean testing)
         {
             InitializeComponent();
             this.containerForm = containerForm;
             ResizeParent(containerForm);
             LoadConfig();
             
+            if (testing)
+            {
+                txbAuthorName.Text = "Autor dos relatórios";
+                txbAreaName.Text = "Área do autor";
+                txbTeamName.Text = "Nome do time";
+                txbPartnerName.Text = "Primeiro fornecedor";
+            }
         }
 
         private readonly string rootFolder = UtilDTO.GetProjectRootFolder();
@@ -163,7 +170,7 @@ namespace RelatorioFA.AppWinForm
             }
             catch (FileNotFoundException)
             {
-                txbResult.Text = $"Não encontrei um arquivo de configuração na pasta {rootFolder}. Espero que este seja o início de uma nova amizade\n;)";
+                txbResult.Text = $"Não encontrei o arquivo de configuração\n\n{UtilDTO.configFileName}\n\nna pasta\n\n{rootFolder}\n\nPode ser que você esteja usando uma versão antiga do arquivo. Se este for o caso, favor gerar um novo a partir deste menu. Caso este seja nosso primeiro contato, espero que seja o início de uma nova amizade\n;)";
             }
             catch (Exception ex)
             {

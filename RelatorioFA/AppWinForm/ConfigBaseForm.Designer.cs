@@ -282,7 +282,7 @@ namespace RelatorioFA.AppWinForm
             this.btnAddSprint.Name = "btnAddSprint";
             this.btnAddSprint.Size = new System.Drawing.Size(120, 23);
             this.btnAddSprint.TabIndex = 7;
-            this.btnAddSprint.Text = "Adicionar / Atualizar";
+            this.btnAddSprint.Text = "Adicionar parceiro";
             this.btnAddSprint.UseVisualStyleBackColor = true;
             this.btnAddSprint.Click += new System.EventHandler(this.BtnAdd_Click);
             // 

@@ -21,7 +21,7 @@ namespace RelatorioFA.AppWinForm
 
         private readonly ConfigXmlDTO config = new ConfigXmlDTO();
         private readonly ContainerForm containerForm;
-        
+
         private FornecedorDTO selectedPartner = new FornecedorDTO();
         private ContratoDTO selectedContract = new ContratoDTO();
         private LoteDTO selectedBatch = new LoteDTO();
@@ -32,7 +32,7 @@ namespace RelatorioFA.AppWinForm
         private void BtnPreviousForm_Click(object sender, System.EventArgs e)
         {
             containerForm.AbrirForm(new ConfigBaseForm(containerForm, config));
-        } 
+        }
         #endregion
 
         #region BtnAddContract_Click
@@ -43,9 +43,9 @@ namespace RelatorioFA.AppWinForm
                 ValidateContractData();
 
                 //validar se o contrato existe. Se existir, emite aviso e se não adiciona
-                if (!selectedPartner.Contracts.Find(c => c == selectedContract).Equals(null))
+                if (selectedPartner.Contracts.Find(c => c.SapNumber == txbContractSap.Text) != null)
                 {
-                    txbResult.Text = $"Contrato {lsbContracts.SelectedItem} já pertence ao parceiro {lsbPartners.SelectedItem}";
+                    txbResult.Text = $"Contrato {txbContractSap.Text} já pertence ao parceiro {lsbPartners.SelectedItem}";
                 }
                 else
                 {
@@ -57,9 +57,6 @@ namespace RelatorioFA.AppWinForm
 
                     config
                         .Partners.Find(p => p == selectedPartner)
-                        .Contracts.Add(newContract);
-
-                    selectedPartner
                         .Contracts.Add(newContract);
 
                     lsbContracts.Items.Add(newContract.SapNumber);
@@ -138,29 +135,21 @@ namespace RelatorioFA.AppWinForm
         {
             try
             {
-                if (!selectedContract.Batches.Find(b => b.Name == cbbAvaliableBatch.SelectedItem.ToString()).Equals(null))
+                ValidateFieldsForNewBatch();
+                LoteDTO newBatch = new LoteDTO()
                 {
-                    txbResult.Text = $"O lote {cbbAvaliableBatch.SelectedItem} já pertence ao contrato {selectedPartner.Name} - {selectedContract.SapNumber}";
-                }
-                else
-                {
-                    LoteDTO newBatch = new LoteDTO()
-                    {
-                        Name = cbbAvaliableBatch.SelectedItem.ToString()
-                    };
+                    Name = cbbAvaliableBatch.SelectedItem.ToString()
+                };
 
-                    config
-                        .Partners.Find(p => p == selectedPartner)
-                        .Contracts.Find(c => c == selectedContract)
-                        .Batches.Add(newBatch);
+                config
+                    .Partners.Find(p => p == selectedPartner)
+                    .Contracts.Find(c => c == selectedContract)
+                    .Batches.Add(newBatch);
 
-                    selectedContract
-                        .Batches.Add(newBatch);
+                lsbBatch.Items.Add(newBatch.Name);
+                cbbAvaliableBatch.SelectedIndex = 0;
+                ShowLog("Lote adicionado");
 
-                    lsbBatch.Items.Add(newBatch.Name);
-                    cbbAvaliableBatch.SelectedIndex = 0;
-                    ShowLog("Lote adicionado");
-                }
             }
             catch (Exception ex)
             {
@@ -192,7 +181,7 @@ namespace RelatorioFA.AppWinForm
                 cbbAvaliableBatch.SelectedIndex = 0;
                 ShowLog("Lote removido");
             }
-        } 
+        }
         #endregion
         #endregion
 
@@ -222,7 +211,7 @@ namespace RelatorioFA.AppWinForm
                     txbResult.AppendText($"      . Valor da UST: {contract.UstValue}\n");
                     foreach (var batch in contract.Batches)
                     {
-                        txbResult.AppendText($"         > Dev: {batch.Name}\n");
+                        txbResult.AppendText($"         > Lote: {batch.Name}\n");
                     }
                 }
             }
@@ -245,6 +234,21 @@ namespace RelatorioFA.AppWinForm
                 throw new Exception("Número SAP e valor da UST são de preenchimento obrigatório.");
             }
         }
+        #endregion
+
+        #region ValidateFieldsForNewBatch
+        private void ValidateFieldsForNewBatch()
+        {
+            if (selectedContract.Batches.Find(b => b.Name == cbbAvaliableBatch.SelectedItem.ToString()) != null)
+            {
+                throw new Exception($"O lote {cbbAvaliableBatch.SelectedItem} já pertence ao contrato {selectedPartner.Name} - {selectedContract.SapNumber}");
+            }
+
+            if (lsbContracts.SelectedItem == null)
+            {
+                throw new Exception("O lote precisa ser adicionado a um contrato. Favor selecione o contrato desejado.");
+            }
+        } 
         #endregion
 
         #region ValidateNumericalInput
@@ -333,7 +337,7 @@ namespace RelatorioFA.AppWinForm
                     Batches.Find(b => b.Name == lsbBatch.SelectedItem.ToString());
                 cbbAvaliableBatch.SelectedItem = selectedBatch.Name;
             }
-        } 
+        }
         #endregion
 
         #region TxbContractUstValue_KeyPress
@@ -342,7 +346,6 @@ namespace RelatorioFA.AppWinForm
             ValidateNumericalInput(sender, e);
         }
         #endregion
-
         #endregion
     }
 }

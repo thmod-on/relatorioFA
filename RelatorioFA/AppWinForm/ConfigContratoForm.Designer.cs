@@ -261,6 +261,7 @@ namespace RelatorioFA.AppWinForm
             this.cbbAvaliableBatch.Location = new System.Drawing.Point(112, 63);
             this.cbbAvaliableBatch.Name = "cbbAvaliableBatch";
             this.cbbAvaliableBatch.Size = new System.Drawing.Size(121, 21);
+            this.cbbAvaliableBatch.Sorted = true;
             this.cbbAvaliableBatch.TabIndex = 24;
             // 
             // label3

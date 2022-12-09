@@ -14,6 +14,7 @@ namespace RelatorioFA.AppWinForm
             InitializeComponent();
             this.config = config;
             this.containerForm = containerForm;
+            LoadAvaliableRoles();
             FillLsbPartnerContractBatch();
         }
 
@@ -34,7 +35,7 @@ namespace RelatorioFA.AppWinForm
         {
             try
             {
-                if (!selectedBatch.Roles.Find(r => r.Name == cbbAvaliableRoles.SelectedItem.ToString()).Equals(null))
+                if (selectedBatch.Roles.Find(r => r.Name == cbbAvaliableRoles.SelectedItem.ToString()) != null)
                 {
                     txbResult.Text = $"O cargo {cbbAvaliableRoles.SelectedItem} já pertence ao lote {selectedBatch.Name} do contrato {selectedContract.SapNumber} da empresa {selectedPartner.Name}";
                 }
@@ -43,20 +44,14 @@ namespace RelatorioFA.AppWinForm
                     CargoDTO newRole = new CargoDTO()
                     {
                         Name = cbbAvaliableRoles.SelectedItem.ToString(),
+                        Factor = Convert.ToDouble(txbRoleFactor.Text)
                     };
-
-                    config
-                        .Partners.Find(p => p == selectedPartner)
-                        .Contracts.Find(c => c == selectedContract)
-                        .Batches.Remove(selectedBatch);
 
                     selectedBatch.Roles.Add(newRole);
 
-                    config
-                        .Partners.Find(p => p == selectedPartner)
-                        .Contracts.Find(c => c == selectedContract)
-                        .Batches.Add(selectedBatch);
-
+                    cbbAvaliableRoles.SelectedIndex = 0;
+                    txbRoleFactor.Clear();
+                    lsbRoles.Items.Add(newRole.Name);
                     ShowLog("Cargo vinculado");
                 }
             }
@@ -85,8 +80,6 @@ namespace RelatorioFA.AppWinForm
                         .Batches.Find(b => b == selectedBatch)
                         .Roles.Remove(selectedRole);
 
-                    selectedBatch.Roles.Remove(selectedRole);
-
                     lsbRoles.Items.Remove(selectedRole.Name);
                     lsbDevs.Items.Clear();
                     selectedRole = null;
@@ -97,7 +90,7 @@ namespace RelatorioFA.AppWinForm
             {
                 txbResult.Text = ex.Message;
             }
-        } 
+        }
         #endregion
 
         #region BtnSetOutputDocPath_Click
@@ -113,20 +106,18 @@ namespace RelatorioFA.AppWinForm
         {
             try
             {
+                ValidateConfig();
                 Processing(true);
-                PrincipalTO.GenerateConfigXmlFile(outputDocPath, UtilDTO.configName, config);
-                txbResult.Text = $"Arquivo {UtilDTO.configName} gerado na pasta {outputDocPath}. Utilize o botão abaixo para abrir o destino.";
+                PrincipalTO.GenerateConfigXmlFile(outputDocPath, UtilDTO.configFileName, config);
+                Processing(false);
                 btnOpenDestinationFolder.Enabled = true;
+                txbResult.Text = $"Arquivo {UtilDTO.configFileName} gerado na pasta {outputDocPath}. Utilize o botão abaixo para abrir o destino.";
             }
             catch (Exception ex)
             {
                 txbResult.Text = ex.Message;
             }
-            finally
-            {
-                Processing(false);
-            }
-        } 
+        }
         #endregion
 
         #region BtnOpenDestinationFolder_Click
@@ -134,7 +125,7 @@ namespace RelatorioFA.AppWinForm
         {
             try
             {
-                var file = Path.Combine(outputDocPath, UtilDTO.configName);
+                var file = Path.Combine(outputDocPath, UtilDTO.configFileName);
                 Process.Start(file);
             }
             catch (Exception ex)
@@ -201,13 +192,7 @@ namespace RelatorioFA.AppWinForm
             }
             else
             {
-                config
-                    .Partners.Find(p => p == selectedPartner)
-                    .Contracts.Find(c => c == selectedContract)
-                    .Batches.Find(b => b == selectedBatch)
-                    .Roles.Find(r => r == selectedRole)
-                    .Collaborators
-                        .Remove(selectedDev);
+                selectedRole.Collaborators.Remove(selectedDev);
 
                 lsbDevs.Items.Remove(selectedDev.Name);
                 selectedDev = null;
@@ -232,17 +217,8 @@ namespace RelatorioFA.AppWinForm
                     WorksHalfDay = ckbDevWorksHalfDay.Checked
                 };
 
-                config
-                    .Partners.Find(p => p == selectedPartner)
-                    .Contracts.Find(c => c == selectedContract)
-                    .Batches.Find(b => b == selectedBatch)
-                    .Roles.Find(r => r == selectedRole)
-                    .Collaborators
-                        .Add(selectedDev);
-                
-                selectedRole.Collaborators.Add(selectedDev);
+                selectedRole.Collaborators.Add(newDev);
 
-                lsbDevs.Items.Remove(newDev.Name);
                 lsbDevs.Items.Add(newDev.Name);
 
                 txbDevName.Clear();
@@ -300,6 +276,7 @@ namespace RelatorioFA.AppWinForm
             {
                 SetSelectedPartnerAndContractAndBatch();
                 lsbRoles.Items.Clear();
+                lsbDevs.Items.Clear();
                 if (selectedBatch.Roles.Count > 0)
                 {
                     foreach (var role in selectedBatch.Roles)
@@ -307,11 +284,11 @@ namespace RelatorioFA.AppWinForm
                         lsbRoles.Items.Add(role.Name);
                     }
                 }
-                lblRole.Text = $"Cargos da {selectedPartner.Name}"; 
+                lblRole.Text = $"Cargos da {selectedPartner.Name}";
             }
         }
         #endregion
-        
+
         #region LsbRoles_SelectedIndexChanged
         private void LsbRoles_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -324,15 +301,44 @@ namespace RelatorioFA.AppWinForm
                     foreach (var dev in selectedRole.Collaborators)
                     {
                         lsbDevs.Items.Add(dev.Name);
-                    } 
+                    }
                 }
             }
             lblDevs.Text = $"Colaborador em {selectedRole.Name}";
         }
         #endregion
+
+        #region TxbRoleFactor_KeyPress
+        private void TxbRoleFactor_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.') && (e.KeyChar != ','))
+            {
+                e.Handled = true;
+            }
+
+            if ((e.KeyChar == ',') && ((sender as TextBox).Text.IndexOf(',') > -1))
+            {
+                e.Handled = true;
+            }
+        }
+        #endregion
         #endregion
 
         #region AUX
+        #region FillAvaliableRoles
+        private void LoadAvaliableRoles()
+        {
+            foreach (var role in Enum.GetValues(typeof(UtilDTO.ROLES)))
+            {
+                if (!role.Equals(UtilDTO.ROLES.HOUSE))
+                {
+                    cbbAvaliableRoles.Items.Add(role);
+                }
+            }
+            cbbAvaliableRoles.SelectedIndex = 0;
+        }
+        #endregion
+
         #region FillLsbPartnerContractBatch
         private void FillLsbPartnerContractBatch()
         {
@@ -346,7 +352,7 @@ namespace RelatorioFA.AppWinForm
                     }
                 }
             }
-        } 
+        }
         #endregion
 
         #region SetSelectedPartnerAndContractAndBatch
@@ -354,9 +360,9 @@ namespace RelatorioFA.AppWinForm
         {
             char coringa = '*';
             var selectedItemText = lsbPartnerContractBatch.SelectedItem.ToString().Replace(' ', coringa).Split('-');
-            string partner = selectedItemText[0].Replace(coringa, ' ');
-            string contract = selectedItemText[1].Replace(coringa, ' ');
-            string batch = selectedItemText[2].Replace(coringa, ' ');
+            string partner = selectedItemText[0].Replace(coringa, ' ').Trim();
+            string contract = selectedItemText[1].Replace(coringa, ' ').Trim();
+            string batch = selectedItemText[2].Replace(coringa, ' ').Trim();
             selectedPartner = config.Partners.Find(c => c.Name == partner);
             selectedContract = selectedPartner.Contracts.Find(c => c.SapNumber == contract);
             selectedBatch = selectedContract.Batches.Find(b => b.Name == batch);
@@ -413,7 +419,7 @@ namespace RelatorioFA.AppWinForm
             }
 
             txbResult.Select(0, 0);
-        } 
+        }
         #endregion
 
         #region Processing
@@ -468,11 +474,47 @@ namespace RelatorioFA.AppWinForm
                 throw new Exception("Você precisa fornecer o nome do colaborador para ser adicionado.");
             }
 
-            if (!selectedRole.Collaborators.Find(c => c.Name == txbDevName.Text).Equals(null))
+            if (selectedRole.Collaborators.Find(c => c.Name == txbDevName.Text) != null)
             {
                 throw new Exception("Colaborador já existente neste cargo");
             }
         }
+        #endregion
+
+        #region ValidateConfig
+        private void ValidateConfig()
+        {
+            foreach (var partner in config.Partners)
+            {
+                foreach (var contract in partner.Contracts)
+                {
+                    foreach (var batch in contract.Batches)
+                    {
+                        if (batch.Roles.Count == 0)
+                        {
+                            if (batch.Name == UtilDTO.BATCHS.EXTERNO.ToString())
+                            {
+                                throw new Exception("Mesmo para o lote de colaboradores externos você precisa cadastrar um cargo pois precisamos saber o fator de ajuste. Mas não se preocupe, não será necessário cadastrar um colaborador nesse cargo.");
+                            }
+
+                            if (batch.Name != UtilDTO.BATCHS.EXTERNO.ToString())
+                            {
+                                throw new Exception("Parece que você deixou algum lote sem cargo cadastrado. Que tal dar uma revisada?");
+                            }                            
+                        }
+
+                        foreach (var role in batch.Roles)
+                        {
+                            if (batch.Name != UtilDTO.BATCHS.EXTERNO.ToString() &&
+                                role.Collaborators.Count == 0)
+                            {
+                                throw new Exception($"O único lote que pode ficar sem colaborador associado é o {UtilDTO.BATCHS.EXTERNO}");
+                            }
+                        }
+                    }
+                }
+            }
+        } 
         #endregion
         #endregion
     }

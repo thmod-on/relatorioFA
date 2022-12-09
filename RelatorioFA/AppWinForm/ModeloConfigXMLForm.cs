@@ -158,7 +158,7 @@ namespace RelatorioFA.AppWinForm
                 Processing(true);
                 config.AuthorName = txbAuthor.Text;
                 config.TeamName = txbTeamName.Text;
-                PrincipalTO.GenerateConfigXmlFile(outputPath, UtilDTO.configName, config);
+                PrincipalTO.GenerateConfigXmlFile(outputPath, UtilDTO.configFileName, config);
                 Processing(false);
             }
             catch (Exception ex)
@@ -347,7 +347,7 @@ namespace RelatorioFA.AppWinForm
         {
             try
             {
-                var file = Path.Combine(outputPath, UtilDTO.configName);
+                var file = Path.Combine(outputPath, UtilDTO.configFileName);
                 Process.Start(file);
             }
             catch (Exception ex)
@@ -683,7 +683,7 @@ namespace RelatorioFA.AppWinForm
             }
             else
             {
-                txbResult.Text = $"Arquivo\n{UtilDTO.configName}\n\nGerado na pasta\n{outputPath}";
+                txbResult.Text = $"Arquivo\n{UtilDTO.configFileName}\n\nGerado na pasta\n{outputPath}";
                 btnOpenFile.Enabled = true;
             }
         }

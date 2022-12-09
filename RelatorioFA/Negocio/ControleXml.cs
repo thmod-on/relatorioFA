@@ -44,6 +44,7 @@ namespace RelatorioFA.Negocio
                             writer.WriteElementString("ValorUst", UtilDTO.ConvertDoubleToStringWithDotAtDecimal(contract.UstValue));
                             foreach (var batch in contract.Batches)
                             {
+                                writer.WriteStartElement("Lote");
                                 writer.WriteElementString("NomeLote", batch.Name);
                                 foreach (var role in batch.Roles)
                                 {
@@ -57,12 +58,12 @@ namespace RelatorioFA.Negocio
                                         writer.WriteElementString("UmTurno", dev.WorksHalfDay ? "true" : "false");
                                         writer.WriteEndElement();//Colaborador
                                     }
+                                    writer.WriteEndElement();//Cargo
                                 }
-                                writer.WriteEndElement();//Cargo
+                                writer.WriteEndElement();//Lote
                             }
-                            writer.WriteEndElement();//Lote
+                            writer.WriteEndElement();//Contrato
                         }
-                        writer.WriteEndElement();//Contrato
                     }
                     writer.WriteEndElement();//Fornecedor
                 }

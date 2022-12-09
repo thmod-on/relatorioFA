@@ -51,7 +51,7 @@ namespace RelatorioFA.AppWinForm
 
         private void ModeloDeArquivoDeConfiguraçãoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AbrirForm(new ConfigBaseForm(this));
+            AbrirForm(new ConfigBaseForm(this, false));
         }
 
         private void TodasEmpresasToolStripMenuItem_Click(object sender, EventArgs e)
