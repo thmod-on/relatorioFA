@@ -52,6 +52,8 @@ namespace RelatorioFA.AppWinForm
             this.btnGenerate = new System.Windows.Forms.Button();
             this.btnSetOutputDocPath = new System.Windows.Forms.Button();
             this.btnOpenDestinationFolder = new System.Windows.Forms.Button();
+            this.cbbContract = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -103,6 +105,8 @@ namespace RelatorioFA.AppWinForm
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.cbbContract);
+            this.splitContainer1.Panel1.Controls.Add(this.label1);
             this.splitContainer1.Panel1.Controls.Add(this.cbbPartners);
             this.splitContainer1.Panel1.Controls.Add(this.label3);
             this.splitContainer1.Panel1.Controls.Add(this.groupBox5);
@@ -120,7 +124,7 @@ namespace RelatorioFA.AppWinForm
             // cbbPartners
             // 
             this.cbbPartners.FormattingEnabled = true;
-            this.cbbPartners.Location = new System.Drawing.Point(76, 28);
+            this.cbbPartners.Location = new System.Drawing.Point(76, 6);
             this.cbbPartners.Name = "cbbPartners";
             this.cbbPartners.Size = new System.Drawing.Size(193, 21);
             this.cbbPartners.TabIndex = 71;
@@ -129,7 +133,7 @@ namespace RelatorioFA.AppWinForm
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 32);
+            this.label3.Location = new System.Drawing.Point(9, 10);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(61, 13);
             this.label3.TabIndex = 70;
@@ -308,6 +312,24 @@ namespace RelatorioFA.AppWinForm
             this.btnOpenDestinationFolder.UseVisualStyleBackColor = true;
             this.btnOpenDestinationFolder.Click += new System.EventHandler(this.BtnOpenDestinationFolder_Click);
             // 
+            // cbbContract
+            // 
+            this.cbbContract.FormattingEnabled = true;
+            this.cbbContract.Location = new System.Drawing.Point(76, 33);
+            this.cbbContract.Name = "cbbContract";
+            this.cbbContract.Size = new System.Drawing.Size(193, 21);
+            this.cbbContract.TabIndex = 73;
+            this.cbbContract.SelectedIndexChanged += new System.EventHandler(this.CbbContract_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(9, 37);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(47, 13);
+            this.label1.TabIndex = 72;
+            this.label1.Text = "Contrato";
+            // 
             // SprintAbsenceHourForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -359,5 +381,7 @@ namespace RelatorioFA.AppWinForm
         private System.Windows.Forms.Button btnOpenDestinationFolder;
         private System.Windows.Forms.TextBox txbExtraHourInvestment;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox cbbContract;
+        private System.Windows.Forms.Label label1;
     }
 }

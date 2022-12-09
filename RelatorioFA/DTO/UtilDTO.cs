@@ -6,6 +6,8 @@ namespace RelatorioFA.DTO
 {
     public class UtilDTO
     {
+        public static string configName = "RelatorioFA_2.xml";
+
         public enum CATEGORY
         {
             DESPESA,

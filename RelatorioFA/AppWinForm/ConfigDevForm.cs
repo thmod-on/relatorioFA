@@ -18,7 +18,6 @@ namespace RelatorioFA.AppWinForm
         }
 
         private string outputDocPath = UtilDTO.GetProjectRootFolder();
-        const string outputName = "RelatorioFA.xml";
         private readonly ConfigXmlDTO config = new ConfigXmlDTO();
         private FornecedorDTO selectedPartner = new FornecedorDTO();
         private ContratoDTO selectedContract = new ContratoDTO();
@@ -115,8 +114,8 @@ namespace RelatorioFA.AppWinForm
             try
             {
                 Processing(true);
-                PrincipalTO.GenerateConfigXmlFile(outputDocPath, outputName, config);
-                txbResult.Text = $"Arquivo {outputName} gerado na pasta {outputDocPath}. Utilize o botão abaixo para abrir o destino.";
+                PrincipalTO.GenerateConfigXmlFile(outputDocPath, UtilDTO.configName, config);
+                txbResult.Text = $"Arquivo {UtilDTO.configName} gerado na pasta {outputDocPath}. Utilize o botão abaixo para abrir o destino.";
                 btnOpenDestinationFolder.Enabled = true;
             }
             catch (Exception ex)
@@ -135,7 +134,7 @@ namespace RelatorioFA.AppWinForm
         {
             try
             {
-                var file = Path.Combine(outputDocPath, outputName);
+                var file = Path.Combine(outputDocPath, UtilDTO.configName);
                 Process.Start(file);
             }
             catch (Exception ex)

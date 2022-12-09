@@ -42,7 +42,6 @@ namespace RelatorioFA.AppWinForm
         }
 
         private string outputPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-        const string outputName = "RelatorioFA.xml";
         private ConfigXmlDTO config = new ConfigXmlDTO();
 
         private void ResizeParent(Form containerForm)
@@ -159,7 +158,7 @@ namespace RelatorioFA.AppWinForm
                 Processing(true);
                 config.AuthorName = txbAuthor.Text;
                 config.TeamName = txbTeamName.Text;
-                PrincipalTO.GenerateConfigXmlFile(outputPath, outputName, config);
+                PrincipalTO.GenerateConfigXmlFile(outputPath, UtilDTO.configName, config);
                 Processing(false);
             }
             catch (Exception ex)
@@ -348,7 +347,7 @@ namespace RelatorioFA.AppWinForm
         {
             try
             {
-                var file = Path.Combine(outputPath, outputName);
+                var file = Path.Combine(outputPath, UtilDTO.configName);
                 Process.Start(file);
             }
             catch (Exception ex)
@@ -684,7 +683,7 @@ namespace RelatorioFA.AppWinForm
             }
             else
             {
-                txbResult.Text = $"Arquivo\n{outputName}\n\nGerado na pasta\n{outputPath}";
+                txbResult.Text = $"Arquivo\n{UtilDTO.configName}\n\nGerado na pasta\n{outputPath}";
                 btnOpenFile.Enabled = true;
             }
         }

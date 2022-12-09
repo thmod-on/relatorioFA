@@ -126,12 +126,14 @@ namespace RelatorioFA.AppWinForm
                 if (fluxo == UtilDTO.NAVIGATION.SM)
                 {
                     bool hasSharedSm = false;
-                    foreach (var partner in configXml.Partners)
+                    foreach (var _ in from partner in configXml.Partners
+                                      from contract in partner.Contracts
+                                      from batch in contract.Batches
+                                      where batch.Name == UtilDTO.BATCHS.SM.ToString() &&
+                                        batch.Roles.Any(role => role.Name == UtilDTO.ROLES.SM_MEDIA.ToString())
+                                      select new { })
                     {
-                        if (partner.Contracts.Any(contract => contract.Name == UtilDTO.ROLES.SM_MEDIA.ToString()))
-                        {
-                            hasSharedSm = true;
-                        }
+                        hasSharedSm = true;
                     }
 
                     if (!hasSharedSm)

@@ -23,10 +23,12 @@ namespace RelatorioFA.Negocio
                 }
 
                 devTeam.AddRange(from cont in partner.Contracts
-                                 from category in cont.Categories
-                                 where category.Name == UtilDTO.ROLES.SM_FIXO.ToString() ||
-                                       category.Name == UtilDTO.ROLES.SM_MEDIA.ToString()
-                                 from dev in category.Collaborators
+                                 from batch in cont.Batches
+                                 where batch.Name == UtilDTO.BATCHS.SM.ToString()
+                                 from role in batch.Roles
+                                 where role.Name == UtilDTO.ROLES.SM_FIXO.ToString() ||
+                                       role.Name == UtilDTO.ROLES.SM_MEDIA.ToString()
+                                 from dev in role.Collaborators
                                  select dev);
 
                 string outputDocName = SetDocumentName(baseSprints, config, partner.Name, UtilDTO.REPORT_TYPE.SM);
@@ -57,13 +59,13 @@ namespace RelatorioFA.Negocio
             SetLastPageText(document, paragraph, partner, contract.UstValue);
 
             //(TODO) Cada time tem 1 SM, Melhorar  o DTO para representar
-            if (contract.Categories.Any(category => category.Name == UtilDTO.ROLES.SM_FIXO.ToString()))
+            if (contract.Batches.Any(b => b.Roles.Any(r => r.Name == UtilDTO.ROLES.SM_FIXO.ToString())))
             {
                 CreateSummaryTableUstSmSettled(document, sprints, ref missing, contract.UstValue);
             }
             else
             {
-                if (contract.Categories.Any(category => category.Name == UtilDTO.ROLES.SM_MEDIA.ToString()))
+                if (contract.Batches.Any(b => b.Roles.Any(r => r.Name == UtilDTO.ROLES.SM_MEDIA.ToString())))
                 {
                     CreateSummaryTableUstSmShared(document, sprints, ref missing, contract.UstValue);
                 }
@@ -169,7 +171,7 @@ namespace RelatorioFA.Negocio
                     if (startLine % 2 != 0)
                     {
                         smTable.Cell(startLine, 5).Range.Text = sprint.AverageSprint.ToString(decimalFormat);//D
-                        smTable.Cell(startLine, 6).Range.Text = sprint.Contracts[0].Categories[0].Factor.ToString(decimalFormat);//E
+                        smTable.Cell(startLine, 6).Range.Text = sprint.Contracts[0].Batches[0].Roles[0].Factor.ToString(decimalFormat);//E
                         smTable.Cell(startLine, 7).Range.Text = "1,000";//F
                         smTable.Cell(startLine, 8).Range.Text = sprint.SmPoints.ToString(decimalFormat);//G
 

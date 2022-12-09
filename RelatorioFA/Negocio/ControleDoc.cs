@@ -112,8 +112,9 @@ namespace RelatorioFA.Negocio
                             strAux = dev.Name;
                             if (partner
                                 .Contracts.Any(contract => contract
-                                .Categories.Any(category => category
-                                .Collaborators.Any(colaborator => colaborator.Name == dev.Name))))
+                                .Batches.Any(batch => batch
+                                .Roles.Any(role => role
+                                .Collaborators.Any(colaborator => colaborator.Name == dev.Name)))))
                             {
                                 AddPAragraph(paragraph, strAux, 0, 0, 0, 14, WdParagraphAlignment.wdAlignParagraphJustify, WdColorIndex.wdYellow);
                             }

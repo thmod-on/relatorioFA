@@ -25,26 +25,6 @@ namespace RelatorioFA.AppWinForm
             Fornecedor
         }
 
-        private void LoadGuideOptions()
-        {
-            cbbGuide.DataSource = Enum.GetValues(typeof(GUIDE_OPTION));
-            cbbGuide.DropDownWidth = SetDropDownWidth(cbbGuide);
-        }
-
-        private int SetDropDownWidth(ComboBox myCombo)
-        {
-            int maxWidth = 0;
-            foreach (var obj in myCombo.Items)
-            {
-                int temp = TextRenderer.MeasureText(obj.ToString(), myCombo.Font).Width;
-                if (temp > maxWidth)
-                {
-                    maxWidth = temp;
-                }
-            }
-            return maxWidth;
-        }
-
         private void CbbGuide_SelectedIndexChanged(object sender, EventArgs e)
         {
             Enum.TryParse<GUIDE_OPTION>(cbbGuide.SelectedValue.ToString(), out GUIDE_OPTION option);

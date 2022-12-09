@@ -38,12 +38,9 @@ namespace RelatorioFA.Negocio
                 //Obtendo o contrato para a capa
                 string contratoSap = "ERRO";
                 foreach (var cont in from cont in partner.Contracts
-                                         from category in contract.Categories
-                                         where category.Name != UtilDTO.ROLES.EXTERNO.ToString()
-                                            && category.Name != UtilDTO.ROLES.SM_MEDIA.ToString()
-                                            && category.Name != UtilDTO.ROLES.SM_FIXO.ToString()
-                                            && category.Name != UtilDTO.ROLES.HOUSE.ToString()
-                                         select cont)
+                                     from batch in contract.Batches
+                                     where batch.Name == UtilDTO.BATCHS.DEVOPS.ToString()
+                                     select cont)
                 {
                     contratoSap = contract.SapNumber;
                     break;
@@ -92,7 +89,7 @@ namespace RelatorioFA.Negocio
             Table summaryTable = document.Tables.Add(EndOfDocument(document, ref missing), 1, columns, ref missing, ref missing);
             summaryTable.Borders.Enable = 1;
             summaryTable.Range.Font.Size = 8;
-            
+
             int line = SetGenericTableHeader(ref summaryTable, headers, UtilDTO.CATEGORY.DESPESA);
             foreach (var sprint in sprintsDevOps)
             {

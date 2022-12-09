@@ -11,14 +11,12 @@ namespace RelatorioFA.AcessoDados
 {
     public class ConfigXmlDA
     {
-        private const string configFile = "RelatorioFA.xml";
-
         public static ConfigXmlDTO LoadConfig(string filePath)
         {
             ConfigXmlDTO config;
             if (filePath.Substring(filePath.Length - 4).ToUpper() != ".XML")
             {
-                filePath = Path.Combine(filePath, configFile); 
+                filePath = Path.Combine(filePath, UtilDTO.configName); 
             }
             try
             {
@@ -31,7 +29,7 @@ namespace RelatorioFA.AcessoDados
             }
             catch (FileNotFoundException ex)
             {
-                throw new FileNotFoundException($"ERRO:\n\nArquivo {configFile} não encontrado em {filePath}.\n\nFavor selecione o local do arquivo utilizando o botão correspondente.", ex);
+                throw new FileNotFoundException($"ERRO:\n\nArquivo {UtilDTO.configName} não encontrado em {filePath}.\n\nFavor selecione o local do arquivo utilizando o botão correspondente.", ex);
             }
             catch (Exception ex)
             {
