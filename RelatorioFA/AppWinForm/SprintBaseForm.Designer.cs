@@ -52,6 +52,7 @@ namespace RelatorioFA.AppWinForm
             this.btnAddSprint = new System.Windows.Forms.Button();
             this.lblScreen = new System.Windows.Forms.Label();
             this.btnChangeConfigFolder = new System.Windows.Forms.Button();
+            this.btnRemoveSprint = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbxSprintImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -292,7 +293,7 @@ namespace RelatorioFA.AppWinForm
             this.btnAddSprint.Name = "btnAddSprint";
             this.btnAddSprint.Size = new System.Drawing.Size(127, 23);
             this.btnAddSprint.TabIndex = 62;
-            this.btnAddSprint.Text = "Adicionar / Atualizar";
+            this.btnAddSprint.Text = "Add / Atualizar sprint";
             this.btnAddSprint.UseVisualStyleBackColor = true;
             this.btnAddSprint.Click += new System.EventHandler(this.BtnAddSprint_Click);
             // 
@@ -317,11 +318,23 @@ namespace RelatorioFA.AppWinForm
             this.btnChangeConfigFolder.UseVisualStyleBackColor = true;
             this.btnChangeConfigFolder.Click += new System.EventHandler(this.BtnChangeConfigFolder_Click);
             // 
+            // btnRemoveSprint
+            // 
+            this.btnRemoveSprint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRemoveSprint.Location = new System.Drawing.Point(211, 485);
+            this.btnRemoveSprint.Name = "btnRemoveSprint";
+            this.btnRemoveSprint.Size = new System.Drawing.Size(127, 23);
+            this.btnRemoveSprint.TabIndex = 73;
+            this.btnRemoveSprint.Text = "Remover sprint";
+            this.btnRemoveSprint.UseVisualStyleBackColor = true;
+            this.btnRemoveSprint.Click += new System.EventHandler(this.BtnRemoveSprint_Click);
+            // 
             // SprintBaseForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(786, 532);
+            this.Controls.Add(this.btnRemoveSprint);
             this.Controls.Add(this.btnChangeConfigFolder);
             this.Controls.Add(this.lblScreen);
             this.Controls.Add(this.btnAddSprint);
@@ -369,5 +382,6 @@ namespace RelatorioFA.AppWinForm
         private System.Windows.Forms.Button btnRemoveSprintImage;
         private System.Windows.Forms.Label lblScreen;
         private System.Windows.Forms.Button btnChangeConfigFolder;
+        private System.Windows.Forms.Button btnRemoveSprint;
     }
 }

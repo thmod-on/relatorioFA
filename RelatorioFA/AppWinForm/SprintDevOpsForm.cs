@@ -36,11 +36,16 @@ namespace RelatorioFA.AppWinForm
                 configXml = PrincipalTO.LoadConfig(outputDocPath);
 
                 //set partners
-                cbbPartners.Items.Add(from partner in configXml.Partners
-                                      from contract in partner.Contracts
-                                      from batch in contract.Batches
-                                      where batch.Name == UtilDTO.BATCHS.DEVOPS.ToString()
-                                      select partner.Name);
+                foreach (var partner in
+                    from partner in configXml.Partners
+                    from contract in partner.Contracts
+                    from batch in contract.Batches
+                    where batch.Name == UtilDTO.BATCHS.DEVOPS.ToString()
+                    select partner)
+                {
+                    cbbPartners.Items.Add(partner.Name);
+                }
+                              
                 cbbPartners.SelectedIndex = 0;
 
                 lsbSprints.SelectedIndex = 0;
@@ -138,17 +143,22 @@ namespace RelatorioFA.AppWinForm
         #endregion
 
         #region Eventos de Click
+        #region BtnPreviousForm_Click
         private void BtnPreviousForm_Click(object sender, System.EventArgs e)
         {
             containerForm.AbrirForm(new SprintBaseForm(containerForm, UtilDTO.NAVIGATION.DEVOPS, sprintsDevOpsList));
-        }
+        } 
+        #endregion
 
+        #region BtnSetOutputDocPath_Click
         private void BtnSetOutputDocPath_Click(object sender, System.EventArgs e)
         {
             outputDocPath = UtilWinForm.SetOutputDocPath();
             ShowLog("Caminho de saído do arquivo definido.");
-        }
+        } 
+        #endregion
 
+        #region BtnGenerate_Click
         private void BtnGenerate_Click(object sender, System.EventArgs e)
         {
             try
@@ -166,12 +176,16 @@ namespace RelatorioFA.AppWinForm
                 txbResult.Text = $"ERRO. {ex.Message}";
             }
         }
+        #endregion
 
+        #region BtnOpenDestinationFolder_Click
         private void BtnOpenDestinationFolder_Click(object sender, System.EventArgs e)
         {
             System.Diagnostics.Process.Start(outputDocPath);
         }
+        #endregion
 
+        #region BtnChangeConfigFolder_Click
         private void BtnChangeConfigFolder_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderDlg = new FolderBrowserDialog
@@ -186,7 +200,8 @@ namespace RelatorioFA.AppWinForm
             }
 
             LoadConfig();
-        }
+        } 
+        #endregion
         #endregion
 
         #region Eventos automaticos

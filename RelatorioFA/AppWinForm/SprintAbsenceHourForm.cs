@@ -101,6 +101,8 @@ namespace RelatorioFA.AppWinForm
                     }
                     else if (cbbPartners.SelectedItem.ToString() == house)
                     {
+                        cbbContract.Items.Clear();
+                        cbbContract.Text = String.Empty;
                         foreach (var dev in configXml.BaneseDes)
                         {
                             lsbDevTeam.Items.Add(mark + dev.Name);
@@ -130,12 +132,23 @@ namespace RelatorioFA.AppWinForm
                     cbbContract.Items.Add(contract.SapNumber);
                 }
             }
+            cbbContract.SelectedIndex = 0;
         }
 
         #region CbbContract_SelectedIndexChanged
         private void CbbContract_SelectedIndexChanged(object sender, EventArgs e)
         {
             selectedContract = selectedPartner.Contracts.Find(c => c.SapNumber == cbbContract.SelectedItem.ToString());
+            lsbDevTeam.Items.Clear();
+            lsbDevTeam.Text = String.Empty;
+            foreach (var dev in from batch in selectedContract.Batches
+                                where batch.Name == UtilDTO.BATCHS.DEV.ToString()
+                                from role in batch.Roles
+                                from dev in role.Collaborators
+                                select dev)
+            {
+                lsbDevTeam.Items.Add(dev.Name);
+            }
         } 
         #endregion
 
@@ -217,6 +230,7 @@ namespace RelatorioFA.AppWinForm
         private ColaboradorDTO GetSelectedDev()
         {
             foreach (var dev in from sprint in sprintsDevList
+                                where sprint.Range.Name == lsbSprints.SelectedItem.ToString()
                                 from contract in sprint.Contracts
                                 from batch in contract.Batches
                                 from role in batch.Roles
@@ -371,8 +385,8 @@ namespace RelatorioFA.AppWinForm
                                         }
                                         newContract.Batches.Add(newBatch);
                                     }
-                                    selectedDevSprint.Contracts.Add(newContract);
                                 }
+                                selectedDevSprint.Contracts.Add(newContract);
                             }
                         }
                         else

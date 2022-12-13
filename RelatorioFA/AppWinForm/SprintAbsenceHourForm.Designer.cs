@@ -33,6 +33,8 @@ namespace RelatorioFA.AppWinForm
             this.txbResult = new System.Windows.Forms.RichTextBox();
             this.lsbSprints = new System.Windows.Forms.ListBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.cbbContract = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.cbbPartners = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -52,8 +54,6 @@ namespace RelatorioFA.AppWinForm
             this.btnGenerate = new System.Windows.Forms.Button();
             this.btnSetOutputDocPath = new System.Windows.Forms.Button();
             this.btnOpenDestinationFolder = new System.Windows.Forms.Button();
-            this.cbbContract = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -68,13 +68,14 @@ namespace RelatorioFA.AppWinForm
             this.btnPreviousForm.Name = "btnPreviousForm";
             this.btnPreviousForm.Size = new System.Drawing.Size(75, 23);
             this.btnPreviousForm.TabIndex = 79;
-            this.btnPreviousForm.Text = "<- Rtornar";
+            this.btnPreviousForm.Text = "<- Retornar";
             this.btnPreviousForm.UseVisualStyleBackColor = true;
             this.btnPreviousForm.Click += new System.EventHandler(this.BtnPreviousForm_Click);
             // 
             // txbResult
             // 
-            this.txbResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.txbResult.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txbResult.Location = new System.Drawing.Point(9, 33);
             this.txbResult.Name = "txbResult";
@@ -120,6 +121,24 @@ namespace RelatorioFA.AppWinForm
             this.splitContainer1.Size = new System.Drawing.Size(762, 460);
             this.splitContainer1.SplitterDistance = 445;
             this.splitContainer1.TabIndex = 75;
+            // 
+            // cbbContract
+            // 
+            this.cbbContract.FormattingEnabled = true;
+            this.cbbContract.Location = new System.Drawing.Point(76, 33);
+            this.cbbContract.Name = "cbbContract";
+            this.cbbContract.Size = new System.Drawing.Size(193, 21);
+            this.cbbContract.TabIndex = 73;
+            this.cbbContract.SelectedIndexChanged += new System.EventHandler(this.CbbContract_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(9, 37);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(47, 13);
+            this.label1.TabIndex = 72;
+            this.label1.Text = "Contrato";
             // 
             // cbbPartners
             // 
@@ -311,24 +330,6 @@ namespace RelatorioFA.AppWinForm
             this.btnOpenDestinationFolder.Text = "Abrir destino";
             this.btnOpenDestinationFolder.UseVisualStyleBackColor = true;
             this.btnOpenDestinationFolder.Click += new System.EventHandler(this.BtnOpenDestinationFolder_Click);
-            // 
-            // cbbContract
-            // 
-            this.cbbContract.FormattingEnabled = true;
-            this.cbbContract.Location = new System.Drawing.Point(76, 33);
-            this.cbbContract.Name = "cbbContract";
-            this.cbbContract.Size = new System.Drawing.Size(193, 21);
-            this.cbbContract.TabIndex = 73;
-            this.cbbContract.SelectedIndexChanged += new System.EventHandler(this.CbbContract_SelectedIndexChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 37);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(47, 13);
-            this.label1.TabIndex = 72;
-            this.label1.Text = "Contrato";
             // 
             // SprintAbsenceHourForm
             // 

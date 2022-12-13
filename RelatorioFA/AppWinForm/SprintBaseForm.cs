@@ -104,6 +104,7 @@ namespace RelatorioFA.AppWinForm
         private readonly List<SprintDevOpsDTO> sprintsDevOpsList = new List<SprintDevOpsDTO>();
         private readonly List<SprintDevDTO> sprintsDevList = new List<SprintDevDTO>();
         private readonly List<SprintSmDTO> sprintsSmList = new List<SprintSmDTO>();
+        private string selectedRangeName;
 
         #region LoadRanges
         private void LoadRanges()
@@ -265,9 +266,10 @@ namespace RelatorioFA.AppWinForm
             {
                 txbResult.Text = $"Erro. {ex.Message}";
             }
-        } 
+        }
         #endregion
 
+        #region BtnNextForm_Click
         private void BtnNextForm_Click(object sender, EventArgs e)
         {
             switch (fluxo)
@@ -290,8 +292,10 @@ namespace RelatorioFA.AppWinForm
                 default:
                     throw new NotImplementedException();
             }
-        }
+        } 
+        #endregion
 
+        #region BtnChangeConfigFolder_Click
         private void BtnChangeConfigFolder_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderDlg = new FolderBrowserDialog
@@ -306,7 +310,8 @@ namespace RelatorioFA.AppWinForm
                 BlockFields(false);
                 txbResult.Text = "Seja bem vindo de volta.";
             }
-        }
+        } 
+        #endregion
 
         #region BtnAddSprintImage_Click
         private void BtnAddSprintImage_Click(object sender, EventArgs e)
@@ -341,6 +346,42 @@ namespace RelatorioFA.AppWinForm
         {
             pbxSprintImage.Image = null;
             sprintImagePath = null;
+        }
+        #endregion
+
+        #region BtnRemoveSprint_Click
+        private void BtnRemoveSprint_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                lsbSprints.Items.Remove(selectedRangeName);
+                switch (fluxo)
+                {
+                    case UtilDTO.NAVIGATION.DEVOPS:
+                        sprintsDevOpsList.Remove(sprintsDevOpsList.Find(s => s.Range.Name == selectedRangeName));
+                        break;
+                    case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
+                        sprintsDevList.Remove(sprintsDevList.Find(s => s.Range.Name == selectedRangeName));
+                        sprintsSmList.Remove(sprintsSmList.Find(s => s.Range.Name == selectedRangeName));
+                        break;
+                    case UtilDTO.NAVIGATION.DEV:
+                        sprintsDevList.Remove(sprintsDevList.Find(s => s.Range.Name == selectedRangeName));
+                        break;
+                    case UtilDTO.NAVIGATION.SM:
+                        sprintsSmList.Remove(sprintsSmList.Find(s => s.Range.Name == selectedRangeName));
+                        break;
+                    case UtilDTO.NAVIGATION.DEV_EXTERNO:
+                        sprintsDevList.Remove(sprintsDevList.Find(s => s.Range.Name == selectedRangeName));
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+                ShowLog();
+            }
+            catch (Exception ex)
+            {
+                txbResult.Text = $"Erro. {ex.Message}";
+            }
         } 
         #endregion
         #endregion
@@ -361,6 +402,7 @@ namespace RelatorioFA.AppWinForm
         {
             if (lsbSprints.SelectedIndex >= 0)
             {
+                selectedRangeName = lsbSprints.SelectedItem.ToString();
                 //Neste caso o fluxo serve apenas para encontrar a lista preenchida
                 switch (fluxo)
                 {
