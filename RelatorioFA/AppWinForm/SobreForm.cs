@@ -20,7 +20,7 @@ namespace RelatorioFA.AppWinForm
 
         private void LoadUpdatesDescription()
         {
-            txbUpdates.AppendText("+ ---------------------+\n  Versão 4.14.0 \n + ---------------------+\n - ");
+            txbUpdates.AppendText("+ ---------------------+\n  Versão 4.14.0 \n + ---------------------+\n - Foi aqui que pediram atualização? Pois temos! Para os olhos nao treinados pode parecer que não temos nada de novo além de um ajuste na nomeclatura do arquivo final e um trabalho para gerar novo arquivo de configuraçao. Mas... aí onde está o pulo do gato.\n\n=^.^=\n\nForam refeitos quase todos objetos e remapeados para um modelo de dados mais correto. Acreditem, deu trabalho! kkkkkkk\n\nTão logo estejamos com uma versão estável, trabalharei numa versão para começar a armazenar os dados das sprints\n\n~o~");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.13.4 \n + ---------------------+\n - Alterada a quantidade de dias da última sprint de cada release para ter uma semana a mais;\n- Alterada nomeclatura das sprints para facilitar leitura;");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.13.3 \n + ---------------------+\n - Alteração na capa\n   . Adicionado o número do contrato SAP;\n   . Adicionado o nome da Área (fixo)\n- Removido o número do contrato SAP da folha de faturamento");
             txbUpdates.AppendText("\n\n + ---------------------+\n  Versão 4.13.2 \n + ---------------------+\n - Correção no fluxo para quando uma empresa tem dev externo e também trabalhando internamente");

@@ -124,13 +124,32 @@ namespace RelatorioFA.AppWinForm
         private void SetPartnerContractsCbb(FornecedorDTO selectedPartner)
         {
             cbbContract.Items.Clear();
+            cbbContract.Text= String.Empty;
             if (selectedPartner != null)
             {
-                foreach (var contract in selectedPartner.Contracts)
+                if (fluxo != UtilDTO.NAVIGATION.VARIOS_RELATORIOS)
                 {
-                    if (contract.Batches.Any(b => b.Name == fluxo.ToString()))
+                    foreach (var contract in selectedPartner.Contracts)
                     {
-                        cbbContract.Items.Add(contract.SapNumber);
+                        if (contract.Batches.Any(b => b.Name == fluxo.ToString()))
+                        {
+                            cbbContract.Items.Add(contract.SapNumber);
+                        }
+                    }
+                }
+                else
+                {
+                    //no fluxo de vários  relatórios não será gerado o DEVOPS, nem DEV_EXTERNO, nem SM_MEDIA pois possuel dados específicos
+                    foreach (var contract in selectedPartner.Contracts)
+                    {
+                        if (contract.Batches.Any(b => b.Name == UtilDTO.BATCHS.DEV.ToString()))
+                        {
+                            cbbContract.Items.Add(contract.SapNumber);
+                        }
+                        else if (contract.Batches.Any(b => b.Roles.Any(r => r.Name == UtilDTO.ROLES.SM_FIXO.ToString())))
+                        {
+                            cbbContract.Items.Add(contract.SapNumber);
+                        }
                     }
                 }
                 cbbContract.SelectedIndex = 0; 
@@ -304,7 +323,6 @@ namespace RelatorioFA.AppWinForm
                                                 from batch in contract.Batches
                                                 where batch.Name == UtilDTO.BATCHS.SM.ToString()
                                                 from role in batch.Roles
-                                                where role.Name == UtilDTO.ROLES.SM_FIXO.ToString()
                                                 select contract).First());
                     }
                 }
