@@ -42,6 +42,7 @@ namespace RelatorioFA.AppWinForm
         private string selectedDevName;
 
         #region Eventos automaticos
+        #region SetCbbPartners
         private void SetCbbPartners()
         {
             if (fluxo != UtilDTO.NAVIGATION.DEV_EXTERNO)
@@ -67,15 +68,15 @@ namespace RelatorioFA.AppWinForm
             {
                 foreach (var partner in from partner in configXml.Partners
                                         from contract in partner.Contracts
-                                        where contract.Batches.Any(b => b.Name == UtilDTO.BATCHS.EXTERNO.ToString())
+                                        where contract.Batches.Any(b => b.Name == UtilDTO.BATCHS.DEV_EXTERNO.ToString())
                                         select partner)
                 {
                     cbbPartners.Items.Add(partner.Name);
                 }
             }
             cbbPartners.SelectedIndex = 0;
-        }
-
+        } 
+        #endregion
 
         #region CbbPartners_SelectedIndexChanged
         private void CbbPartners_SelectedIndexChanged(object sender, EventArgs e)
@@ -108,32 +109,34 @@ namespace RelatorioFA.AppWinForm
                             lsbDevTeam.Items.Add(mark + dev.Name);
                         }
                     }
-                    else
-                    {
-                        selectedPartner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
-                        SetPartnerContractsCbb(selectedPartner);
-                    }
                     if (lsbDevTeam.Items.Count > 0)
                     {
                         lsbDevTeam.SelectedIndex = 0;
                     }
                 }
             }
+            selectedPartner = configXml.Partners.Find(p => p.Name == cbbPartners.SelectedItem.ToString());
+            SetPartnerContractsCbb(selectedPartner);
         }
         #endregion
 
+        #region SetPartnerContractsCbb
         private void SetPartnerContractsCbb(FornecedorDTO selectedPartner)
         {
             cbbContract.Items.Clear();
-            foreach (var contract in selectedPartner.Contracts)
+            if (selectedPartner != null)
             {
-                if (contract.Batches.Any(b => b.Name == UtilDTO.BATCHS.DEV.ToString()))
+                foreach (var contract in selectedPartner.Contracts)
                 {
-                    cbbContract.Items.Add(contract.SapNumber);
+                    if (contract.Batches.Any(b => b.Name == fluxo.ToString()))
+                    {
+                        cbbContract.Items.Add(contract.SapNumber);
+                    }
                 }
+                cbbContract.SelectedIndex = 0; 
             }
-            cbbContract.SelectedIndex = 0;
-        }
+        } 
+        #endregion
 
         #region CbbContract_SelectedIndexChanged
         private void CbbContract_SelectedIndexChanged(object sender, EventArgs e)
@@ -203,7 +206,6 @@ namespace RelatorioFA.AppWinForm
         {
             GetSelectedDev().AbsenceDays = Convert.ToInt32(txbAbsence.Text);
             ShowLog();
-            //devAbsences[selectedDevName] = Convert.ToInt32(txbAbsence.Text);
         }
         #endregion
 
@@ -267,6 +269,7 @@ namespace RelatorioFA.AppWinForm
         }
         #endregion
 
+        #region SetScreenLayout
         private void SetScreenLayout(UtilDTO.NAVIGATION flux)
         {
             switch (flux)
@@ -274,17 +277,20 @@ namespace RelatorioFA.AppWinForm
                 case UtilDTO.NAVIGATION.DEV_EXTERNO:
                     lblText1.Visible = false;
                     lblText2.Visible = false;
+                    lblSprints.Visible = false;
                     lblAbsence.Visible = false;
 
+                    lsbSprints.Visible = false;
                     lsbDevTeam.Visible = false;
                     txbAbsence.Visible = false;
                     break;
                 default:
                     break;
             }
-
         }
+        #endregion
 
+        #region SetSmSprintWithContracts
         private void SetSmSprintWithContracts()
         {
             if (sprintsSmList != null)
@@ -294,17 +300,19 @@ namespace RelatorioFA.AppWinForm
                     if (sprintSm.Contracts.Count < 1)
                     {
                         sprintSm.Contracts.Add((from partner in configXml.Partners
-                                               from contract in partner.Contracts
-                                               from batch in contract.Batches
-                                               where batch.Name == UtilDTO.BATCHS.SM.ToString()
-                                               from role in batch.Roles
-                                               where role.Name == UtilDTO.ROLES.SM_FIXO.ToString()
-                                               select  contract).First());
+                                                from contract in partner.Contracts
+                                                from batch in contract.Batches
+                                                where batch.Name == UtilDTO.BATCHS.SM.ToString()
+                                                from role in batch.Roles
+                                                where role.Name == UtilDTO.ROLES.SM_FIXO.ToString()
+                                                select contract).First());
                     }
                 }
             }
         }
+        #endregion
 
+        #region SetDevSprintWithContractsAndDevs
         private void SetDevSprintWithContractsAndDevs()
         {
             foreach (var selectedDevSprint in sprintsDevList)
@@ -361,10 +369,10 @@ namespace RelatorioFA.AppWinForm
                                         Name = batch.Name
                                     };
                                     if (batch.Name != UtilDTO.BATCHS.SM.ToString() &&
-                                        batch.Name != UtilDTO.BATCHS.EXTERNO.ToString())
+                                        batch.Name != UtilDTO.BATCHS.DEV_EXTERNO.ToString())
                                     {
                                         foreach (var role in batch.Roles)
-                                        {  
+                                        {
                                             CargoDTO newRole = new CargoDTO()
                                             {
                                                 Name = role.Name,
@@ -395,7 +403,7 @@ namespace RelatorioFA.AppWinForm
                             {
                                 foreach (var batch in contract.Batches)
                                 {
-                                    if (batch.Name == UtilDTO.BATCHS.EXTERNO.ToString())
+                                    if (batch.Name == UtilDTO.BATCHS.DEV_EXTERNO.ToString())
                                     {
                                         ContratoDTO newContract = new ContratoDTO()
                                         {
@@ -421,7 +429,8 @@ namespace RelatorioFA.AppWinForm
                     }
                 }
             }
-        }
+        } 
+        #endregion
 
         #region SetSprintList
         private void SetSprintListBox()
@@ -440,6 +449,7 @@ namespace RelatorioFA.AppWinForm
         private void BlockFields(bool block)
         {
             cbbPartners.Enabled = !block;
+            cbbContract.Enabled = !block;
             lsbDevTeam.Enabled = !block;
             lsbSprints.Enabled = !block;
             txbAbsence.Enabled = !block;
@@ -507,6 +517,9 @@ namespace RelatorioFA.AppWinForm
                 case UtilDTO.NAVIGATION.DEV:
                     containerForm.AbrirForm(new SprintPontosObsForm(containerForm, configXml, fluxo, sprintsDevList));
                     break;
+                case UtilDTO.NAVIGATION.DEV_EXTERNO:
+                    containerForm.AbrirForm(new SprintPontosObsForm(containerForm, configXml, fluxo, sprintsDevList));
+                    break;
                 default:
                     break;
             }
@@ -567,7 +580,7 @@ namespace RelatorioFA.AppWinForm
                             //SM_MEDIA nao será gerado nesse fluxo
                             if (contract.Batches.Any(b => b.Name == UtilDTO.BATCHS.DEV.ToString()))
                             {
-                                PrincipalTO.CreateDevDoc(configXml, partner, contract, outputDocPath, sprintsDevList);
+                                PrincipalTO.CreateDevDoc(configXml, partner, contract, outputDocPath, sprintsDevList, UtilDTO.REPORT_TYPE.DEV);
                             }
 
                             if (contract.Batches.Any(b => b.Roles.Any(r => r.Name == UtilDTO.ROLES.SM_MEDIA.ToString())))
@@ -575,7 +588,7 @@ namespace RelatorioFA.AppWinForm
                                 hasSharedSM = true;
                             }
 
-                            if (contract.Batches.Any(b => b.Name == UtilDTO.BATCHS.EXTERNO.ToString()))
+                            if (contract.Batches.Any(b => b.Name == UtilDTO.BATCHS.DEV_EXTERNO.ToString()))
                             {
                                 hasExternalDev = true;
                             }
@@ -590,11 +603,13 @@ namespace RelatorioFA.AppWinForm
                 else
                 {
                     var selectedPartner = configXml.Partners.Find(partner => partner.Name == cbbPartners.SelectedItem.ToString());
+                    UtilDTO.REPORT_TYPE type = UtilDTO.REPORT_TYPE.DEV;
                     if (fluxo == UtilDTO.NAVIGATION.DEV_EXTERNO)
                     {
                         selectedPartner.BillingType = UtilDTO.BILLING_TYPE.UST_EXTERNAL;
+                        type = UtilDTO.REPORT_TYPE.DEV_EXTERNO;
                     }
-                    PrincipalTO.CreateDevDoc(configXml, selectedPartner, selectedContract, outputDocPath, sprintsDevList);
+                    PrincipalTO.CreateDevDoc(configXml, selectedPartner, selectedContract, outputDocPath, sprintsDevList, type);
                 }
 
                 txbResult.Text = $"Arquivos gerados na pasta {outputDocPath}";

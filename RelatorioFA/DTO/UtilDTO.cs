@@ -18,7 +18,7 @@ namespace RelatorioFA.DTO
         {
             SM,
             DEV,
-            EXTERNO,
+            DEV_EXTERNO,
             DEVOPS
         }
 
@@ -66,6 +66,7 @@ namespace RelatorioFA.DTO
         public enum REPORT_TYPE
         {
             DEV,
+            DEV_EXTERNO,
             DEVOPS,
             SM
         }

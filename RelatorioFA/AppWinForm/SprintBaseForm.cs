@@ -420,7 +420,8 @@ namespace RelatorioFA.AppWinForm
                         dtpIniDate.Value = selectedDevOpsSprint.Range.IniDate;
                         dtpEndDate.Value = selectedDevOpsSprint.Range.EndDate;
                         break;
-                    case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
+                    //case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
+                    default:
                         var selectedSprint = sprintsDevList.Find(s => s.Range.Name == lsbSprints.SelectedItem.ToString());
                         if (!String.IsNullOrEmpty(selectedSprint.ImagePath))
                         {
@@ -433,8 +434,6 @@ namespace RelatorioFA.AppWinForm
                         cbbSprintRanges.SelectedItem = selectedSprint.Range.Name;
                         dtpIniDate.Value = selectedSprint.Range.IniDate;
                         dtpEndDate.Value = selectedSprint.Range.EndDate;
-                        break;
-                    default:
                         break;
                 }
             }

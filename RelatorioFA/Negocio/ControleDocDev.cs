@@ -9,7 +9,7 @@ namespace RelatorioFA.Negocio
     public class ControleDocDev : ControleDoc
     {
         #region GenerateDoc
-        public static void GenerateDoc(ConfigXmlDTO config, FornecedorDTO partner, ContratoDTO contract, string outputDocPath, List<SprintDevDTO> sprints)
+        public static void GenerateDoc(ConfigXmlDTO config, FornecedorDTO partner, ContratoDTO contract, string outputDocPath, List<SprintDevDTO> sprints, UtilDTO.REPORT_TYPE reportType)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace RelatorioFA.Negocio
                                  from dev in role.Collaborators
                                  select dev);
                 
-                string outputDocName = SetDocumentName(baseSprints, config, partner.Name, UtilDTO.REPORT_TYPE.DEV);
+                string outputDocName = SetDocumentName(baseSprints, config, partner.Name, reportType);
 
                 Application winword = CreateWinWord();
 

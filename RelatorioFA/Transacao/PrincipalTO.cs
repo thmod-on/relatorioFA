@@ -36,9 +36,9 @@ namespace RelatorioFA.Transacao
         } 
 
         #region CreateDoc
-        public static void CreateDevDoc(ConfigXmlDTO config, FornecedorDTO partner, ContratoDTO contract, string outputDocPath, List<SprintDevDTO> sprints)
+        public static void CreateDevDoc(ConfigXmlDTO config, FornecedorDTO partner, ContratoDTO contract, string outputDocPath, List<SprintDevDTO> sprints, UtilDTO.REPORT_TYPE reportType)
         {
-            ControleDocDev.GenerateDoc(config, partner, contract, outputDocPath, sprints);
+            ControleDocDev.GenerateDoc(config, partner, contract, outputDocPath, sprints, reportType);
         }
 
         public static void CreateSmDoc(ConfigXmlDTO config, FornecedorDTO partner, ContratoDTO contract, string outputDocPath, List<SprintSmDTO> sprints)

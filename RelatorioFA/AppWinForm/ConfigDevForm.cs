@@ -492,12 +492,12 @@ namespace RelatorioFA.AppWinForm
                     {
                         if (batch.Roles.Count == 0)
                         {
-                            if (batch.Name == UtilDTO.BATCHS.EXTERNO.ToString())
+                            if (batch.Name == UtilDTO.BATCHS.DEV_EXTERNO.ToString())
                             {
                                 throw new Exception("Mesmo para o lote de colaboradores externos você precisa cadastrar um cargo pois precisamos saber o fator de ajuste. Mas não se preocupe, não será necessário cadastrar um colaborador nesse cargo.");
                             }
 
-                            if (batch.Name != UtilDTO.BATCHS.EXTERNO.ToString())
+                            if (batch.Name != UtilDTO.BATCHS.DEV_EXTERNO.ToString())
                             {
                                 throw new Exception("Parece que você deixou algum lote sem cargo cadastrado. Que tal dar uma revisada?");
                             }                            
@@ -505,10 +505,10 @@ namespace RelatorioFA.AppWinForm
 
                         foreach (var role in batch.Roles)
                         {
-                            if (batch.Name != UtilDTO.BATCHS.EXTERNO.ToString() &&
+                            if (batch.Name != UtilDTO.BATCHS.DEV_EXTERNO.ToString() &&
                                 role.Collaborators.Count == 0)
                             {
-                                throw new Exception($"O único lote que pode ficar sem colaborador associado é o {UtilDTO.BATCHS.EXTERNO}");
+                                throw new Exception($"O único lote que pode ficar sem colaborador associado é o {UtilDTO.BATCHS.DEV_EXTERNO}");
                             }
                         }
                     }

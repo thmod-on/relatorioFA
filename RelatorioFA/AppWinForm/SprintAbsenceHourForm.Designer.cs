@@ -48,7 +48,7 @@ namespace RelatorioFA.AppWinForm
             this.lblText1 = new System.Windows.Forms.Label();
             this.txbAbsence = new System.Windows.Forms.TextBox();
             this.lblAbsence = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lblSprints = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.lblScreen = new System.Windows.Forms.Label();
             this.btnGenerate = new System.Windows.Forms.Button();
@@ -63,7 +63,7 @@ namespace RelatorioFA.AppWinForm
             // 
             // btnPreviousForm
             // 
-            this.btnPreviousForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPreviousForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnPreviousForm.Location = new System.Drawing.Point(12, 485);
             this.btnPreviousForm.Name = "btnPreviousForm";
             this.btnPreviousForm.Size = new System.Drawing.Size(75, 23);
@@ -85,6 +85,8 @@ namespace RelatorioFA.AppWinForm
             // 
             // lsbSprints
             // 
+            this.lsbSprints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lsbSprints.FormattingEnabled = true;
             this.lsbSprints.Location = new System.Drawing.Point(305, 32);
             this.lsbSprints.Name = "lsbSprints";
@@ -99,7 +101,6 @@ namespace RelatorioFA.AppWinForm
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(12, 9);
             this.splitContainer1.Name = "splitContainer1";
@@ -111,7 +112,7 @@ namespace RelatorioFA.AppWinForm
             this.splitContainer1.Panel1.Controls.Add(this.cbbPartners);
             this.splitContainer1.Panel1.Controls.Add(this.label3);
             this.splitContainer1.Panel1.Controls.Add(this.groupBox5);
-            this.splitContainer1.Panel1.Controls.Add(this.label4);
+            this.splitContainer1.Panel1.Controls.Add(this.lblSprints);
             this.splitContainer1.Panel1.Controls.Add(this.lsbSprints);
             // 
             // splitContainer1.Panel2
@@ -268,18 +269,17 @@ namespace RelatorioFA.AppWinForm
             this.lblAbsence.TabIndex = 10;
             this.lblAbsence.Text = "Ausências (dias)";
             // 
-            // label4
+            // lblSprints
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(302, 6);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(99, 13);
-            this.label4.TabIndex = 68;
-            this.label4.Text = "Sprints adicionadas";
+            this.lblSprints.AutoSize = true;
+            this.lblSprints.Location = new System.Drawing.Point(302, 6);
+            this.lblSprints.Name = "lblSprints";
+            this.lblSprints.Size = new System.Drawing.Size(99, 13);
+            this.lblSprints.TabIndex = 68;
+            this.lblSprints.Text = "Sprints adicionadas";
             // 
             // label2
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 6);
             this.label2.Name = "label2";
@@ -363,7 +363,7 @@ namespace RelatorioFA.AppWinForm
         private System.Windows.Forms.RichTextBox txbResult;
         private System.Windows.Forms.ListBox lsbSprints;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblSprints;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblScreen;
         private System.Windows.Forms.GroupBox groupBox5;

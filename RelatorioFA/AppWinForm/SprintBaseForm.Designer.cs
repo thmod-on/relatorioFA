@@ -154,7 +154,8 @@ namespace RelatorioFA.AppWinForm
             // 
             // txbResult
             // 
-            this.txbResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.txbResult.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txbResult.Location = new System.Drawing.Point(9, 33);
             this.txbResult.Name = "txbResult";
@@ -209,7 +210,6 @@ namespace RelatorioFA.AppWinForm
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(12, 12);
             this.splitContainer1.Name = "splitContainer1";
@@ -266,7 +266,6 @@ namespace RelatorioFA.AppWinForm
             // 
             // label2
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 6);
             this.label2.Name = "label2";
@@ -320,7 +319,7 @@ namespace RelatorioFA.AppWinForm
             // 
             // btnRemoveSprint
             // 
-            this.btnRemoveSprint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRemoveSprint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnRemoveSprint.Location = new System.Drawing.Point(211, 485);
             this.btnRemoveSprint.Name = "btnRemoveSprint";
             this.btnRemoveSprint.Size = new System.Drawing.Size(127, 23);

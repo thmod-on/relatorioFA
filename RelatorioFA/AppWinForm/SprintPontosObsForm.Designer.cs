@@ -79,7 +79,6 @@ namespace RelatorioFA.AppWinForm
             // 
             // label2
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 6);
             this.label2.Name = "label2";
@@ -248,6 +247,8 @@ namespace RelatorioFA.AppWinForm
             // 
             // lsbSprints
             // 
+            this.lsbSprints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lsbSprints.FormattingEnabled = true;
             this.lsbSprints.Location = new System.Drawing.Point(305, 32);
             this.lsbSprints.Name = "lsbSprints";
@@ -258,7 +259,8 @@ namespace RelatorioFA.AppWinForm
             // 
             // txbResult
             // 
-            this.txbResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.txbResult.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txbResult.Location = new System.Drawing.Point(9, 33);
             this.txbResult.Name = "txbResult";

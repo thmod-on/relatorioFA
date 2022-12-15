@@ -84,7 +84,8 @@ namespace RelatorioFA.AppWinForm
             // 
             // txbResult
             // 
-            this.txbResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.txbResult.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txbResult.Location = new System.Drawing.Point(11, 33);
             this.txbResult.Name = "txbResult";
@@ -164,6 +165,8 @@ namespace RelatorioFA.AppWinForm
             // 
             // lsbPartners
             // 
+            this.lsbPartners.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lsbPartners.FormattingEnabled = true;
             this.lsbPartners.Location = new System.Drawing.Point(305, 24);
             this.lsbPartners.Name = "lsbPartners";
@@ -178,7 +181,6 @@ namespace RelatorioFA.AppWinForm
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.splitContainer1.Location = new System.Drawing.Point(12, 11);
             this.splitContainer1.Name = "splitContainer1";
             // 
@@ -212,6 +214,8 @@ namespace RelatorioFA.AppWinForm
             // 
             // lsbBatch
             // 
+            this.lsbBatch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lsbBatch.FormattingEnabled = true;
             this.lsbBatch.Location = new System.Drawing.Point(305, 354);
             this.lsbBatch.Name = "lsbBatch";
@@ -284,6 +288,8 @@ namespace RelatorioFA.AppWinForm
             // 
             // lsbContracts
             // 
+            this.lsbContracts.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lsbContracts.FormattingEnabled = true;
             this.lsbContracts.Location = new System.Drawing.Point(305, 138);
             this.lsbContracts.Name = "lsbContracts";
@@ -303,7 +309,6 @@ namespace RelatorioFA.AppWinForm
             // 
             // label2
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(8, 3);
             this.label2.Name = "label2";

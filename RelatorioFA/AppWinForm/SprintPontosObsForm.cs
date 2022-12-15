@@ -28,6 +28,7 @@ namespace RelatorioFA.AppWinForm
         private readonly ConfigXmlDTO configXml;
 
         #region Eventos de Click
+        #region BtnNextForm_Click
         private void BtnNextForm_Click(object sender, EventArgs e)
         {
             switch (fluxo)
@@ -49,7 +50,9 @@ namespace RelatorioFA.AppWinForm
                     break;
             }
         }
+        #endregion
 
+        #region BtnNextForm_Click
         private void BtnPreviousForm_Click(object sender, EventArgs e)
         {
             switch (fluxo)
@@ -57,16 +60,21 @@ namespace RelatorioFA.AppWinForm
                 case UtilDTO.NAVIGATION.DEVOPS:
                     break;
                 case UtilDTO.NAVIGATION.VARIOS_RELATORIOS:
-                    containerForm.AbrirForm(new SprintBaseForm(containerForm, UtilDTO.NAVIGATION.VARIOS_RELATORIOS, sprintsDevList, sprintsSmList));
+                    containerForm.AbrirForm(new SprintBaseForm(containerForm, fluxo, sprintsDevList, sprintsSmList));
                     break;
                 case UtilDTO.NAVIGATION.DEV:
-                    containerForm.AbrirForm(new SprintBaseForm(containerForm, UtilDTO.NAVIGATION.VARIOS_RELATORIOS, sprintsDevList));
+                    containerForm.AbrirForm(new SprintBaseForm(containerForm, fluxo, sprintsDevList));
+                    break;
+                case UtilDTO.NAVIGATION.DEV_EXTERNO:
+                    containerForm.AbrirForm(new SprintBaseForm(containerForm, fluxo, sprintsDevList));
                     break;
                 default:
                     break;
             }
         }
+        #endregion
 
+        #region CkbAdaptationSprint_CheckedChanged
         private void CkbAdaptationSprint_CheckedChanged(object sender, EventArgs e)
         {
             string msg = "Por ser uma sprint de adaptação está sendo assumida uma pontuação fixa de 5 pontos.";
@@ -75,7 +83,7 @@ namespace RelatorioFA.AppWinForm
             txbAcceptedPointsInvestment.Enabled = !ckbAdaptationSprint.Checked;
             if (ckbAdaptationSprint.Checked &&
                 txbObs.Text.IndexOf(msg) == -1)
-            {   
+            {
                 txbObs.Text += $"\n{msg}";
                 txbAcceptedPointsExpense.Text = "5";
                 txbAcceptedPointsInvestment.Text = "0";
@@ -83,7 +91,8 @@ namespace RelatorioFA.AppWinForm
             GetSelectedDevSprint().AcceptedPointsExpenses = Convert.ToInt32(txbAcceptedPointsExpense.Text);
             GetSelectedDevSprint().AcceptedPointsInvestment = Convert.ToInt32(txbAcceptedPointsInvestment.Text);
             GetSelectedDevSprint().Obs = txbObs.Text;
-        }
+        } 
+        #endregion
         #endregion
 
         #region Eventos automaticos
